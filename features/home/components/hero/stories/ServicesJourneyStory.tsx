@@ -15,7 +15,7 @@ import {
   UserRound
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent, type MouseEvent } from 'react';
 
 const STEPS = [
   {
@@ -724,21 +724,78 @@ export function ServicesJourneyStory() {
   const [gatewayIndex, setGatewayIndex] = useState(0);
 
   const reduceMotion = Boolean(useReducedMotion());
+  const [hovered, setHovered] = useState(false);
+  const [held, setHeld] = useState(false);
+  const paused = hovered || held;
+  const stepClock = useRef({
+    step: 0,
+    remaining: STEP_DURATION,
+  });
+
+  useEffect(() => {
+    function release() {
+      setHeld(false);
+    }
+
+    function clearPause() {
+      setHeld(false);
+      setHovered(false);
+    }
+
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    window.addEventListener('blur', clearPause);
+
+    return () => {
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+      window.removeEventListener('blur', clearPause);
+    };
+  }, []);
+
+  const pauseHandlers = {
+    onPointerEnter: (event: PointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === 'mouse') setHovered(true);
+    },
+    onPointerLeave: (event: PointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === 'mouse') setHovered(false);
+    },
+    onPointerDown: () => setHeld(true),
+    onPointerUp: () => setHeld(false),
+    onPointerCancel: () => setHeld(false),
+    onContextMenu: (event: MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+    },
+  };
 
   useEffect(() => {
     if (reduceMotion) return;
 
-    const completed = step === STEPS.length - 1;
+    const clock = stepClock.current;
 
+    if (clock.step !== step) {
+      clock.step = step;
+      clock.remaining = step === STEPS.length - 1 ? 4500 : STEP_DURATION;
+    }
+
+    if (paused) return;
+
+    const started = performance.now();
     const timeout = window.setTimeout(() => {
       setStep(current => (current + 1) % STEPS.length);
-    }, completed ? 4500 : STEP_DURATION);
+    }, clock.remaining);
 
-    return () => window.clearTimeout(timeout);
-  }, [step, reduceMotion]);
+    return () => {
+      window.clearTimeout(timeout);
+      clock.remaining = Math.max(
+        0,
+        clock.remaining - (performance.now() - started)
+      );
+    };
+  }, [step, reduceMotion, paused]);
 
   useEffect(() => {
-    if (reduceMotion || step < 2) {
+    if (reduceMotion || paused || step < 2) {
       return;
     }
 
@@ -749,7 +806,7 @@ export function ServicesJourneyStory() {
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [gatewayIndex, reduceMotion, step]);
+  }, [gatewayIndex, reduceMotion, step, paused]);
 
   const visibleStep = reduceMotion ? STEPS.length - 1 : step;
   const visibleGatewayIndex = reduceMotion ? 0 : gatewayIndex;
@@ -771,11 +828,11 @@ export function ServicesJourneyStory() {
 
   return (
     <>
-      <div className="lg:hidden">
+      <div className="select-none lg:hidden" {...pauseHandlers}>
         <MobileServicesJourneyStory {...storyProps} onStepChange={setStep} />
       </div>
 
-      <div className="hidden lg:block">
+      <div className="hidden select-none lg:block" {...pauseHandlers}>
         <DesktopServicesJourneyStory {...storyProps} onStepChange={setStep} />
       </div>
     </>
