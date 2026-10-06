@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { ServicesHero } from '@/features/services/components/hero/ServicesHero';
 
+import { SystemsOverviewSections } from '@/features/systems/components/SystemsOverviewSections';
+
 export const metadata: Metadata = {
   title: 'Rcentz Systems',
   description:
@@ -9,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function SystemsPage() {
-  return <ServicesHero />;
+  return (
+    <>
+      <ServicesHero />
+      <SystemsOverviewSections />
+    </>
+  );
 }

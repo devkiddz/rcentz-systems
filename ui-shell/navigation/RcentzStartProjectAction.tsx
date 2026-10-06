@@ -15,7 +15,7 @@ export function RcentzStartProjectAction({
 }: RcentzStartProjectActionProps) {
   return (
     <a
-      href="mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20project%20enquiry"
+      href="mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20quote%20enquiry"
       onClick={onNavigate}
       className={[
         'inline-flex items-center justify-center gap-2 rounded-full bg-foreground font-medium text-background hover:opacity-85',
@@ -23,7 +23,7 @@ export function RcentzStartProjectAction({
         mobile ? 'min-h-11 w-full px-4 text-sm'
           : compact ? 'h-8 px-3 text-xs' : 'h-9 px-4 text-xs',
       ].join(' ')}>
-      Discuss a project
+      Get a quote
       <ArrowUpRight aria-hidden="true" className="size-3.5" />
     </a>
   );
