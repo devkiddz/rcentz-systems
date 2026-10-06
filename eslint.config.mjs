@@ -7,6 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
 
   globalIgnores([
+    'pending-routes/**',
     // Next.js generated output
     '.next/**',
     'out/**',

@@ -65,14 +65,14 @@ export function ServicesHero() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
-              href="#systems-service-catalogue"
+              href="mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20project%20enquiry"
               className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-85">
-              Explore our services
+              Discuss your project
               <ArrowDown aria-hidden="true" className="size-3.5" />
             </Link>
 
             <Link
-              href="/portfolio"
+              href="https://dennis.rcentz.cc"
               className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-surface-muted">
               View our work
               <ArrowUpRight aria-hidden="true" className="size-3.5" />
