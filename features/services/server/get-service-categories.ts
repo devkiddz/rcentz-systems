@@ -1,54 +1,24 @@
-import "server-only";
+﻿import 'server-only';
 
-import { cache } from "react";
+import { cache } from 'react';
 
-import { prisma } from "@/lib/prisma";
+import { rcentzApiGet } from '@/server/rcentz-api/client';
+import type { ServiceSummary } from './get-services';
 
-export const getServiceCategories = cache(async () => {
-  return prisma.serviceCategory.findMany({
-    where: {
-      services: {
-        some: {
-          status: "ACTIVE",
-        },
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      description: true,
-      services: {
-        where: {
-          status: "ACTIVE",
-        },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          shortDescription: true,
-          type: true,
-          featured: true,
-        },
-        orderBy: [
-          {
-            featured: "desc",
-          },
-          {
-            createdAt: "asc",
-          },
-        ],
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
-});
+export type ServiceCardSummary = Omit<ServiceSummary, 'category'>;
 
-export type ServiceCategorySummary = Awaited<
-  ReturnType<typeof getServiceCategories>
->[number];
+export type ServiceCategorySummary = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  services: ServiceCardSummary[];
+};
 
-export type ServiceCardSummary =
-  ServiceCategorySummary["services"][number];
+export const getServiceCategories = cache(
+  async (): Promise<ServiceCategorySummary[]> => {
+    return rcentzApiGet<ServiceCategorySummary[]>(
+      '/api/v1/services/categories'
+    );
+  }
+);

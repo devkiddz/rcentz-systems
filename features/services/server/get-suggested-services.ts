@@ -1,25 +1,9 @@
-import "server-only";
+﻿import 'server-only';
 
-import { cache } from "react";
+import { cache } from 'react';
 
-import { prisma } from "@/lib/prisma";
-
-const suggestedServiceSelect = {
-  id: true,
-  name: true,
-  slug: true,
-  shortDescription: true,
-  type: true,
-  featured: true,
-
-  category: {
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-    },
-  },
-} as const;
+import { getServiceCategories } from './get-service-categories';
+import { getServices, type ServiceSummary } from './get-services';
 
 type GetSuggestedServicesOptions = {
   serviceId: string;
@@ -27,97 +11,67 @@ type GetSuggestedServicesOptions = {
   limit?: number;
 };
 
+export type SuggestedService = Omit<ServiceSummary, 'category'> & {
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+};
+
 export const getSuggestedServices = cache(
   async ({
     serviceId,
     categoryId,
     limit = 8,
-  }: GetSuggestedServicesOptions) => {
-    const sameCategoryServices = categoryId
-      ? await prisma.service.findMany({
-          where: {
-            status: "ACTIVE",
-            id: {
-              not: serviceId,
-            },
-            category: {
-              is: {
-                id: categoryId,
-              },
-            },
-          },
-
-          select: suggestedServiceSelect,
-
-          orderBy: [
-            {
-              featured: "desc",
-            },
-            {
-              name: "asc",
-            },
-          ],
-
-          take: limit,
-        })
-      : [];
-
-    const remainingSlots = Math.max(
-      limit - sameCategoryServices.length,
-      0,
-    );
-
-    if (remainingSlots === 0) {
-      return sameCategoryServices;
+  }: GetSuggestedServicesOptions): Promise<SuggestedService[]> => {
+    if (!Number.isInteger(limit) || limit <= 0) {
+      return [];
     }
 
-    const otherServices = await prisma.service.findMany({
-      where: {
-        status: "ACTIVE",
+    const [services, categories] = await Promise.all([
+      getServices(),
+      getServiceCategories(),
+    ]);
 
-        id: {
-          notIn: [
-            serviceId,
-            ...sameCategoryServices.map(
-              (service) => service.id,
-            ),
-          ],
-        },
+    const categoriesBySlug = new Map(
+      categories.map(category => [category.slug, category]),
+    );
 
-        ...(categoryId
-          ? {
-              NOT: {
-                category: {
-                  is: {
-                    id: categoryId,
-                  },
-                },
-              },
-            }
-          : {}),
-      },
+    const catalogue: SuggestedService[] = services
+      .filter(service => service.id !== serviceId)
+      .map(service => {
+        const category = service.category
+          ? categoriesBySlug.get(service.category.slug)
+          : undefined;
 
-      select: suggestedServiceSelect,
+        if (service.category && !category) {
+          throw new Error('Service catalogue category is missing');
+        }
 
-      orderBy: [
-        {
-          featured: "desc",
-        },
-        {
-          name: "asc",
-        },
-      ],
+        return {
+          ...service,
+          category: category
+            ? {
+                id: category.id,
+                name: category.name,
+                slug: category.slug,
+              }
+            : null,
+        };
+      });
 
-      take: remainingSlots,
-    });
+    return catalogue
+      .sort((left, right) => {
+        const leftMatches = Boolean(categoryId && left.category?.id === categoryId);
+        const rightMatches = Boolean(categoryId && right.category?.id === categoryId);
 
-    return [
-      ...sameCategoryServices,
-      ...otherServices,
-    ];
+        return (
+          Number(rightMatches) - Number(leftMatches) ||
+          Number(right.featured) - Number(left.featured) ||
+          left.name.localeCompare(right.name, 'en')
+        );
+      })
+      .slice(0, limit);
   },
 );
-
-export type SuggestedService = Awaited<
-  ReturnType<typeof getSuggestedServices>
->[number];

@@ -1,5 +1,7 @@
 'use client';
 
+import { GlobeSphere } from './GlobeSphere';
+
 import {
   Boxes,
   BriefcaseBusiness,
@@ -50,28 +52,6 @@ const PRODUCT_NODES = [
 
 const FIRST_CARD_DELAY = 900;
 const CARD_RELEASE_DELAY = 2100;
-
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-
-const GLOBE_POINTS = Array.from(
-  {
-    length: 560
-  },
-  (_, index) => {
-    const y = 1 - (index / 559) * 2;
-    const radius = Math.sqrt(Math.max(0, 1 - y * y));
-    const theta = GOLDEN_ANGLE * index;
-    const x = Math.cos(theta) * radius;
-    const z = Math.sin(theta) * radius;
-
-    return {
-      x: 260 + x * 226,
-      y: 260 + y * 226,
-      opacity: z > 0 ? 0.82 : 0.12,
-      radius: z > 0 ? 1.55 : 0.78
-    };
-  }
-);
 
 type GlobeCardProps = {
   node: (typeof PRODUCT_NODES)[number];
@@ -225,26 +205,7 @@ export function RcentzGlobeStory() {
 
         {/* SPHERE */}
         <div className="absolute inset-0 overflow-hidden rounded-full border border-theme-accent/18">
-          <motion.svg
-            aria-hidden="true"
-            viewBox="0 0 520 520"
-            animate={reduceMotion ? undefined : { rotate: 360 }}
-            transition={{ duration: 42, repeat: Infinity, ease: 'linear' }}
-            style={{ transformOrigin: '50% 50%' }}
-            className="absolute inset-0 size-full">
-            <g className="text-theme-accent">
-              {GLOBE_POINTS.map((point, index) => (
-                <circle
-                  key={index}
-                  cx={point.x}
-                  cy={point.y}
-                  r={point.radius}
-                  fill="currentColor"
-                  opacity={point.opacity}
-                />
-              ))}
-            </g>
-          </motion.svg>
+          <GlobeSphere />
 
           <svg
             aria-hidden="true"
@@ -319,7 +280,7 @@ export function RcentzGlobeStory() {
         <motion.div
           animate={reduceMotion ? undefined : { scale: [1, 1.035, 1] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative flex size-[118px] flex-col items-center justify-center rounded-full border border-theme-accent/32 bg-background/82 shadow-2xl backdrop-blur-2xl sm:size-[124px] lg:size-[132px] lg:bg-background/78">
+          className="relative flex size-[118px] flex-col items-center justify-center rounded-full border border-transparent bg-transparent sm:size-[124px] lg:size-[132px]">
           <motion.span
             animate={
               reduceMotion

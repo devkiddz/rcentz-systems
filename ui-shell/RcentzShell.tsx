@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import { RcentzDataField } from '@/ui-shell/layers/RcentzDataField';
+
 
 import { RcentzContentFrame } from '@/ui-shell/layout/RcentzContentFrame';
 
@@ -20,7 +20,7 @@ type RcentzShellProps = {
 export function RcentzShell({ children, style }: RcentzShellProps) {
   return (
     <div className="relative isolate min-h-screen overflow-x-hidden bg-background" style={style}>
-      <RcentzDataField />
+
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <RcentzHeader />

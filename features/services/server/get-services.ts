@@ -1,44 +1,34 @@
-import 'server-only';
+﻿import 'server-only';
 
 import { cache } from 'react';
 
-import { prisma } from '@/lib/prisma';
+import { rcentzApiGet } from '@/server/rcentz-api/client';
 
-export const getServices = cache(async () => {
-  const services = await prisma.service.findMany({
-    where: {
-      status: 'ACTIVE'
-    },
+export type ServiceSummary = {
+  id: string;
+  name: string;
+  slug: string;
+  shortDescription: string | null;
+  type:
+    | 'WEBSITE'
+    | 'WEB_APP'
+    | 'MOBILE_APP'
+    | 'DESKTOP_APP'
+    | 'SAAS'
+    | 'API'
+    | 'ECOMMERCE'
+    | 'BRANDING'
+    | 'GRAPHIC_DESIGN'
+    | 'CONSULTING'
+    | 'MAINTENANCE'
+    | 'OTHER';
+  featured: boolean;
+  category: {
+    name: string;
+    slug: string;
+  } | null;
+};
 
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      shortDescription: true,
-      type: true,
-      featured: true,
-
-      category: {
-        select: {
-          name: true,
-          slug: true
-        }
-      }
-    },
-
-    orderBy: [
-      {
-        featured: 'desc'
-      },
-      {
-        createdAt: 'asc'
-      }
-    ]
-  });
-
-  return services;
+export const getServices = cache(async (): Promise<ServiceSummary[]> => {
+  return rcentzApiGet<ServiceSummary[]>('/api/v1/services');
 });
-
-export type ServiceSummary = Awaited<
-  ReturnType<typeof getServices>
->[number];
