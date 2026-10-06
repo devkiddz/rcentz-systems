@@ -341,87 +341,164 @@ function ProjectDeliveryContent({
 function MobileServicesJourneyStory({
   current,
   visibleStep,
-  visibleGatewayIndex,
   reduceMotion,
-  checkoutExpanded,
-  paymentActive,
   notificationCount,
-}: SharedStoryProps) {
+  onStepChange,
+}: SharedStoryProps & { onStepChange: (step: number) => void }) {
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
+  const group = reduceMotion
+    ? selectedGroup ?? 2
+    : Math.floor(visibleStep / 2);
+  const displayedStep = reduceMotion ? group * 2 + 1 : visibleStep;
+  const displayed = reduceMotion ? STEPS[displayedStep] : current;
+
   return (
-    <div className="space-y-2 pb-2">
-      <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2">
-        <span className="relative flex size-7 shrink-0 items-center justify-center rounded-full bg-theme-accent-soft">
-          <Bell aria-hidden="true" className="size-3.5 text-theme-accent" />
+    <div className="grid h-[26rem] grid-rows-[4rem_minmax(0,1fr)_2.5rem] gap-2">
+      <div className="flex min-h-0 items-center gap-3 rounded-xl border border-border bg-background px-3 py-2">
+        <span className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-theme-accent-soft">
+          <Bell aria-hidden="true" className="size-4 text-theme-accent" />
           <span className="absolute -right-1 -top-1 rounded-full bg-status-danger px-1 text-[9px] text-destructive-foreground">
-            {notificationCount}
+            {reduceMotion ? displayedStep + 1 : notificationCount}
           </span>
         </span>
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold">Project updates</p>
-          <p className="text-[10px] leading-4 text-muted-foreground">
-            {current.notification}
+          <p className="text-xs font-semibold">Project {ORDER.id}</p>
+          <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">
+            {displayed.notification}
           </p>
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border border-border bg-background p-3">
+      <div className="relative min-h-0 overflow-hidden rounded-xl border border-border bg-background">
         <DigitalPanelSurface />
-        <OrderEngineContent
-          current={current}
-          checkoutExpanded={checkoutExpanded}
-          paymentActive={paymentActive}
-        />
-      </div>
-
-      <div className="grid grid-cols-2 items-start gap-2">
-        <div className="relative min-w-0 overflow-hidden rounded-xl border border-border bg-background p-2.5">
-          <DigitalPanelSurface />
-          <DebitCardContent />
-          <div className="relative z-10 mt-3 border-t border-border pt-2">
-            <div className="flex items-start gap-1.5">
-              <UserRound aria-hidden="true" className="mt-0.5 size-3 shrink-0 text-theme-accent" />
-              <p className="text-[10px] leading-4">{current.customer}</p>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={group}
+            initial={reduceMotion ? false : { opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={reduceMotion ? {} : { opacity: 0, x: -16 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 z-10 flex flex-col p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold">
+                {['Project brief', 'Design & build', 'Review & delivery'][group]}
+              </p>
+              <span className="text-[10px] text-theme-accent">
+                {displayed.label}
+              </span>
             </div>
-          </div>
-        </div>
 
-        <div className="relative min-w-0 overflow-hidden rounded-xl border border-border bg-background p-2.5">
-          <DigitalPanelSurface />
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={visibleStep >= 3 ? 'delivery' : 'workflow'}
-              initial={reduceMotion ? false : { opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? {} : { opacity: 0, y: -5 }}
-              transition={{ duration: 0.25 }}>
-              {visibleStep >= 3 ? (
-                <ProjectDeliveryContent
-                  current={current}
-                  visibleStep={visibleStep}
-                />
-              ) : (
-                <PaymentRoutingContent
-                  visibleGatewayIndex={visibleGatewayIndex}
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            <div className="relative mt-3 min-h-0 flex-1">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={displayedStep}
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? {} : { opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="absolute inset-0">
+                  {group === 0 ? (
+                    displayedStep === 0 ? (
+                      <ProductContent />
+                    ) : (
+                      <div>
+                        <DebitCardContent />
+                        <div className="mt-4 rounded-xl bg-theme-accent-soft p-3">
+                          <p className="text-xs font-medium">Business needs</p>
+                          <p className="mt-2 text-[11px] leading-5 text-muted-foreground">
+                            Customer workspace ? Team workflows ? Connected information
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  ) : group === 1 ? (
+                    <div>
+                      <div className="flex items-center gap-3 rounded-xl bg-theme-accent-soft p-3">
+                        {displayedStep === 2
+                          ? <FileCheck aria-hidden="true" className="size-6 shrink-0 text-theme-accent" />
+                          : <Code2 aria-hidden="true" className="size-6 shrink-0 text-theme-accent" />}
+                        <div>
+                          <p className="text-xs font-semibold">
+                            {displayedStep === 2 ? 'Scope approved' : 'Application taking shape'}
+                          </p>
+                          <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+                            {displayedStep === 2
+                              ? 'Clear deliverables and agreed milestones.'
+                              : 'Interfaces, workflows and data connected.'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-4 text-[13px] font-medium">{ORDER.product}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {CRYPTO_RAILS.map(layer => (
+                          <span
+                            key={layer}
+                            className="rounded-full border border-border px-3 py-1 text-[10px] text-theme-accent">
+                            {layer}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <ProjectDeliveryContent
+                        current={displayed}
+                        visibleStep={displayedStep}
+                      />
+                      <div className="mt-4 flex items-center gap-2 rounded-xl bg-theme-accent-soft p-3">
+                        <CheckCircle2 aria-hidden="true" className="size-4 shrink-0 text-theme-accent" />
+                        <p className="text-[11px] leading-4">
+                          {displayedStep === 4
+                            ? 'Review the application and share feedback.'
+                            : 'Application delivered with team handover.'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <div className="mt-3 flex min-h-10 shrink-0 items-center gap-2 border-t border-border pt-2">
+              <UserRound aria-hidden="true" className="size-4 shrink-0 text-theme-accent" />
+              <p className="text-[11px] leading-4 text-muted-foreground">
+                {displayed.customer}
+              </p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <div
-        aria-hidden="true"
-        className="flex h-6 items-center justify-center gap-2">
-        {[0, 1, 2].map(index => (
-          <span
-            key={index}
-            className={[
-              'rounded-full transition-all duration-300',
-              Math.floor(visibleStep / 2) === index
-                ? 'size-2 bg-status-danger'
-                : 'size-1 bg-muted-foreground/50',
-            ].join(' ')}
-          />
+        role="group"
+        aria-label="Project story stages"
+        className="flex items-center justify-center gap-1">
+        {['Brief', 'Build', 'Delivery'].map((label, index) => (
+          <button
+            key={label}
+            type="button"
+            aria-pressed={group === index}
+            onClick={() => {
+              if (reduceMotion) {
+                setSelectedGroup(index);
+              } else {
+                onStepChange(index * 2);
+              }
+            }}
+            className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-[11px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <span
+              aria-hidden="true"
+              className={[
+                'rounded-full transition-all duration-300',
+                group === index
+                  ? 'size-2.5 bg-status-danger'
+                  : 'size-1.5 bg-muted-foreground/50',
+              ].join(' ')}
+            />
+            <span className={group === index ? 'font-medium text-foreground' : 'text-muted-foreground'}>
+              {label}
+            </span>
+          </button>
         ))}
       </div>
     </div>
@@ -695,7 +772,7 @@ export function ServicesJourneyStory() {
   return (
     <>
       <div className="lg:hidden">
-        <MobileServicesJourneyStory {...storyProps} />
+        <MobileServicesJourneyStory {...storyProps} onStepChange={setStep} />
       </div>
 
       <div className="hidden lg:block">
