@@ -1,3 +1,4 @@
+import { SystemsIllustrationReveal } from './SystemsIllustrationReveal';
 import { IntelligentCollaborationIllustration } from './IntelligentCollaborationIllustration';
 import { DatabaseIllustration } from './DatabaseIllustration';
 import { ComputingIllustration } from './ComputingIllustration';
@@ -46,22 +47,22 @@ export function SystemsPurposeSection() {
         role="region"
         aria-label="Digital infrastructure illustrations"
         tabIndex={0}
-        className="mt-16 rcentz-purpose-carousel flex h-[36rem] w-full min-w-0 snap-x snap-mandatory items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-4 [scrollbar-width:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:mt-20 lg:mt-32 lg:grid lg:h-auto lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
-        <div className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-0">
+        className="mt-24 rcentz-purpose-carousel flex h-[36rem] w-full min-w-0 snap-x snap-mandatory items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-4 [scrollbar-width:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:mt-28 lg:mt-44 lg:grid lg:h-auto lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
+        <SystemsIllustrationReveal index={0} className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-0">
           <BusinessDataStream />
-        </div>
-        <div className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-16">
+        </SystemsIllustrationReveal>
+        <SystemsIllustrationReveal index={1} className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-16">
           <CustomerExperienceIllustration />
-        </div>
-        <div className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-32">
+        </SystemsIllustrationReveal>
+        <SystemsIllustrationReveal index={2} className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-32">
           <ComputingIllustration />
-        </div>
-        <div className="w-[88%] min-w-0 shrink-0 snap-start lg:-mt-16 lg:w-auto">
+        </SystemsIllustrationReveal>
+        <SystemsIllustrationReveal index={3} className="w-[88%] min-w-0 shrink-0 snap-start lg:-mt-16 lg:w-auto">
           <DatabaseIllustration />
-        </div>
-        <div className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-20">
+        </SystemsIllustrationReveal>
+        <SystemsIllustrationReveal index={4} className="w-[88%] min-w-0 shrink-0 snap-start lg:w-auto lg:pt-20">
           <IntelligentCollaborationIllustration />
-        </div>
+        </SystemsIllustrationReveal>
       </div>
     </section>
   );

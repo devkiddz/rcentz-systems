@@ -1010,3 +1010,46 @@ a {
   width: 0;
   height: 0;
 }
+
+/* Purpose card hover surfaces */
+.rcentz-illustration-column > div > .relative {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rcentz-illustration-column:hover > div > .relative {
+    background-image: none;
+    background-color: color-mix(in srgb, var(--surface-raised) 97%, var(--foreground));
+    border-color: color-mix(in srgb, var(--border) 50%, var(--foreground));
+    box-shadow:
+      0 14px 32px rgb(0 0 0 / 0.05),
+      0 3px 10px rgb(0 0 0 / 0.08),
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rcentz-illustration-column > div > .relative {
+    transition: none;
+  }
+}
+
+/* Open-hand cursor for purpose illustrations */
+@media (hover: hover) and (pointer: fine) {
+  .rcentz-illustration-column {
+    cursor: grab;
+  }
+}
+
+/* Calm hover: preserve the original illustration surface */
+@media (hover: hover) and (pointer: fine) {
+  .rcentz-illustration-column:hover > div > .relative {
+    background-image: revert-layer;
+    background-color: revert-layer;
+    border-color: var(--border);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.06);
+  }
+}
