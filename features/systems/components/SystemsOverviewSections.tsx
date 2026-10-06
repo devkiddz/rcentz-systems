@@ -1,24 +1,7 @@
+import { SystemsSolutionsSection } from './SystemsSolutionsSection';
 import { SystemsPurposeSection } from './SystemsPurposeSection';
-import { ArrowUpRight, AppWindow, Workflow, Database } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
-
-const solutions = [
-  {
-    title: 'Customer experiences',
-    description: 'Websites and applications that help customers discover your business, make requests and stay connected.',
-    icon: AppWindow,
-  },
-  {
-    title: 'Business operations',
-    description: 'Workspaces for teams, approvals and everyday processes, built around how your business works.',
-    icon: Workflow,
-  },
-  {
-    title: 'Connected data',
-    description: 'Integrations that bring information together and reduce repeated entry across your tools.',
-    icon: Database,
-  },
-] as const;
 
 const quoteUrl = 'mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20quote%20enquiry';
 
@@ -27,27 +10,7 @@ export function SystemsOverviewSections() {
     <>
       <SystemsPurposeSection />
 
-      <section
-        id="solutions"
-        aria-labelledby="systems-solutions-title"
-        className="rcentz-section scroll-mt-24 border-b border-border py-12 sm:py-16">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Solutions</p>
-        <h2 id="systems-solutions-title" className="mt-3 max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl">
-          Give your business a connected way to work.
-        </h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {solutions.map(solution => {
-            const Icon = solution.icon;
-            return (
-              <div key={solution.title} className="rounded-2xl border border-border bg-surface-subtle p-5">
-                <Icon aria-hidden="true" className="size-5 text-theme-accent" />
-                <h3 className="mt-4 text-base font-semibold">{solution.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{solution.description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      <SystemsSolutionsSection />
 
       <section
         id="work"
