@@ -1,5 +1,6 @@
 'use client';
 
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { InlineToolCode } from './InlineToolCode';
 
 import { useEffect, useRef, useState } from 'react';
@@ -420,7 +421,7 @@ export function SystemsToolsSection() {
       className="rcentz-section border-b border-border py-16 sm:py-24">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <div className="lg:pt-3">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
             Our tools
           </p>
@@ -428,15 +429,15 @@ export function SystemsToolsSection() {
         <div className="min-w-0">
           <h2
             id="systems-tools-title"
-            className="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4rem]">
-            <span className="block font-normal text-muted-foreground lg:pl-12">
+            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            <span className="block font-medium text-muted-foreground lg:pl-12">
               Proven technology.
             </span>
-            <span className="mt-1 block font-medium text-foreground">
+            <span className="mt-1 block font-semibold text-foreground">
               Built around your business.
             </span>
           </h2>
-          <p className="mt-5 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
             We choose the right tools to build your applications, connect
             your data and support how your company works.
           </p>

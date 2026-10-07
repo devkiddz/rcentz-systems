@@ -24,14 +24,14 @@
   width: 100%;
   min-width: 0;
   overflow: hidden;
-  height: min(72vw, 360px);
+  height: min(58vw, 288px);
 }
 
 .globe > figure {
   position: absolute;
-  width: 180%;
+  width: 144%;
   left: 50%;
-  top: -18vw;
+  top: -14.4vw;
   transform: translateX(-50%);
 }
 

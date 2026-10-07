@@ -1,3 +1,4 @@
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import Link from 'next/link';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 
@@ -53,7 +54,7 @@ export function ServicesHero() {
 
           <h1
             id="systems-hero-title"
-            className="text-3xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+            className={rcentzTypography.className + ' font-bold tracking-normal text-[2rem] sm:text-[2.5rem] lg:text-5xl leading-[1.18]'}>
             Software built around{' '}
             <span className="text-theme-accent">your business.</span>
           </h1>

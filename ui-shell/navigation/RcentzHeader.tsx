@@ -1,10 +1,12 @@
 'use client';
 
+import { RcentzBrandLogo } from '../brand/RcentzBrandLogo';
+
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { RcentzGithubIcon } from '../brand/RcentzGithubIcon';
 import { useEffect, useRef, useState } from 'react';
 
-import { RcentzLogo } from '../brand/RcentzLogo';
 import { RcentzThemeControl } from '../theme/RcentzThemeControl';
 import { RcentzLanguageControl } from './RcentzLanguageControl';
 import { RcentzNavigation } from './RcentzNavigation';
@@ -70,20 +72,20 @@ export function RcentzHeader() {
               onClick={closeMobileNavigation}
               aria-label="Rcentz Systems home"
               className="flex shrink-0 items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <RcentzLogo compact={scrolled} />
-              <span className="text-sm font-semibold tracking-tight">
-                rcentz
-                <span className="ml-1.5 font-normal text-muted-foreground">
-                  systems
-                </span>
-              </span>
+              <RcentzBrandLogo className="h-auto w-24 shrink-0 sm:w-28" />
             </Link>
 
-            <div className="hidden lg:block">
+            <div className="hidden min-w-0 flex-1 lg:block">
               <RcentzNavigation />
             </div>
 
-            <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <div className="hidden shrink-0 items-center gap-3 lg:flex">
+              <a
+                href="https://github.com/devkiddz/rcentz-systems"
+                aria-label="Rcentz Systems on GitHub"
+                className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <RcentzGithubIcon aria-hidden="true" className="size-4" />
+              </a>
               <RcentzLanguageControl />
               <RcentzThemeControl />
               <RcentzStartProjectAction compact={scrolled} />

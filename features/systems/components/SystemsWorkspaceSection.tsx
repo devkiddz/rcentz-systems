@@ -1,5 +1,6 @@
 'use client';
 
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from 'motion/react';
 import { ProjectOverviewIllustration, WORKSPACE_STORY } from './ProjectOverviewIllustration';
@@ -57,7 +58,7 @@ export function SystemsWorkspaceSection() {
       className="rcentz-section scroll-mt-24 border-b border-border py-16 sm:py-24">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <div className="lg:pt-3">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
             How we work
           </p>
@@ -65,15 +66,15 @@ export function SystemsWorkspaceSection() {
         <div className="min-w-0">
           <h2
             id="systems-workspace-title"
-            className="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4rem]">
-            <span className="block font-normal text-muted-foreground lg:pl-12">
+            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            <span className="block font-medium text-muted-foreground lg:pl-12">
               Your project, in view.
             </span>
-            <span className="mt-1 block font-medium text-foreground">
+            <span className="mt-1 block font-semibold text-foreground">
               From first brief to launch.
             </span>
           </h2>
-          <p className="mt-5 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
             Follow your project from your own workspace. See milestone progress,
             review what is ready, explore your application features and keep
             track of the decisions that move delivery forward.
@@ -113,7 +114,7 @@ export function SystemsWorkspaceSection() {
           </div>
 
           <div className="mt-6 min-h-40">
-            <h3 className="text-xl font-semibold leading-tight tracking-tight">{story.title}</h3>
+            <h3 className={rcentzTypography.className + ' text-xl font-medium leading-tight tracking-normal'}>{story.title}</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">{story.description}</p>
           </div>
           <p className="mt-4 text-xs leading-6 text-muted-foreground">

@@ -1,5 +1,6 @@
 'use client';
 
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useState } from 'react';
 import {
   ArrowUpRight,
@@ -99,7 +100,7 @@ function WorkspacePreview({ selected }: { selected: number }) {
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 {view.screen}
               </p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight sm:text-xl">
+              <h3 className={rcentzTypography.className + ' mt-2 text-lg font-medium tracking-normal sm:text-xl'}>
                 {selected === 0
                   ? 'Manage your business relationships.'
                   : selected === 1
@@ -323,22 +324,22 @@ export function SystemsSolutionsSection() {
       aria-labelledby="systems-solutions-title"
       className="rcentz-section scroll-mt-24 border-b border-border py-16 sm:py-24">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
-        <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
           Solutions
         </p>
         <div className="min-w-0">
           <h2
             id="systems-solutions-title"
-            className="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4rem]">
-            <span className="block font-normal text-muted-foreground lg:pl-12">
+            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            <span className="block font-medium text-muted-foreground lg:pl-12">
               Built for your customers.
             </span>
-            <span className="mt-1 block font-medium text-foreground">
+            <span className="mt-1 block font-semibold text-foreground">
               Connected to your operations.
             </span>
           </h2>
-          <p className="mt-5 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
             <strong className="font-medium text-foreground">
               Bring us your business needs. We build the software to move them forward.
             </strong>{' '}
@@ -375,7 +376,7 @@ export function SystemsSolutionsSection() {
           </div>
 
           <div className="mt-6 min-h-36">
-            <h3 className="text-xl font-semibold leading-tight tracking-tight">
+            <h3 className={rcentzTypography.className + ' text-xl font-medium leading-tight tracking-normal'}>
               {view.title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">

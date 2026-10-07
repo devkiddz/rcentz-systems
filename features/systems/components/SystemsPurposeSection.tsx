@@ -1,3 +1,4 @@
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { SystemsIllustrationReveal } from './SystemsIllustrationReveal';
 import { IntelligentCollaborationIllustration } from './IntelligentCollaborationIllustration';
 import { DatabaseIllustration } from './DatabaseIllustration';
@@ -13,7 +14,7 @@ export function SystemsPurposeSection() {
       className="rcentz-section scroll-mt-24 border-b border-border pb-12 pt-24 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-40">
       <div className="grid gap-6 lg:grid-cols-[1fr_3fr] lg:gap-12">
         <div className="lg:pt-3">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
           Why Rcentz Systems
         </p>
@@ -23,16 +24,16 @@ export function SystemsPurposeSection() {
         <div className="min-w-0">
           <h2
             id="systems-purpose-title"
-            className="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4rem]">
-            <span className="block font-normal text-muted-foreground lg:pl-12">
+            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            <span className="block font-medium text-muted-foreground lg:pl-12">
               Building digital infrastructure
             </span>
-            <span className="mt-1 block font-medium text-foreground">
+            <span className="mt-1 block font-semibold text-foreground">
               around your business.
             </span>
           </h2>
 
-          <p className="mt-5 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
             We bring your ideas, processes and information together into applications
             that help people access your services, coordinate their work and keep
             your business moving.

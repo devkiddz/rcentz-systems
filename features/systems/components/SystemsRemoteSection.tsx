@@ -1,5 +1,6 @@
 'use client';
 
+import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { RemoteDeliveryGlobe, deliveries } from './RemoteDeliveryGlobe';
@@ -39,17 +40,17 @@ export function SystemsRemoteSection() {
       <div className={[styles.layout, 'rcentz-section'].join(' ')}>
         <div className={styles.introduction}>
           <div>
-            <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
               Remote delivery
             </p>
             <h2
               id="systems-remote-title"
-              className="mt-4 text-3xl leading-[1.08] tracking-tight sm:text-4xl lg:text-5xl">
-              <span className="block font-normal text-muted-foreground">
+              className={rcentzTypography.className + ' mt-4 font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+              <span className="block font-medium text-muted-foreground">
                 Built for your business.
               </span>
-              <span className="mt-1 block font-medium text-foreground">
+              <span className="mt-1 block font-semibold text-foreground">
                 Delivered across borders.
               </span>
             </h2>
