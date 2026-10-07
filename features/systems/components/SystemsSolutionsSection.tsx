@@ -323,7 +323,8 @@ export function SystemsSolutionsSection() {
       aria-labelledby="systems-solutions-title"
       className="rcentz-section scroll-mt-24 border-b border-border py-16 sm:py-24">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:pt-3">
+        <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
           Solutions
         </p>
         <div className="min-w-0">

@@ -1,3 +1,4 @@
+import { SystemsToolsSection } from './SystemsToolsSection';
 import { SystemsSolutionsSection } from './SystemsSolutionsSection';
 import { SystemsPurposeSection } from './SystemsPurposeSection';
 import { ArrowUpRight } from 'lucide-react';
@@ -11,6 +12,8 @@ export function SystemsOverviewSections() {
       <SystemsPurposeSection />
 
       <SystemsSolutionsSection />
+
+      <SystemsToolsSection />
 
       <section
         id="work"

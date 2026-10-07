@@ -13,15 +13,11 @@ export function SystemsPurposeSection() {
       className="rcentz-section scroll-mt-24 border-b border-border pb-12 pt-24 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-40">
       <div className="grid gap-6 lg:grid-cols-[1fr_3fr] lg:gap-12">
         <div className="lg:pt-3">
-          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted-foreground">
-            <span aria-hidden="true" className="text-status-danger">?</span>
-            Why Rcentz Systems
-          </p>
-          <span
-            aria-hidden="true"
-            className="mt-5 hidden text-8xl font-normal leading-none tracking-tight text-foreground/10 lg:block">
-            01
-          </span>
+          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
+          Why Rcentz Systems
+        </p>
+
         </div>
 
         <div className="min-w-0">
