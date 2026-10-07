@@ -1053,3 +1053,9 @@ a {
     box-shadow: 0 8px 20px rgb(0 0 0 / 0.06);
   }
 }
+
+
+/* Keep the remote-delivery sticky section in the document scroll flow. */
+.rcentz-canvas:has(#remote-delivery) {
+  overflow: visible;
+}

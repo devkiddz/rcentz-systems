@@ -1,0 +1,156 @@
+.section {
+  position: relative;
+}
+
+.layout {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.introduction {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.stage {
+  display: grid;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.globe {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  height: min(72vw, 360px);
+}
+
+.globe > figure {
+  position: absolute;
+  width: 180%;
+  left: 50%;
+  top: -18vw;
+  transform: translateX(-50%);
+}
+
+.monitor {
+  overflow: hidden;
+}
+
+.monitor > :first-child,
+.monitor > :last-child {
+  flex-shrink: 0;
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  padding: 0.75rem;
+  scrollbar-width: none;
+}
+
+.timeline::-webkit-scrollbar {
+  display: none;
+}
+
+.timeline > li {
+  width: 88%;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    padding-top: 5rem;
+    padding-bottom: 4rem;
+  }
+
+  .introduction {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: end;
+    gap: 3rem;
+  }
+
+  .stage {
+    container-type: size;
+    height: clamp(420px, 34vw, 620px);
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .globe {
+    height: 100cqh;
+    align-self: end;
+  }
+
+  .globe > figure {
+    width: 235cqh;
+    top: -17.5cqh;
+  }
+
+  .monitor {
+    display: flex;
+    flex-direction: column;
+    max-height: 100cqh;
+    min-height: 0;
+  }
+
+  .timeline {
+    display: block;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .timeline > li {
+    width: auto;
+    margin-bottom: 0.25rem;
+  }
+}
+
+.readingLight {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  animation: readingSignal 2.8s ease-in-out infinite;
+}
+
+.greenLight {
+  background: #58b88a;
+  color: #58b88a;
+}
+
+.blueLight {
+  background: #669fd4;
+  color: #669fd4;
+  animation-delay: 0.6s;
+}
+
+.redLight {
+  background: #c77c7c;
+  color: #c77c7c;
+  animation-delay: 1.2s;
+}
+
+@keyframes readingSignal {
+  0%, 100% {
+    opacity: 0.35;
+    box-shadow: none;
+  }
+  45% {
+    opacity: 0.9;
+    box-shadow: 0 0 6px currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .readingLight {
+    animation: none;
+    opacity: 0.65;
+  }
+}

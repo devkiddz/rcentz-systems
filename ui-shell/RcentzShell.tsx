@@ -19,7 +19,7 @@ type RcentzShellProps = {
 
 export function RcentzShell({ children, style }: RcentzShellProps) {
   return (
-    <div className="relative isolate min-h-screen overflow-x-hidden bg-background" style={style}>
+    <div className="relative isolate min-h-screen overflow-x-clip bg-background" style={style}>
 
 
       <div className="relative z-10 flex min-h-screen flex-col">

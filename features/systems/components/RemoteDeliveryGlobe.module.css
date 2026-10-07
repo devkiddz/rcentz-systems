@@ -1,0 +1,35 @@
+.label {
+  display: none;
+  position: absolute;
+  bottom: anchor(top);
+  left: anchor(center);
+  translate: -50% -10px;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+@supports (position-anchor: --example) {
+  .label {
+    display: block;
+  }
+}
+
+@media (max-width: 639px) {
+  .label {
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label {
+    transition: none;
+  }
+}

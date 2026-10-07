@@ -1,3 +1,5 @@
+import { SystemsRemoteSection } from './SystemsRemoteSection';
+import { SystemsWorkspaceSection } from './SystemsWorkspaceSection';
 import { SystemsToolsSection } from './SystemsToolsSection';
 import { SystemsSolutionsSection } from './SystemsSolutionsSection';
 import { SystemsPurposeSection } from './SystemsPurposeSection';
@@ -15,6 +17,12 @@ export function SystemsOverviewSections() {
 
       <SystemsToolsSection />
 
+      <SystemsWorkspaceSection />
+
+      <div className="relative isolate">
+        <SystemsRemoteSection />
+
+        <div className="relative bg-background">
       <section
         id="work"
         aria-labelledby="systems-work-title"
@@ -71,6 +79,8 @@ export function SystemsOverviewSections() {
           <ArrowUpRight aria-hidden="true" className="size-4" />
         </a>
       </section>
+        </div>
+      </div>
     </>
   );
 }
