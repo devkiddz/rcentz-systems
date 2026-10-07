@@ -1,10 +1,12 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { InlineToolCode } from './InlineToolCode';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { Check, GitBranch, Layers3 } from 'lucide-react';
 
 const explanations = [
@@ -62,10 +64,9 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
       label: 'Session check',
       kind: 'ui',
       code: [
-        "import { requireAuth }",
-        "  from \"@/features/auth/server/require-auth\";",
-        "",
-        "await requireAuth();"
+        '// Server guard',
+        'await',
+        '  requireAuth();'
       ].join('\n')
     },
     {
@@ -75,13 +76,14 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
       label: 'Profile query',
       kind: 'logic',
       code: [
-        "import { prisma }",
-        "  from \"@/lib/prisma\";",
-        "",
-        "await prisma.user",
-        "  .findUnique({",
-        "    where: { id: user.id }",
-        "  });"
+        'await prisma',
+        '  .user',
+        '  .findUnique({',
+        '    where: {',
+        '      id:',
+        '        user.id',
+        '    }',
+        '  });'
       ].join('\n')
     },
     {
@@ -92,7 +94,7 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
       kind: 'data',
       code: [
         "SELECT id, name",
-        "FROM \"User\"",
+        "FROM \"user\"",
         "WHERE id = $1;"
       ].join('\n')
     }
@@ -157,7 +159,7 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
   return (
     <div
       ref={canvasRef}
-      className="relative min-w-0 w-full"
+      className="relative min-w-0 w-full max-w-md mx-auto lg:max-w-none"
       style={{
         aspectRatio: '500 / ' + canvasHeight,
         containerType: 'inline-size'
@@ -166,21 +168,11 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
         aria-hidden="true"
         viewBox={'0 0 500 ' + canvasHeight}
         className="absolute inset-0 h-full w-full">
-        <defs>
-          <pattern
-            id="rcentz-tools-circuit-grid"
-            width="28"
-            height="28"
-            patternUnits="userSpaceOnUse">
-            <circle
-              cx="1" cy="1" r="0.7"
-              fill="var(--border-strong)"
-              opacity="0.4"
-            />
-          </pattern>
-        </defs>
-
-        <rect width="500" height={canvasHeight} fill="url(#rcentz-tools-circuit-grid)" />
+        <g fill="none" stroke="var(--border)" strokeWidth="0.6" opacity="0.35">
+          {Array.from({ length: 13 }, (_, index) => (
+            <line key={index} x1={10 + index * 40} x2={10 + index * 40} y1="0" y2={canvasHeight} />
+          ))}
+        </g>
 
         <g
           fill="none"
@@ -413,12 +405,12 @@ function ArchitectureDiagram({ active }: { active: boolean }) {
 export function SystemsToolsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref, { amount: 0.2 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <section
       aria-labelledby="systems-tools-title"
-      className="rcentz-section border-b border-border py-16 sm:py-24">
+      className="rcentz-section border-b border-border py-12 sm:py-20">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <div className="lg:pt-3">
           <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -429,15 +421,15 @@ export function SystemsToolsSection() {
         <div className="min-w-0">
           <h2
             id="systems-tools-title"
-            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            className={rcentzTypography.className + ' font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
             <span className="block font-medium text-muted-foreground lg:pl-12">
               Proven technology.
             </span>
-            <span className="mt-1 block font-semibold text-foreground">
+            <span className="mt-2 block font-bold text-foreground">
               Built around your business.
             </span>
           </h2>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">
             We choose the right tools to build your applications, connect
             your data and support how your company works.
           </p>
@@ -446,7 +438,7 @@ export function SystemsToolsSection() {
 
       <div
         ref={ref}
-        className="mt-12 grid items-center gap-10 sm:mt-16 lg:grid-cols-[0.85fr_1.4fr_1fr] lg:gap-8">
+        className="mt-8 grid items-center gap-10 sm:mt-12 lg:grid-cols-[0.85fr_1.4fr_1fr] lg:gap-8">
         <div className="space-y-8">
           {explanations.map(item => (
             <div key={item.title}>

@@ -1,6 +1,8 @@
 'use client';
 
-import { useReducedMotion } from 'motion/react';
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
+
 
 import { useEffect, useState } from 'react';
 
@@ -26,7 +28,7 @@ export function RcentzWebsiteStory() {
 
   const [awake, setAwake] = useState(false);
 
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   /*
    * WAKE-UP

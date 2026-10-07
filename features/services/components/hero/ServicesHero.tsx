@@ -1,6 +1,7 @@
+import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import Link from 'next/link';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 import { ServicesJourneyStory } from '@/features/home/components/hero/stories/ServicesJourneyStory';
 
@@ -66,10 +67,10 @@ export function ServicesHero() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
-              href="mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20project%20enquiry"
+              href={projectEntryUrl}
               className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-85">
-              Discuss your project
-              <ArrowDown aria-hidden="true" className="size-3.5" />
+              Start a project
+              <ArrowUpRight aria-hidden="true" className="size-3.5" />
             </Link>
 
             <Link

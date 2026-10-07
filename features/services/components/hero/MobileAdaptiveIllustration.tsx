@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import {
   ArrowRight,
   BarChart3,
@@ -8,11 +10,10 @@ import {
   Monitor,
   Smartphone,
   Tablet,
-  Touchpad,
   Users
 } from 'lucide-react';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 const EXPERIENCE_SIGNALS = [
   {
@@ -30,7 +31,7 @@ const EXPERIENCE_SIGNALS = [
 ] as const;
 
 export function MobileAdaptiveIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <div className="relative mx-auto w-full max-w-[680px] py-2 sm:py-3">

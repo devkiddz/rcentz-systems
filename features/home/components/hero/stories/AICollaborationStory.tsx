@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import {
   BrainCircuit,
   Check,
@@ -13,7 +15,7 @@ import {
   Workflow
 } from 'lucide-react';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 const CAPABILITIES = [
   {
@@ -645,7 +647,7 @@ function ProductionOutput({ reduceMotion }: { reduceMotion: boolean }) {
 }
 
 export function AICollaborationStory() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <div

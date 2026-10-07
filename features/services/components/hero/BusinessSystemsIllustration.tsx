@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import Image from 'next/image';
 
 import {
@@ -30,7 +32,7 @@ import {
   YAxis
 } from 'recharts';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 const financialData = [
   { year: '2020', revenue: 1.2, expenses: 0.8, profit: 0.4 },
@@ -58,7 +60,7 @@ const performanceData = [
 const pieOpacity = [1, 0.82, 0.64, 0.46, 0.28];
 
 export function BusinessSystemsIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <div className="relative mx-auto w-full max-w-[760px] py-2 sm:py-3">

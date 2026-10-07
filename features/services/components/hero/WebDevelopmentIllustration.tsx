@@ -1,10 +1,12 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import Image from 'next/image';
 
 import { Code2, Gauge, Globe2, MonitorSmartphone } from 'lucide-react';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 const BUILD_SIGNALS = [
   {
@@ -22,7 +24,7 @@ const BUILD_SIGNALS = [
 ] as const;
 
 export function WebDevelopmentIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <div className="relative mx-auto w-full max-w-[580px] pt-2 sm:pt-3">

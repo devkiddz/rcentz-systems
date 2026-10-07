@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import Image from 'next/image';
 
 import { useEffect, useState } from 'react';
@@ -14,7 +16,7 @@ import {
   ShoppingCart
 } from 'lucide-react';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 const PRESERVED_ITEMS = [
   {
@@ -119,7 +121,7 @@ function MarketingTypewriter() {
 }
 
 export function WordPressIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   return (
     <div className="relative mx-auto w-full max-w-[680px] py-2 sm:py-3">

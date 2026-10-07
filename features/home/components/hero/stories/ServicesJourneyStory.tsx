@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import {
   Bell,
   LayoutDashboard,
@@ -14,7 +16,7 @@ import {
   MessageSquare,
   UserRound
 } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type PointerEvent, type MouseEvent } from 'react';
 
 const STEPS = [
@@ -723,7 +725,7 @@ export function ServicesJourneyStory() {
   const [step, setStep] = useState(0);
   const [gatewayIndex, setGatewayIndex] = useState(0);
 
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
   const [hovered, setHovered] = useState(false);
   const [held, setHeld] = useState(false);
   const paused = hovered || held;

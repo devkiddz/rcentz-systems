@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Check, Circle, FileText, Globe2, Pause, Play } from 'lucide-react';
 
 export const WORKSPACE_STORY = [
@@ -205,7 +207,7 @@ export function ProjectOverviewIllustration({
   onPrepared: () => void;
 }) {
   const story = WORKSPACE_STORY[selected];
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const [elapsed, setElapsed] = useState(0);
   const completed = useRef(false);
   const loadingClock = useRef(1200);

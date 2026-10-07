@@ -1,6 +1,8 @@
 'use client';
 
-import { useInView, useReducedMotion } from 'motion/react';
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
+import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 const columns = 28;
@@ -18,7 +20,7 @@ const risingProfile = [
 export function BusinessDataStream() {
   const panel = useRef<HTMLDivElement>(null);
   const visible = useInView(panel, { amount: 0.5 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export function BusinessDataStream() {
 
   return (
     <div className="grid min-w-0 grid-rows-[8rem_24rem] lg:block">
-      <p className="min-h-32 text-sm leading-6 text-muted-foreground lg:min-h-32">
+      <p className="min-h-24 text-sm leading-6 text-muted-foreground lg:min-h-32">
         <span className="font-semibold text-foreground">Business data.</span>{' '}
         Bring everyday activity into view, with connected records that grow
         alongside your operations.

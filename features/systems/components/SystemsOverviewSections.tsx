@@ -1,67 +1,60 @@
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
+import { projectEntryUrl } from '../lib/project-entry';
 import { SystemsCallToActionSection } from './SystemsCallToActionSection';
 import { SystemsRemoteSection } from './SystemsRemoteSection';
 import { SystemsWorkspaceSection } from './SystemsWorkspaceSection';
 import { SystemsToolsSection } from './SystemsToolsSection';
 import { SystemsSolutionsSection } from './SystemsSolutionsSection';
 import { SystemsPurposeSection } from './SystemsPurposeSection';
-import { ArrowUpRight } from 'lucide-react';
-
-
-const quoteUrl = 'mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20quote%20enquiry';
 
 export function SystemsOverviewSections() {
   return (
     <>
       <SystemsPurposeSection />
-
       <SystemsSolutionsSection />
-
       <SystemsToolsSection />
-
       <SystemsWorkspaceSection />
-
-      <div className="relative isolate">
-        <SystemsRemoteSection />
-
-        <div className="relative bg-background">
+      <SystemsRemoteSection />
       <SystemsCallToActionSection />
-
-      <section
-        id="pricing"
-        aria-labelledby="systems-pricing-title"
-        className="rcentz-section scroll-mt-24 py-12 sm:py-16">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Pricing</p>
-        <h2 id="systems-pricing-title" className={rcentzTypography.className + ' mt-3 font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
-          Start with the scope. Agree the investment.
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          Your workflows, integrations and delivery requirements shape the quote.
-          We agree the scope and milestones before development begins.
-        </p>
-        <div className="mt-6 grid max-w-3xl gap-5 sm:grid-cols-2">
-          <div className="rounded-2xl border border-border p-5">
-            <h3 className="text-base font-semibold">Build your system</h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Define the application, its requirements and a clear delivery plan.
+      <section id="pricing" aria-labelledby="systems-pricing-title" className="rcentz-section scroll-mt-24 border-b border-border py-12 sm:py-20">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
+              Scope & investment
             </p>
           </div>
-          <div className="rounded-2xl border border-border p-5">
-            <h3 className="text-base font-semibold">Plan ongoing support</h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Discuss maintenance and improvements alongside your operational needs.
+          <div>
+            <h2 id="systems-pricing-title" className={rcentzTypography.className + ' text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'}>
+              A clear scope. An agreed investment.
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+              Tell us what your business needs. We define the requirements,
+              milestones and cost before development begins.
             </p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              <div className="border-t border-border pt-4">
+                <h3 className="text-base font-semibold">Build your system</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Agree the features, integrations and responsibilities that shape delivery.
+                </p>
+              </div>
+              <div className="border-t border-border pt-4">
+                <h3 className="text-base font-semibold">Plan ongoing support</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Decide what maintenance, support and future improvements your team needs.
+                </p>
+              </div>
+            </div>
+            <Link href={projectEntryUrl} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              Start a project
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+            </Link>
           </div>
         </div>
-        <a
-          href={quoteUrl}
-          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          Get a quote
-          <ArrowUpRight aria-hidden="true" className="size-4" />
-        </a>
       </section>
-        </div>
-      </div>
     </>
   );
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import Image from 'next/image';
 import { useState } from 'react';
 import {
@@ -14,7 +16,7 @@ import {
   Tablet,
   Wrench
 } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 
 const REPAIR_SIGNALS = [
   { icon: Gauge, label: 'Faster', meta: 'Performance' },
@@ -23,7 +25,7 @@ const REPAIR_SIGNALS = [
 ] as const;
 
 export function MaintenanceModernizationIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
   const [activeTab, setActiveTab] = useState<'before' | 'after'>('after');
   const [isHovered, setIsHovered] = useState(false);
 

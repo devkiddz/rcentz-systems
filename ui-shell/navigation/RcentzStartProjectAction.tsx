@@ -1,5 +1,6 @@
 'use client';
 
+import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
@@ -17,7 +18,7 @@ export function RcentzStartProjectAction({
 }: RcentzStartProjectActionProps) {
   return (
     <Link
-      href="/services/custom-web-application-development"
+      href={projectEntryUrl}
       onClick={onNavigate}
       className={[
         'inline-flex items-center justify-center gap-2 rounded-md bg-foreground font-medium text-background hover:opacity-85',

@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { Database } from 'lucide-react';
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 const records = [
@@ -13,7 +15,7 @@ const records = [
 export function DatabaseIllustration() {
   const panel = useRef<HTMLDivElement>(null);
   const visible = useInView(panel, { amount: 0.5 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export function DatabaseIllustration() {
 
   return (
     <div className="grid min-w-0 grid-rows-[8rem_24rem] lg:block">
-      <p className="min-h-32 text-sm leading-6 text-muted-foreground lg:min-h-32">
+      <p className="min-h-24 text-sm leading-6 text-muted-foreground lg:min-h-32">
         <span className="font-semibold text-foreground">Database.</span>{' '}
         Keep customer, project and operational records connected, so your
         applications share a clear source of information.

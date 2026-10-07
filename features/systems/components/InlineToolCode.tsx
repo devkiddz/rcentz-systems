@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { useEffect, useRef, useState } from 'react';
-import { useReducedMotion } from 'motion/react';
+
 
 type InlineToolCodeProps = {
   label: string;
@@ -19,7 +21,7 @@ export function InlineToolCode({
   const [length, setLength] = useState(0);
   const cursor = useRef(0);
   const started = useRef(false);
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
 
   useEffect(() => {
     if (!active || reducedMotion || cursor.current >= code.length) return;
@@ -49,12 +51,12 @@ export function InlineToolCode({
 
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-surface-raised">
-      <p className="border-b border-border px-2 py-1.5 font-mono text-[clamp(7px,2cqw,9px)] text-muted-foreground">
+      <p className="border-b border-border px-2 py-1.5 font-mono text-[clamp(7px,1.9cqw,9px)] text-muted-foreground">
         {label}
       </p>
       <pre
         aria-hidden="true"
-        className="overflow-hidden whitespace-pre-wrap break-all px-2 py-2 font-mono text-[clamp(7px,2cqw,9px)] leading-[14px] text-foreground">
+        className="overflow-hidden whitespace-pre px-2 py-2 font-mono text-[clamp(7px,1.9cqw,9px)] leading-[14px] text-foreground">
         <code>{displayed}</code>
         {!reducedMotion && length < code.length ? (
           <span className="inline-block h-2.5 w-1 bg-theme-accent/50" />

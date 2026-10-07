@@ -1,6 +1,8 @@
 'use client';
 
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
+import { motion, useInView } from 'motion/react';
 import { useRef, useSyncExternalStore, type ReactNode } from 'react';
 
 type SystemsIllustrationRevealProps = {
@@ -35,7 +37,7 @@ export function SystemsIllustrationReveal({
     getServerSnapshot
   );
   const visible = useInView(element, { once: true, amount: 0.15 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const revealEnabled = desktop && !reducedMotion;
 
   return (

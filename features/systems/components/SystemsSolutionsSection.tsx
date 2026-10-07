@@ -1,5 +1,6 @@
 'use client';
 
+import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useState } from 'react';
 import {
@@ -100,7 +101,7 @@ function WorkspacePreview({ selected }: { selected: number }) {
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 {view.screen}
               </p>
-              <h3 className={rcentzTypography.className + ' mt-2 text-lg font-medium tracking-normal sm:text-xl'}>
+              <h3 className={rcentzTypography.className + ' mt-2 text-base font-medium tracking-normal sm:text-lg'}>
                 {selected === 0
                   ? 'Manage your business relationships.'
                   : selected === 1
@@ -322,7 +323,7 @@ export function SystemsSolutionsSection() {
     <section
       id="solutions"
       aria-labelledby="systems-solutions-title"
-      className="rcentz-section scroll-mt-24 border-b border-border py-16 sm:py-24">
+      className="rcentz-section scroll-mt-24 border-b border-border py-12 sm:py-20">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
@@ -331,21 +332,19 @@ export function SystemsSolutionsSection() {
         <div className="min-w-0">
           <h2
             id="systems-solutions-title"
-            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            className={rcentzTypography.className + ' font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
             <span className="block font-medium text-muted-foreground lg:pl-12">
               Built for your customers.
             </span>
-            <span className="mt-1 block font-semibold text-foreground">
+            <span className="mt-2 block font-bold text-foreground">
               Connected to your operations.
             </span>
           </h2>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">
             <strong className="font-medium text-foreground">
-              Bring us your business needs. We build the software to move them forward.
+              Bring us your business needs. We build the software.
             </strong>{' '}
-            Give your clients a clear way to request services and track progress.
-            Give your team one connected workspace to manage accounts, approvals
-            and delivery.
+            Connect client requests, team approvals and delivery in one workspace.
           </p>
         </div>
       </div>
@@ -376,7 +375,7 @@ export function SystemsSolutionsSection() {
           </div>
 
           <div className="mt-6 min-h-36">
-            <h3 className={rcentzTypography.className + ' text-xl font-medium leading-tight tracking-normal'}>
+            <h3 className={rcentzTypography.className + ' text-lg sm:text-xl font-medium leading-tight tracking-normal'}>
               {view.title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -397,9 +396,9 @@ export function SystemsSolutionsSection() {
           </ul>
 
           <a
-            href="mailto:dennis@rcentz.cc?subject=Rcentz%20Systems%20quote%20enquiry"
+            href={projectEntryUrl}
             className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-medium underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            Discuss your requirements
+            Start a project
             <ArrowUpRight aria-hidden="true" className="size-3.5" />
           </a>
         </div>

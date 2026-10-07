@@ -60,7 +60,7 @@ export function RcentzNavigation({
       aria-label={mobile ? 'Mobile navigation' : 'Primary navigation'}
       className={mobile ? 'flex flex-col gap-1' : 'flex items-center gap-1'}>
       <Link href="/#solutions" onClick={navigate} className={linkClass}>Solutions</Link>
-      <Link href="/#work" onClick={navigate} className={linkClass}>Work</Link>
+      <Link href="/#how-we-work" onClick={navigate} className={linkClass}>How we work</Link>
 
       <details ref={dropdown} className="group relative">
         <summary className={linkClass + ' cursor-pointer list-none gap-1.5 [&::-webkit-details-marker]:hidden'}>

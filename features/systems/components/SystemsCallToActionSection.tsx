@@ -1,21 +1,22 @@
+import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
 import Link from 'next/link';
 import { ArrowUpRight, ChevronDown, Grid2X2 } from 'lucide-react';
 import { RcentzGithubIcon } from '@/ui-shell/brand/RcentzGithubIcon';
 
-const projectUrl = '/services/custom-web-application-development';
+
 
 export function SystemsCallToActionSection() {
   return (
     <section
-      id="work"
+      id="start-project"
       aria-labelledby="systems-cta-title"
-      className="rcentz-section overflow-hidden border-b border-border py-16 sm:py-24 lg:py-28">
+      className="rcentz-section overflow-hidden border-b border-border py-12 sm:py-20 lg:py-28">
       <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-12">
         <h2
           id="systems-cta-title"
-          className={rcentzTypography.className + ' max-w-3xl lg:col-start-2 font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+          className={rcentzTypography.className + ' max-w-3xl lg:col-start-2 font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
           Your next business move.
           <span className="block">Built into software.</span>
         </h2>
@@ -73,14 +74,9 @@ export function SystemsCallToActionSection() {
                   <Grid2X2 aria-hidden="true" className="size-3.5" />
                 </a>
                 <Link
-                  href={projectUrl}
-                  className="hidden min-h-9 items-center text-[9px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline-flex">
-                  Discuss a project
-                </Link>
-                <Link
-                  href={projectUrl}
+                  href={projectEntryUrl}
                   className="inline-flex min-h-9 items-center rounded-full bg-foreground px-3 text-[9px] font-medium text-background hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Get started
+                  Start a project
                 </Link>
               </div>
             </div>
@@ -102,13 +98,13 @@ export function SystemsCallToActionSection() {
 
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 <Link
-                  href={projectUrl}
+                  href={projectEntryUrl}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-foreground px-3 text-[10px] font-medium text-background hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Explore your project
+                  Start a project
                   <ArrowUpRight aria-hidden="true" className="size-3" />
                 </Link>
                 <Link
-                  href={projectUrl}
+                  href={projectEntryUrl}
                   className="inline-flex min-h-11 items-center justify-center rounded-md border border-border px-3 text-[10px] font-medium hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   View service scope
                 </Link>

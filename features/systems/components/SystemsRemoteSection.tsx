@@ -1,8 +1,10 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useReducedMotion } from 'motion/react';
+
 import { RemoteDeliveryGlobe, deliveries } from './RemoteDeliveryGlobe';
 import styles from './SystemsRemoteSection.module.css';
 
@@ -10,7 +12,7 @@ export function SystemsRemoteSection() {
   const [active, setActive] = useState(-1);
   const list = useRef<HTMLOListElement>(null);
   const items = useRef<Array<HTMLLIElement | null>>([]);
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
 
   const highlightDelivery = useCallback((index: number) => {
     setActive(index);
@@ -46,11 +48,11 @@ export function SystemsRemoteSection() {
             </p>
             <h2
               id="systems-remote-title"
-              className={rcentzTypography.className + ' mt-4 font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+              className={rcentzTypography.className + ' mt-4 font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
               <span className="block font-medium text-muted-foreground">
                 Built for your business.
               </span>
-              <span className="mt-1 block font-semibold text-foreground">
+              <span className="mt-2 block font-bold text-foreground">
                 Delivered across borders.
               </span>
             </h2>

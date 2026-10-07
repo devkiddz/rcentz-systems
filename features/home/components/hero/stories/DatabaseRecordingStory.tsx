@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { CheckCircle2, Database, FileText, FolderOpen, Gauge, ShieldCheck } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 const RECORDS = [
@@ -131,7 +133,7 @@ export function DatabaseRecordingStory() {
 
   const [databaseIndex, setDatabaseIndex] = useState(0);
 
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   useEffect(() => {
     if (reduceMotion || recordIndex >= RECORDS.length - 1) {

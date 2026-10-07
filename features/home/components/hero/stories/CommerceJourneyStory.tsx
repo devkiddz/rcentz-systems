@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import {
   Bell,
   Bitcoin,
@@ -14,7 +16,7 @@ import {
   UserRound,
   WalletCards
 } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 const STEPS = [
@@ -675,7 +677,7 @@ export function CommerceJourneyStory() {
   const [step, setStep] = useState(0);
   const [gatewayIndex, setGatewayIndex] = useState(0);
 
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   useEffect(() => {
     if (reduceMotion || step >= STEPS.length - 1) {

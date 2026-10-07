@@ -1,8 +1,10 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from 'motion/react';
+import { motion, useInView, useMotionValue, useSpring } from 'motion/react';
 import { ProjectOverviewIllustration, WORKSPACE_STORY } from './ProjectOverviewIllustration';
 
 export function SystemsWorkspaceSection() {
@@ -14,7 +16,7 @@ export function SystemsWorkspaceSection() {
   const [workspacePrepared, setWorkspacePrepared] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref, { amount: 0.25 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const x = useSpring(pointerX, { stiffness: 140, damping: 26 });
@@ -55,7 +57,7 @@ export function SystemsWorkspaceSection() {
     <section
       id="how-we-work"
       aria-labelledby="systems-workspace-title"
-      className="rcentz-section scroll-mt-24 border-b border-border py-16 sm:py-24">
+      className="rcentz-section scroll-mt-24 border-b border-border py-12 sm:py-20">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <div className="lg:pt-3">
           <p className="inline-flex h-fit w-fit self-start items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -66,25 +68,24 @@ export function SystemsWorkspaceSection() {
         <div className="min-w-0">
           <h2
             id="systems-workspace-title"
-            className={rcentzTypography.className + ' font-bold tracking-normal text-[1.75rem] sm:text-4xl lg:text-[2.75rem] leading-[1.18]'}>
+            className={rcentzTypography.className + ' font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
             <span className="block font-medium text-muted-foreground lg:pl-12">
               Your project, in view.
             </span>
-            <span className="mt-1 block font-semibold text-foreground">
+            <span className="mt-2 block font-bold text-foreground">
               From first brief to launch.
             </span>
           </h2>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground">
-            Follow your project from your own workspace. See milestone progress,
-            review what is ready, explore your application features and keep
-            track of the decisions that move delivery forward.
+          <p className="mt-4 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">
+            Follow milestones, review working features and keep decisions
+            together in your project workspace.
           </p>
         </div>
       </div>
 
-      <div className="mt-12 grid items-center gap-8 sm:mt-16 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
+      <div className="mt-8 grid items-center gap-8 sm:mt-12 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">
         <div className="min-w-0">
-          <div role="group" aria-label="Explore the project story" className="space-y-2">
+          <div role="group" aria-label="Explore the project story" className="flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-2">
             {WORKSPACE_STORY.map((item, index) => (
               <button
                 key={item.label}
@@ -96,7 +97,7 @@ export function SystemsWorkspaceSection() {
                   setRevision(current => current + 1);
                 }}
                 className={[
-                  'flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm',
+                  'flex min-h-11 shrink-0 lg:w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   selected === index
                     ? 'bg-surface-muted font-medium text-foreground'
@@ -113,13 +114,13 @@ export function SystemsWorkspaceSection() {
             ))}
           </div>
 
-          <div className="mt-6 min-h-40">
-            <h3 className={rcentzTypography.className + ' text-xl font-medium leading-tight tracking-normal'}>{story.title}</h3>
+          <div className="mt-4 lg:min-h-36">
+            <h3 className={rcentzTypography.className + ' text-lg sm:text-xl font-medium leading-tight tracking-normal'}>{story.title}</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">{story.description}</p>
           </div>
           <p className="mt-4 text-xs leading-6 text-muted-foreground">
             Three chapters. One connected project experience.
-            Hover or hold the preview to pause.
+            Use the pause button to read at your own pace.
           </p>
         </div>
 
@@ -155,7 +156,10 @@ export function SystemsWorkspaceSection() {
               selected={selected}
               paused={manualPause}
               typingPaused={!visible || (workspacePrepared && paused)}
-              onTogglePause={() => setManualPause(current => !current)}
+              onTogglePause={() => {
+                setFocused(false);
+                setManualPause(current => !current);
+              }}
             />
           </motion.div>
         </div>

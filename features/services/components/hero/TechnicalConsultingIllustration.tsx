@@ -1,8 +1,10 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { useState } from 'react';
 
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 
 import {
   ArrowDown,
@@ -168,7 +170,7 @@ const CONSULTING_OPTIONS: OptionType[] = [
 ];
 
 export function TechnicalConsultingIllustration() {
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   const [selectedOptionId, setSelectedOptionId] = useState<string>('saas');
 

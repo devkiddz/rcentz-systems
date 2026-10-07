@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { ArrowUpRight, Check, Inbox } from 'lucide-react';
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 const durations = [1400, 2200, 2400, 1200, 3500];
@@ -9,7 +11,7 @@ const durations = [1400, 2200, 2400, 1200, 3500];
 export function CustomerExperienceIllustration() {
   const panel = useRef<HTMLDivElement>(null);
   const visible = useInView(panel, { amount: 0.5 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const [step, setStep] = useState(0);
   const current = reducedMotion ? 4 : step;
 
@@ -23,7 +25,7 @@ export function CustomerExperienceIllustration() {
 
   return (
     <div className="grid min-w-0 grid-rows-[8rem_24rem] lg:block">
-      <p className="min-h-32 text-sm leading-6 text-muted-foreground lg:min-h-32">
+      <p className="min-h-24 text-sm leading-6 text-muted-foreground lg:min-h-32">
         <span className="font-semibold text-foreground">Customer experiences.</span>{' '}
         Give customers a clear way to reach your business, with requests your
         team can act on.

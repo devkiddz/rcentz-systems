@@ -1,5 +1,7 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { GlobeSphere } from './GlobeSphere';
 
 import {
@@ -8,7 +10,7 @@ import {
   Layers3,
   ShoppingBag
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 const PRODUCT_NODES = [
@@ -158,7 +160,7 @@ function ProductCard({
 
 export function RcentzGlobeStory() {
   const [activeNode, setActiveNode] = useState(-1);
-  const reduceMotion = Boolean(useReducedMotion());
+  const reduceMotion = Boolean(useHydratedReducedMotion());
 
   useEffect(() => {
     if (reduceMotion || activeNode >= PRODUCT_NODES.length - 1) {

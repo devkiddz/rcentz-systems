@@ -1,7 +1,9 @@
 'use client';
 
+import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
+
 import { Check } from 'lucide-react';
-import { useInView, useReducedMotion } from 'motion/react';
+import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 const operations = [
@@ -13,7 +15,7 @@ const operations = [
 export function ComputingIllustration() {
   const panel = useRef<HTMLDivElement>(null);
   const visible = useInView(panel, { amount: 0.5 });
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = Boolean(useHydratedReducedMotion());
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export function ComputingIllustration() {
 
   return (
     <div className="grid min-w-0 grid-rows-[8rem_24rem] lg:block">
-      <p className="min-h-32 text-sm leading-6 text-muted-foreground lg:min-h-32">
+      <p className="min-h-24 text-sm leading-6 text-muted-foreground lg:min-h-32">
         <span className="font-semibold text-foreground">Computing.</span>{' '}
         Turn incoming requests into checks, updates and actions that keep
         your business moving.
