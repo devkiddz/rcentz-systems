@@ -18,9 +18,7 @@ export function RcentzNavigation({
   onNavigate
 }: RcentzNavigationProps) {
   const nav = useRef<HTMLElement>(null);
-  const closeTimer = useRef<number | undefined>(
-    undefined
-  );
+  const closeTimer = useRef<number | undefined>(undefined);
   const [productsOpen, setProductsOpen] = useState(false);
 
   useEffect(() => {
@@ -127,10 +125,12 @@ export function RcentzNavigation({
                 className={[
                   'rounded-xl border border-border bg-background shadow-sm',
                   item.label === 'Products' && !compact && !mobile
-                    ? 'w-3xl max-w-[calc(100vw-2rem)]'
+                    ? 'w-4xl max-w-[calc(100vw-2rem)]'
                     : mobile
                       ? 'w-full'
-                      : 'w-52'
+                      : compact
+                        ? 'w-64'
+                        : 'w-96'
                 ].join(' ')}
               >
                 {item.label === 'Products' && !compact ? (
@@ -138,13 +138,13 @@ export function RcentzNavigation({
                     <RcentzProductsMenu onNavigate={navigate} />
                   ) : null
                 ) : (
-                  <div className="p-2">
+                  <div className="grid grid-cols-2 gap-1 p-2">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}
                         onClick={navigate}
-                        className="flex min-h-11 items-center justify-between gap-3 rounded-lg px-3 text-xs hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex min-h-11 items-center justify-between gap-3 rounded-lg px-3 text-xs font-semibold hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         {child.label}
                         <ArrowUpRight

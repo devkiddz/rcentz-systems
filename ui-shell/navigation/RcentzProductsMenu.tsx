@@ -6,82 +6,12 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
-  Layers3,
-  Package,
   Pause,
   Play
 } from 'lucide-react';
 import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
 import { rcentzMenuProducts } from './rcentz-menu-products';
-
-function ProductIllustration({ slug }: { slug: string }) {
-  const commerce = ['waffi', 'aj-logik', 'shelsea-commerce'].includes(slug);
-  const heading = commerce
-    ? 'Discover your next find'
-    : slug === 'jobman'
-      ? 'Find work. Share your skills.'
-      : slug === 'hotel-management'
-        ? 'Guest operations'
-        : slug === 'real-estate'
-          ? 'Your property workspace'
-          : 'Your connected workspace';
-  return (
-    <div
-      aria-hidden="true"
-      className="rounded-lg border border-border bg-background p-3"
-    >
-      <div className="mb-3 flex items-center gap-2 border-b border-border pb-2">
-        <Layers3 className="size-3.5 text-theme-accent" />
-        <span className="text-[10px] font-semibold">{heading}</span>
-        <span className="ml-auto h-1 w-7 rounded-full bg-border" />
-      </div>
-      {commerce ? (
-        <div className="grid grid-cols-3 gap-2">
-          {['Explore', 'Discover', 'Save'].map((label) => (
-            <div key={label} className="rounded-md border border-border p-2">
-              <div className="flex h-12 items-center justify-center rounded bg-surface-muted">
-                <Package className="size-5 text-muted-foreground" />
-              </div>
-              <p className="mt-2 text-[9px] font-medium">{label}</p>
-              <div className="mt-2 h-1 w-2/3 rounded-full bg-border" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-[1fr_2fr] gap-2">
-          <div className="space-y-2 rounded-md bg-surface-subtle p-2">
-            {['Overview', 'Activity', 'Records'].map((label) => (
-              <p key={label} className="text-[9px] text-muted-foreground">
-                {label}
-              </p>
-            ))}
-          </div>
-          <div className="space-y-2">
-            {(slug === 'jobman'
-              ? [
-                  'Your professional profile',
-                  'Roles & opportunities',
-                  'Saved applications'
-                ]
-              : [
-                  'Keep information together',
-                  'Follow the latest activity',
-                  'Manage your next steps'
-                ]
-            ).map((label) => (
-              <div
-                key={label}
-                className="rounded-md border border-border px-2 py-2 text-[9px]"
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+import { RcentzProductDashboard } from './RcentzProductDashboard';
 
 export function RcentzProductsMenu({ onNavigate }: { onNavigate: () => void }) {
   const [selected, setSelected] = useState(0);
@@ -100,7 +30,7 @@ export function RcentzProductsMenu({ onNavigate }: { onNavigate: () => void }) {
   }, [paused, interacting, reducedMotion, selected]);
 
   return (
-    <div className="grid gap-5 p-4 sm:grid-cols-[1.1fr_1fr] sm:p-5">
+    <div className="grid gap-5 p-4 sm:grid-cols-[1.25fr_1fr] sm:p-5">
       <section
         aria-label="Product previews"
         aria-roledescription="carousel"
@@ -129,7 +59,7 @@ export function RcentzProductsMenu({ onNavigate }: { onNavigate: () => void }) {
                 aria-hidden={selected !== index}
                 className="w-full min-w-0 shrink-0 p-3"
               >
-                <ProductIllustration slug={item.slug} />
+                <RcentzProductDashboard slug={item.slug} />
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <p className="text-sm font-semibold">{item.name}</p>
                   <span className="text-[9px] capitalize text-muted-foreground">
@@ -206,7 +136,7 @@ export function RcentzProductsMenu({ onNavigate }: { onNavigate: () => void }) {
         <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
           Explore our products
         </p>
-        <ul className="grid grid-cols-2 gap-1 sm:grid-cols-1">
+        <ul className="grid grid-cols-2 gap-2">
           {rcentzMenuProducts.map((item, index) => (
             <li key={item.slug}>
               <Link
@@ -217,8 +147,8 @@ export function RcentzProductsMenu({ onNavigate }: { onNavigate: () => void }) {
                 className={[
                   'flex min-h-11 items-center justify-between gap-2 rounded-lg px-2.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   selected === index
-                    ? 'bg-surface-muted font-medium'
-                    : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
+                    ? 'bg-surface-muted font-semibold'
+                    : 'font-semibold text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                 ].join(' ')}
               >
                 {item.name}

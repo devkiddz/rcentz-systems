@@ -17,22 +17,6 @@ export const rcentzMenuProducts = [
     href: 'https://products.rcentz.cc/jobman'
   },
   {
-    name: 'AJ Logik',
-    slug: 'aj-logik',
-    summary:
-      'A live commerce pilot and an early proving ground for Rcentz marketplace architecture.',
-    stage: 'maintenance',
-    href: 'https://products.rcentz.cc/aj-logik'
-  },
-  {
-    name: 'Shelsea Commerce',
-    slug: 'shelsea-commerce',
-    summary:
-      'A completed commerce implementation focused on fashion, apparel, perfume and beauty.',
-    stage: 'maintenance',
-    href: 'https://products.rcentz.cc/shelsea-commerce'
-  },
-  {
     name: 'Hotel Management',
     slug: 'hotel-management',
     summary:

@@ -1,0 +1,29 @@
+Rcentz product dashboard showcase update
+
+Owned-product menu: Waffi, JobMan, Hotel Management, Real Estate and Rcentz Vault. Shelsea Commerce and AJ Logik have been removed; the legacy Fintech Lab entry remains excluded.
+
+Dashboard previews are theme-aware vector interface illustrations with example data, not screenshots of deployed products. Waffi shows a customer's orders and delivery experience; Hotel Management shows room availability and reservations; Real Estate shows housing listings and enquiries; JobMan shows applications and profile readiness; Vault shows connected products and account activity. Product development/planning stage labels remain visible.
+
+Desktop Products menu is wider. Product links and standard dropdown items use a two-column grid and semibold labels. Mobile keeps tap access and a stacked preview/link layout. Existing hover, keyboard, previous/next, pause and reduced-motion behaviour remains.
+
+Installation package includes all earlier navigation changes and applies only missing commits. It validates lint/build and auth/database readiness before pushing systems HEAD:main. No force push or database migration/seed occurs.
+
+For the previous missing-config error, the optional Configure-Rcentz-Onboarding.ps1 helper:
+- Reads missing DATABASE_URL and BETTER_AUTH_SECRET from sibling ../rcentz-api/.env or .env.local.
+- Preserves existing Systems settings and does not print secret values.
+- Adds a missing BETTER_AUTH_URL using http://localhost:3001 by default.
+- Writes only to the ignored Systems .env.local. Stops without writing if the required source settings cannot be found.
+- Does not configure hosting variables or provision a database/mailbox.
+
+Run from rcentz-systems:
+$zip = Join-Path $env:USERPROFILE 'Downloads\rcentz-product-showcase-update.zip'
+$folder = '..\Rcentz-Product-Showcase-Update'
+Expand-Archive -LiteralPath $zip -DestinationPath $folder -Force
+& "$folder\Configure-Rcentz-Onboarding.ps1" -LocalUrl 'http://localhost:3001'
+& "$folder\Install-Rcentz-Product-Showcase-And-Push.ps1"
+
+If the API project is elsewhere, pass -ApiProjectPath 'FULL_PATH_TO_RECOVERED_API' to the configuration helper. If your dev server uses another port, change LocalUrl. Restart the dev server after changing .env.local.
+
+Configure DATABASE_URL, BETTER_AUTH_SECRET and BETTER_AUTH_URL separately on your host. Production BETTER_AUTH_URL must match https://systems.rcentz.cc. Do not use the API origin or a localhost address as the production Systems origin. Do not paste secrets into chat or commit environment files.
+
+contact@rcentz.cc still needs an actual mailbox or forwarding alias. Company/product destination pages on the other Rcentz sites remain planned routes.
