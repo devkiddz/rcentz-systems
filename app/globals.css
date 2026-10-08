@@ -1059,3 +1059,7 @@ a {
 .rcentz-canvas:has(#remote-delivery) {
   overflow: visible;
 }
+
+@media (max-width: 767px) {
+  body { padding-bottom: calc(var(--customer-dock-space, 0px) + env(safe-area-inset-bottom)); }
+}

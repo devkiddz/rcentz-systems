@@ -12,6 +12,8 @@ import './globals.css';
 
 import { ThemeProvider } from '@/components/theme-provider';
 
+import { CustomerActivityDock } from '@/features/activity/components/CustomerActivityDock';
+
 import { Toaster } from '@/components/ui/toast';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
@@ -50,6 +52,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange>
             <TooltipProvider>{children}</TooltipProvider>
 
+            <CustomerActivityDock />
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>

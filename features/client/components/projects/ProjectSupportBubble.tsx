@@ -9,8 +9,8 @@ type Message = {
   mine: boolean;
   sender: { name: string };
 };
-export function ProjectSupportBubble({ projectId }: { projectId: string }) {
-  const [open, setOpen] = useState(false);
+export function ProjectSupportBubble({ projectId, embedded = false, onClose }: { projectId?: string; embedded?: boolean; onClose?: () => void }) {
+  const [open, setOpen] = useState(embedded);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
@@ -21,7 +21,8 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
   const input = useRef<HTMLTextAreaElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const end = useRef<HTMLDivElement>(null);
-  const endpoint = `/api/projects/${encodeURIComponent(projectId)}/chat`;
+  const endpoint = projectId ? `/api/projects/${encodeURIComponent(projectId)}/chat` : '/api/support/chat';
+  function closeChat() { setOpen(false); onClose?.(); }
   useEffect(() => {
     if (!open) return;
     input.current?.focus();
@@ -55,6 +56,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
     function escape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setOpen(false);
+        onClose?.();
         trigger.current?.focus();
       }
     }
@@ -64,7 +66,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
       window.clearInterval(timer);
       document.removeEventListener("keydown", escape);
     };
-  }, [open, endpoint]);
+  }, [open, endpoint, onClose]);
   useEffect(() => {
     end.current?.scrollIntoView({ block: "nearest" });
   }, [messages]);
@@ -98,7 +100,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
     }
   }
   return (
-    <div className="fixed bottom-20 right-4 z-40 sm:bottom-6 sm:right-6">
+    <div className={embedded ? "" : "fixed bottom-20 right-4 z-40 sm:bottom-6 sm:right-6"}>
       {open ? (
         <section
           aria-label="Project support chat"
@@ -116,7 +118,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
               type="button"
               aria-label="Close support"
               onClick={() => {
-                setOpen(false);
+                closeChat();
                 trigger.current?.focus();
               }}
               className="flex size-9 items-center justify-center rounded-lg hover:bg-surface-muted"
@@ -200,7 +202,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
           </p>
         </section>
       ) : null}
-      <button
+      {embedded ? null : <button
         ref={trigger}
         type="button"
         aria-expanded={open}
@@ -212,7 +214,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
         className="ml-auto flex size-12 items-center justify-center rounded-full bg-foreground text-background shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <MessageSquare aria-hidden="true" className="size-5" />
-      </button>
+      </button>}
     </div>
   );
 }

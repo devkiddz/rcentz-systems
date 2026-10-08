@@ -10,7 +10,6 @@ import type { ClientProject } from "@/features/client/server/projects/get-client
 
 import { ClientProjectAnalyticsSection } from "./ClientProjectAnalyticsSection";
 import { ClientProjectFinanceSection } from "./ClientProjectFinanceSection";
-import { ProjectSupportBubble } from "./ProjectSupportBubble";
 
 type ClientProjectPageProps = {
   project: ClientProject;
@@ -78,7 +77,6 @@ export function ClientProjectPage({
           project={project}
           analytics={analytics}
         />
-        <ProjectSupportBubble projectId={project.id} />
 
         {/*
           THEN:
