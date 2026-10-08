@@ -1,5 +1,8 @@
 'use client';
 
+import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
+import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
+
 import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { useState } from 'react';
@@ -60,10 +63,9 @@ function WorkspacePreview({ selected }: { selected: number }) {
       aria-label={view.screen + ' example'}>
       <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-4">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-foreground text-xs font-semibold text-background">
-            R
-          </span>
-          <span className="truncate text-xs font-medium">Rcentz workspace</span>
+          <RcentzBrandSymbol className="size-5 shrink-0" />
+          <RcentzBrandLogo className="h-auto w-16 shrink-0" />
+          <span className="text-[10px] text-muted-foreground">workspace</span>
         </div>
         <span className="shrink-0 rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground">
           Example

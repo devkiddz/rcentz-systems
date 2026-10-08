@@ -3,7 +3,7 @@
 import { RcentzBrandLogo } from '../brand/RcentzBrandLogo';
 
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Grid2X2, Menu, X } from 'lucide-react';
 import { RcentzGithubIcon } from '../brand/RcentzGithubIcon';
 import { useEffect, useRef, useState } from 'react';
 
@@ -38,7 +38,7 @@ export function RcentzHeader() {
       }
     }
 
-    const desktop = window.matchMedia('(min-width: 1024px)');
+    const desktop = window.matchMedia('(min-width: 1280px)');
     function handleResize() {
       if (desktop.matches) setMobileOpen(false);
     }
@@ -75,23 +75,27 @@ export function RcentzHeader() {
               <RcentzBrandLogo className="h-auto w-20 shrink-0 sm:w-24" />
             </Link>
 
-            <div className="hidden min-w-0 flex-1 lg:block">
+            <div className="hidden min-w-0 flex-1 xl:block">
               <RcentzNavigation />
             </div>
 
-            <div className="hidden shrink-0 items-center gap-3 lg:flex">
+            <div className="hidden shrink-0 items-center gap-3 xl:flex">
               <a
                 href="https://github.com/devkiddz/rcentz-systems"
                 aria-label="Rcentz Systems on GitHub"
                 className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <RcentzGithubIcon aria-hidden="true" className="size-4" />
               </a>
+              <a href="https://products.rcentz.cc" aria-label="Explore Rcentz products"
+                className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <Grid2X2 aria-hidden="true" className="size-4" />
+              </a>
               <RcentzLanguageControl />
               <RcentzThemeControl />
               <RcentzStartProjectAction compact={scrolled} />
             </div>
 
-            <div className="flex shrink-0 items-center gap-1 lg:hidden">
+            <div className="flex shrink-0 items-center gap-1 xl:hidden">
               <RcentzLanguageControl />
               <button
                 ref={menuButton}
@@ -111,7 +115,7 @@ export function RcentzHeader() {
           <div
             id="rcentz-mobile-navigation"
             hidden={!mobileOpen}
-            className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border py-3 lg:hidden">
+            className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border py-3 xl:hidden">
             {mobileOpen ? (
               <>
                 <RcentzNavigation mobile onNavigate={closeMobileNavigation} />

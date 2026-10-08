@@ -1,8 +1,10 @@
+import { RcentzNavigation } from '@/ui-shell/navigation/RcentzNavigation';
+import { SystemsProjectPreviewCarousel } from './SystemsProjectPreviewCarousel';
 import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
 import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
 import Link from 'next/link';
-import { ArrowUpRight, ChevronDown, Grid2X2 } from 'lucide-react';
+import { ArrowUpRight, Grid2X2 } from 'lucide-react';
 import { RcentzGithubIcon } from '@/ui-shell/brand/RcentzGithubIcon';
 
 
@@ -39,25 +41,11 @@ export function SystemsCallToActionSection() {
         </div>
 
         <div className="relative min-w-0 lg:col-start-2 lg:row-start-2">
-          <div className="relative overflow-hidden rounded-xl border border-border bg-background">
+          <div className="relative rounded-xl border border-border bg-background">
             <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-3">
               <div className="flex min-w-0 items-center gap-4">
-                <RcentzBrandLogo className="h-auto w-16 shrink-0 sm:w-20" />
-                <div
-                  aria-hidden="true"
-                  className="hidden items-center gap-3 text-[9px] text-muted-foreground xl:flex">
-                  <span className="flex items-center gap-1">
-                    Products <ChevronDown className="size-2.5" />
-                  </span>
-                  <span className="flex items-center gap-1">
-                    Solutions <ChevronDown className="size-2.5" />
-                  </span>
-                  <span className="flex items-center gap-1">
-                    Resources <ChevronDown className="size-2.5" />
-                  </span>
-                  <span>Company</span>
-                  <span>Pricing</span>
-                </div>
+                <RcentzBrandLogo className="h-auto w-14 shrink-0 sm:w-16" />
+                <div className="hidden xl:block"><RcentzNavigation compact /></div>
               </div>
 
               <div className="flex shrink-0 items-center gap-3">
@@ -81,7 +69,8 @@ export function SystemsCallToActionSection() {
               </div>
             </div>
 
-            <div className="relative px-4 pb-24 pt-14 text-center sm:px-6 sm:pb-28 sm:pt-20">
+            <SystemsProjectPreviewCarousel>
+            <div className="relative flex h-full min-h-[510px] flex-col justify-center px-4 pb-12 pt-10 text-center sm:min-h-[480px] sm:px-6 sm:pb-14 sm:pt-12">
               <p className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">
                 Digital infrastructure, built around you
               </p>
@@ -104,9 +93,9 @@ export function SystemsCallToActionSection() {
                   <ArrowUpRight aria-hidden="true" className="size-3" />
                 </Link>
                 <Link
-                  href={projectEntryUrl}
+                  href="/#how-we-work"
                   className="inline-flex min-h-11 items-center justify-center rounded-md border border-border px-3 text-[10px] font-medium hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  View service scope
+                  Explore the workspace
                 </Link>
               </div>
 
@@ -127,11 +116,9 @@ export function SystemsCallToActionSection() {
                 ))}
               </div>
 
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent"
-              />
+
             </div>
+            </SystemsProjectPreviewCarousel>
           </div>
         </div>
       </div>

@@ -1,40 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-
 import { ChevronDown, ArrowUpRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { rcentzNavigationItems } from './rcentz-navigation-items';
 
 type RcentzNavigationProps = {
   mobile?: boolean;
+  compact?: boolean;
   onNavigate?: () => void;
 };
 
-const resources = [
-  { label: 'Rcentz', description: 'Company and wider ecosystem', href: 'https://rcentz.cc' },
-  { label: 'Products', description: 'Explore Rcentz products', href: 'https://products.rcentz.cc' },
-] as const;
-
-export function RcentzNavigation({
-  mobile = false,
-  onNavigate,
-}: RcentzNavigationProps) {
-  const dropdown = useRef<HTMLDetailsElement>(null);
+export function RcentzNavigation({ mobile = false, compact = false, onNavigate }: RcentzNavigationProps) {
+  const nav = useRef<HTMLElement>(null);
 
   useEffect(() => {
     function dismiss(event: PointerEvent) {
-      if (event.target instanceof Node && !dropdown.current?.contains(event.target)) {
-        if (dropdown.current) dropdown.current.open = false;
-      }
+      nav.current?.querySelectorAll('details[open]').forEach(details => {
+        if (event.target instanceof Node && !details.contains(event.target)) {
+          details.removeAttribute('open');
+        }
+      });
     }
-
     function escape(event: KeyboardEvent) {
-      if (event.key === 'Escape' && dropdown.current?.open) {
-        dropdown.current.open = false;
-        dropdown.current.querySelector('summary')?.focus();
-      }
+      if (event.key !== 'Escape') return;
+      const open = nav.current?.querySelector<HTMLDetailsElement>('details[open]');
+      open?.removeAttribute('open');
+      open?.querySelector('summary')?.focus();
     }
-
     document.addEventListener('pointerdown', dismiss);
     document.addEventListener('keydown', escape);
     return () => {
@@ -44,56 +37,41 @@ export function RcentzNavigation({
   }, []);
 
   function navigate() {
-    if (dropdown.current) dropdown.current.open = false;
+    nav.current?.querySelectorAll('details[open]').forEach(details => details.removeAttribute('open'));
     onNavigate?.();
   }
 
   const linkClass = [
-    'inline-flex min-h-11 items-center rounded-lg text-sm text-muted-foreground',
-    'transition-colors hover:bg-surface-muted hover:text-foreground',
+    'inline-flex items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-    mobile ? 'w-full px-3' : 'px-2.5',
+    compact ? 'min-h-9 px-1.5 text-[9px]' : 'min-h-11 px-2 text-[13px]',
+    mobile ? 'w-full px-3 text-sm' : ''
   ].join(' ');
 
   return (
-    <nav
-      aria-label={mobile ? 'Mobile navigation' : 'Primary navigation'}
-      className={mobile ? 'flex flex-col gap-1' : 'flex items-center gap-1'}>
-      <Link href="/#solutions" onClick={navigate} className={linkClass}>Solutions</Link>
-      <Link href="/#how-we-work" onClick={navigate} className={linkClass}>How we work</Link>
-
-      <details ref={dropdown} className="group relative">
-        <summary className={linkClass + ' cursor-pointer list-none gap-1.5 [&::-webkit-details-marker]:hidden'}>
-          Resources
-          <ChevronDown
-            aria-hidden="true"
-            className="size-3.5 transition-transform group-open:rotate-180 motion-reduce:transition-none"
-          />
-        </summary>
-
-        <div className={[
-          'rounded-xl border border-border bg-background p-2',
-          mobile ? 'mx-3 mb-2' : 'absolute left-0 top-full z-50 mt-2 w-64 shadow-lg',
-        ].join(' ')}>
-          {resources.map(resource => (
-            <a
-              key={resource.href}
-              href={resource.href}
-              onClick={navigate}
-              className="block rounded-lg px-3 py-2.5 hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <span className="flex items-center justify-between gap-3 text-sm font-medium">
-                {resource.label}
-                <ArrowUpRight aria-hidden="true" className="size-3.5 text-muted-foreground" />
-              </span>
-              <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                {resource.description}
-              </span>
-            </a>
-          ))}
-        </div>
-      </details>
-
-      <Link href="/#pricing" onClick={navigate} className={linkClass}>Pricing</Link>
+    <nav ref={nav} aria-label={compact ? 'Preview navigation' : mobile ? 'Mobile navigation' : 'Primary navigation'}
+      className={mobile ? 'flex flex-col gap-1' : 'flex items-center gap-0.5'}>
+      {rcentzNavigationItems.map(item => 'children' in item ? (
+        <details key={item.label} className="group relative">
+          <summary className={linkClass + ' cursor-pointer list-none gap-1 [&::-webkit-details-marker]:hidden'}>
+            {item.label}
+            <ChevronDown aria-hidden="true" className="size-3 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+          </summary>
+          <div className={[
+            'z-50 rounded-xl border border-border bg-background p-2',
+            mobile ? 'mx-3 mb-2' : 'absolute left-0 top-full mt-1 w-52 shadow-sm'
+          ].join(' ')}>
+            {item.children.map(child => (
+              <Link key={child.href} href={child.href} onClick={navigate}
+                className="flex min-h-11 items-center justify-between gap-3 rounded-lg px-3 text-xs hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                {child.label}<ArrowUpRight aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+              </Link>
+            ))}
+          </div>
+        </details>
+      ) : (
+        <Link key={item.label} href={item.href} onClick={navigate} className={linkClass}>{item.label}</Link>
+      ))}
     </nav>
   );
 }
