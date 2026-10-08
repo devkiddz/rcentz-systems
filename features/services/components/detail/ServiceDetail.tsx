@@ -55,7 +55,7 @@ export async function ServiceDetail({ service }: ServiceDetailProps) {
               </div>
 
               <h2 className="mt-4 max-w-[640px] text-[2rem] font-semibold leading-[1] tracking-[-0.05em] text-foreground sm:text-[2.8rem]">
-                Understand the investment. Then define the project.
+                Understand the project cost. Then define the project.
               </h2>
 
               <p className="mt-5 max-w-[610px] text-[13px] leading-7 text-muted sm:text-[15px]">

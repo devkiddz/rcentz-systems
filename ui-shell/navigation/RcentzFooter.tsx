@@ -18,7 +18,7 @@ export function RcentzFooter() {
           {[
             ['Solutions', '/#solutions'],
             ['How we work', '/#how-we-work'],
-            ['Scope & investment', '/#pricing'],
+            ['Scope & pricing', '/#pricing'],
             ['Start a project', projectEntryUrl]
           ].map(([label, href]) => (
             <Link key={href} href={href} className="inline-flex min-h-11 items-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">

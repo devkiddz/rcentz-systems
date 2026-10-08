@@ -23,12 +23,12 @@ export function SystemsOverviewSections() {
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-subtle px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               <span aria-hidden="true" className="size-1.5 rounded-full bg-theme-accent" />
-              Scope & investment
+              Scope & pricing
             </p>
           </div>
           <div>
             <h2 id="systems-pricing-title" className={rcentzTypography.className + ' text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'}>
-              A clear scope. An agreed investment.
+              A clear scope. An agreed project cost.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
               Tell us what your business needs. We define the requirements,
