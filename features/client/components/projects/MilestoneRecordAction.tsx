@@ -59,8 +59,6 @@ export function MilestoneRecordAction({
         return <RecordStatus icon={RefreshCw} label="Preparing" description="Record is being finalized" />;
 
       case 'READY':
-        return <RecordStatus icon={FileCheck2} label="Ready" description="Preparing email delivery" />;
-
       case 'SENT':
         if (record.pdfUrl) {
           return (
@@ -73,6 +71,10 @@ export function MilestoneRecordAction({
               Download copy
             </a>
           );
+        }
+
+        if (record.status === 'READY') {
+          return <RecordStatus icon={FileCheck2} label="Ready" description="Available for review" />;
         }
 
         return (

@@ -235,7 +235,7 @@ function RecordsList({ records }: { records: ClientOverviewRecord[] }) {
           <div className="mt-3 flex items-center justify-between gap-3">
             <p className="text-[9px] text-muted">Requested {formatDate(record.requestedAt)}</p>
 
-            {record.status === 'SENT' && record.pdfUrl ? (
+            {(record.status === 'READY' || record.status === 'SENT') && record.pdfUrl ? (
               <a
                 href={record.pdfUrl}
                 target="_blank"
