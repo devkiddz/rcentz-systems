@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -42,11 +43,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
+        <Script id="rcentz-palette-init" strategy="beforeInteractive">{`try { var p = localStorage.getItem('rcentz-palette-v1'); document.documentElement.dataset.palette = ['yellow','emerald','blue','violet'].includes(p) ? p : 'neutral'; } catch {}`}</Script>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
-            enableSystem={false}
+            enableSystem
             themes={['light', 'dark']}
             storageKey="rcentz-theme"
             disableTransitionOnChange>

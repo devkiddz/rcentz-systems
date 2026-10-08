@@ -1063,3 +1063,81 @@ a {
 @media (max-width: 767px) {
   body { padding-bottom: calc(var(--customer-dock-space, 0px) + env(safe-area-inset-bottom)); }
 }
+
+/* Optional customer palettes. Status colours retain their semantic meaning. */
+
+:root[data-palette="yellow"] {
+  --theme-accent: #876400;
+  --theme-accent-vivid: #876400;
+  --theme-accent-strong: #876400;
+  --primary: #f5d84b;
+  --primary-foreground: #171717;
+  --theme-accent-soft: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  --theme-accent-faint: color-mix(in srgb, var(--theme-accent) 4%, transparent);
+  --theme-accent-glow: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  --ring: var(--theme-accent);
+}
+:root.dark[data-palette="yellow"] {
+  --theme-accent: #f5d84b;
+  --theme-accent-vivid: #f5d84b;
+  --theme-accent-strong: #f5d84b;
+  --primary: #f5d84b;
+  --primary-foreground: #171717;
+}
+
+:root[data-palette="emerald"] {
+  --theme-accent: #08775b;
+  --theme-accent-vivid: #08775b;
+  --theme-accent-strong: #08775b;
+  --primary: #08775b;
+  --primary-foreground: #ffffff;
+  --theme-accent-soft: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  --theme-accent-faint: color-mix(in srgb, var(--theme-accent) 4%, transparent);
+  --theme-accent-glow: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  --ring: var(--theme-accent);
+}
+:root.dark[data-palette="emerald"] {
+  --theme-accent: #34d399;
+  --theme-accent-vivid: #34d399;
+  --theme-accent-strong: #34d399;
+  --primary: #34d399;
+  --primary-foreground: #171717;
+}
+
+:root[data-palette="blue"] {
+  --theme-accent: #2563eb;
+  --theme-accent-vivid: #2563eb;
+  --theme-accent-strong: #2563eb;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --theme-accent-soft: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  --theme-accent-faint: color-mix(in srgb, var(--theme-accent) 4%, transparent);
+  --theme-accent-glow: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  --ring: var(--theme-accent);
+}
+:root.dark[data-palette="blue"] {
+  --theme-accent: #60a5fa;
+  --theme-accent-vivid: #60a5fa;
+  --theme-accent-strong: #60a5fa;
+  --primary: #60a5fa;
+  --primary-foreground: #171717;
+}
+
+:root[data-palette="violet"] {
+  --theme-accent: #7540cc;
+  --theme-accent-vivid: #7540cc;
+  --theme-accent-strong: #7540cc;
+  --primary: #7540cc;
+  --primary-foreground: #ffffff;
+  --theme-accent-soft: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  --theme-accent-faint: color-mix(in srgb, var(--theme-accent) 4%, transparent);
+  --theme-accent-glow: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  --ring: var(--theme-accent);
+}
+:root.dark[data-palette="violet"] {
+  --theme-accent: #b69aff;
+  --theme-accent-vivid: #b69aff;
+  --theme-accent-strong: #b69aff;
+  --primary: #b69aff;
+  --primary-foreground: #171717;
+}

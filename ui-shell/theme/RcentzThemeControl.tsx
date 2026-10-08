@@ -8,10 +8,10 @@ type RcentzThemeControlProps = {
 };
 
 export function RcentzThemeControl({ mobile = false }: RcentzThemeControlProps) {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   function toggleTheme() {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   }
 
   return (
