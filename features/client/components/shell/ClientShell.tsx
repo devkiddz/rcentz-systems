@@ -115,6 +115,11 @@ const projectNavigation = [
     icon: ReceiptText
   },
   {
+    label: 'Project brief',
+    href: '/dashboard/onboarding',
+    icon: ClipboardList,
+      },
+  {
     label: 'Requests',
     href: '/dashboard/requests',
     icon: ClipboardList

@@ -71,6 +71,7 @@ export default async function ProjectRequestPage({
         </p>
       </section>
       <div className="mt-7 flex flex-wrap gap-3">
+        <Link href={`/dashboard/onboarding/${requestId}`} className="inline-flex min-h-11 items-center rounded-full border border-border px-5 text-sm font-medium">Review or edit your brief</Link>
         <Link
           href="/dashboard/requests"
           className="inline-flex min-h-11 items-center rounded-full bg-foreground px-5 text-sm font-medium text-background"

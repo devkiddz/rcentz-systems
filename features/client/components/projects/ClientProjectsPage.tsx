@@ -261,7 +261,7 @@ export function ClientProjectsPage({ projects }: ClientProjectsPageProps) {
                 <ProjectCard key={project.id} project={project} />
               ))}
 
-              {filter === 'ALL' && !search.trim() ? <RequestProjectCard /> : null}
+              {filter === 'ALL' && !search.trim() ? <RequestProjectCard hasProjects={projects.length > 0} /> : null}
             </div>
 
             {filteredProjects.length === 0 && (filter !== 'ALL' || search.trim()) ? (
@@ -442,17 +442,17 @@ function ProjectCard({ project }: { project: ClientProjectMonitor }) {
   );
 }
 
-function RequestProjectCard() {
+function RequestProjectCard({ hasProjects }: { hasProjects: boolean }) {
   return (
     <Link
-      href="/services"
+      href="/dashboard/onboarding"
       className="group flex min-h-[520px] items-center justify-center rounded-[22px] border border-dashed border-border bg-background/40 p-8 text-center transition-colors hover:border-theme-accent/30 hover:bg-theme-accent/[0.025]">
       <div>
         <div className="mx-auto flex size-12 items-center justify-center rounded-2xl border border-border bg-surface transition-transform duration-200 group-hover:-translate-y-0.5">
           <Plus className="size-5 text-theme-accent" />
         </div>
 
-        <h2 className="mt-5 text-sm font-semibold text-foreground">Start another project</h2>
+        <h2 className="mt-5 text-sm font-semibold text-foreground">{hasProjects ? 'Start another project' : 'Start your first project'}</h2>
 
         <p className="mx-auto mt-2 max-w-[260px] text-[10px] leading-5 text-muted-foreground">
           Tell Rcentz what you would like us to build, improve or manage next.

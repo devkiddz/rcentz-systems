@@ -27,7 +27,7 @@ export default async function RequestsPage() {
       description="Track your submitted briefs, delivery decisions and project support."
     >
       <Link
-        href="/start-project"
+        href="/dashboard/onboarding"
         className="inline-flex min-h-11 items-center rounded-full bg-foreground px-4 text-sm font-medium text-background"
       >
         Start a project
@@ -42,7 +42,7 @@ export default async function RequestsPage() {
                 className="flex flex-wrap items-center justify-between gap-3 py-3"
               >
                 <Link
-                  href={`/start-project/requests/${request.id}`}
+                  href={`/dashboard/onboarding/${request.id}`}
                   className="min-w-0 break-words text-sm font-medium hover:underline"
                 >
                   {request.title}

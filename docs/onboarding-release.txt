@@ -19,3 +19,8 @@ Expand-Archive -LiteralPath $zip -DestinationPath $folder -Force
 After deployment, test Start a project -> Create account -> Sign in -> complete brief -> receipt -> workspace. Confirm a second account cannot open the first account's brief.
 
 This release saves real requests; it does not pretend to create an approved project, working preview, payment, or full delivery dashboard. Uploaded files and email password-reset are not part of this release. File exchange can be arranged during scope review. Form answers remain while navigating steps; refreshing an unsubmitted form clears them.
+
+Update: Dashboard brief editing and optional private PDF/sample-image uploads
+are now included. See docs/brief-editing-and-uploads.txt for current behavior
+and private storage configuration. Earlier file-exchange limitations above
+describe the initial release.

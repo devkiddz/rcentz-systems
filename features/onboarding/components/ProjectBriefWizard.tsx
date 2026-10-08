@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,8 +13,8 @@ import {
   Smartphone,
   Workflow,
   HelpCircle,
-  LoaderCircle
-} from 'lucide-react';
+  LoaderCircle,
+} from "lucide-react";
 import {
   buildOptions,
   currencies,
@@ -23,47 +23,66 @@ import {
   timelines,
   validateBrief,
   type BriefErrors,
-  type ProjectBrief
-} from '../lib/project-brief';
-import { BriefIllustration } from './BriefIllustration';
+  type ProjectBrief,
+} from "../lib/project-brief";
+import { BriefFilePicker } from "./BriefFilePicker";
+import { BriefIllustration } from "./BriefIllustration";
 
 const steps = [
-  'What should we build?',
-  'Tell us about your business.',
-  'What are we starting with?',
-  'Plan the budget and timing.',
-  'Check your project brief.'
+  "What should we build?",
+  "Tell us about your business.",
+  "What are we starting with?",
+  "Plan the budget and timing.",
+  "Check your project brief.",
 ];
 const icons = [Globe2, Layers3, ShoppingBag, Smartphone, Workflow, HelpCircle];
 const fieldsByStep: (keyof ProjectBrief)[][] = [
-  ['build'],
-  ['company', 'title', 'goals', 'audience'],
-  ['startingPoint', 'website', 'features'],
-  ['currency', 'budget', 'timeline', 'notes'],
-  []
+  ["build"],
+  ["company", "title", "goals", "audience"],
+  ["startingPoint", "website", "features"],
+  ["currency", "budget", "timeline", "notes"],
+  [],
 ];
 const inputClass =
-  'mt-2 min-h-12 w-full rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none focus:border-foreground focus:ring-1 focus:ring-ring';
+  "mt-2 min-h-12 w-full rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none focus:border-foreground focus:ring-1 focus:ring-ring";
 
-export function ProjectBriefWizard({ name }: { name: string }) {
+export function ProjectBriefWizard({
+  name,
+  initialBrief,
+  requestId,
+  updatedAt,
+  existingFileCount = 0,
+  uploadsEnabled = false,
+}: {
+  name: string;
+  initialBrief?: ProjectBrief;
+  requestId?: string;
+  updatedAt?: string;
+  uploadsEnabled?: boolean;
+  existingFileCount?: number;
+}) {
+  const [files, setFiles] = useState<File[]>([]);
+  const revision = useRef(updatedAt);
   const [step, setStep] = useState(0);
-  const [brief, setBrief] = useState<ProjectBrief>({ ...emptyBrief });
+  const [brief, setBrief] = useState<ProjectBrief>({
+    ...(initialBrief || emptyBrief),
+  });
   const [errors, setErrors] = useState<BriefErrors>({});
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
 
   function update<K extends keyof ProjectBrief>(
     key: K,
-    value: ProjectBrief[K]
+    value: ProjectBrief[K],
   ) {
     setBrief((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
   }
   function navigate(next: number) {
     setStep(next);
-    setError('');
+    setError("");
     requestAnimationFrame(() => heading.current?.focus());
   }
   function nextStep() {
@@ -71,11 +90,11 @@ export function ProjectBriefWizard({ name }: { name: string }) {
     const relevant = Object.fromEntries(
       fieldsByStep[step]
         .filter((key) => validated[key])
-        .map((key) => [key, validated[key]])
+        .map((key) => [key, validated[key]]),
     );
     setErrors(relevant);
     if (Object.keys(relevant).length) {
-      setError('Check the highlighted fields before continuing.');
+      setError("Check the highlighted fields before continuing.");
       return;
     }
     navigate(step + 1);
@@ -86,38 +105,70 @@ export function ProjectBriefWizard({ name }: { name: string }) {
       setErrors(checked.errors);
       navigate(
         fieldsByStep.findIndex((fields) =>
-          fields.some((key) => checked.errors[key])
-        )
+          fields.some((key) => checked.errors[key]),
+        ),
       );
-      setError('Check the highlighted fields.');
+      setError("Check the highlighted fields.");
+      return;
+    }
+    if (files.length + existingFileCount > 5) {
+      setError("Keep up to five files per brief.");
+      return;
+    }
+    if (files.some((file) => file.size > 2 * 1024 * 1024)) {
+      setError(
+        "Each attachment must be 2 MB or smaller. Remove or replace the larger file.",
+      );
       return;
     }
     setPending(true);
-    setError('');
+    setError("");
     try {
-      const response = await fetch('/api/project-briefs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(checked.brief)
-      });
+      const response = await fetch(
+        requestId ? `/api/project-briefs/${requestId}` : "/api/project-briefs",
+        {
+          method: requestId ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...checked.brief,
+            updatedAt: revision.current,
+          }),
+        },
+      );
       const result = await response.json();
       if (!response.ok) {
         if (response.status === 401) {
           setError(
-            'Your session expired. Open sign-in in a new tab, then return here to submit your answers.'
+            "Your session expired. Open sign-in in a new tab, then return here to submit your answers.",
           );
           return;
         }
         setErrors(result.fields || {});
         setError(
-          result.error || 'We could not submit your brief. Please try again.'
+          result.error || "We could not submit your brief. Please try again.",
         );
         return;
       }
-      router.push(`/start-project/requests/${encodeURIComponent(result.id)}`);
+      revision.current = result.updatedAt;
+      for (const file of files) {
+        const form = new FormData();
+        form.set("file", file);
+        const upload = await fetch(`/api/project-briefs/${result.id}/files`, {
+          method: "POST",
+          body: form,
+        });
+        if (!upload.ok) {
+          router.push(`/dashboard/onboarding/${result.id}?upload=failed`);
+          return;
+        }
+      }
+      router.push(
+        `/dashboard/onboarding/${encodeURIComponent(result.id)}?saved=1`,
+      );
+      router.refresh();
     } catch {
       setError(
-        'Connection interrupted. Your answers are still here. Please try again.'
+        "Connection interrupted. Your answers are still here. Please try again.",
       );
     } finally {
       setPending(false);
@@ -125,40 +176,40 @@ export function ProjectBriefWizard({ name }: { name: string }) {
   }
   function field(
     key:
-      | 'company'
-      | 'title'
-      | 'audience'
-      | 'website'
-      | 'budget'
-      | 'goals'
-      | 'features'
-      | 'notes',
+      | "company"
+      | "title"
+      | "audience"
+      | "website"
+      | "budget"
+      | "goals"
+      | "features"
+      | "notes",
     label: string,
     placeholder: string,
-    multiline = false
+    multiline = false,
   ) {
     const shared = {
-      id: 'brief-' + key,
+      id: "brief-" + key,
       name: key,
       value: brief[key],
       onChange: (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       ) => update(key, event.target.value),
       placeholder,
       className: inputClass,
-      'aria-invalid': Boolean(errors[key]),
-      'aria-describedby': errors[key] ? key + '-error' : undefined,
+      "aria-invalid": Boolean(errors[key]),
+      "aria-describedby": errors[key] ? key + "-error" : undefined,
       disabled: pending,
       maxLength:
-        key === 'company'
+        key === "company"
           ? 120
-          : key === 'title'
+          : key === "title"
             ? 160
-            : key === 'website' || key === 'audience'
+            : key === "website" || key === "audience"
               ? 500
-              : key === 'budget'
+              : key === "budget"
                 ? 15
-                : 4000
+                : 4000,
     };
     return (
       <div>
@@ -170,12 +221,12 @@ export function ProjectBriefWizard({ name }: { name: string }) {
         ) : (
           <input
             {...shared}
-            type={key === 'website' ? 'url' : 'text'}
-            inputMode={key === 'budget' ? 'decimal' : undefined}
+            type={key === "website" ? "url" : "text"}
+            inputMode={key === "budget" ? "decimal" : undefined}
           />
         )}
         {errors[key] ? (
-          <p id={key + '-error'} className="mt-2 text-xs text-destructive">
+          <p id={key + "-error"} className="mt-2 text-xs text-destructive">
             {errors[key]}
           </p>
         ) : null}
@@ -183,16 +234,16 @@ export function ProjectBriefWizard({ name }: { name: string }) {
     );
   }
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
       <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
           {name}, let us shape your project.
         </p>
         <Link
-          href="/workspace"
+          href="/dashboard/requests"
           className="text-xs font-medium underline underline-offset-4"
         >
-          Your workspace
+          Your briefs
         </Link>
       </div>
       <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
@@ -220,16 +271,20 @@ export function ProjectBriefWizard({ name }: { name: string }) {
             tabIndex={-1}
             className="text-2xl font-semibold leading-tight tracking-tight outline-none sm:text-3xl"
           >
-            {steps[step]}
+            {step === 4
+              ? requestId
+                ? "Refine your project brief."
+                : "Your idea, ready to take shape."
+              : steps[step]}
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             {
               [
-                'Choose the closest fit. We can refine the approach together.',
-                'The problem and the people come before the software.',
-                'Bring the context, tools and features you already have in mind.',
-                'A starting budget helps us propose a realistic scope. It is not a fixed quote.',
-                'Check the details before sending them to the Rcentz team.'
+                "Choose the closest fit. We can refine the approach together.",
+                "The problem and the people come before the software.",
+                "Bring the context, tools and features you already have in mind.",
+                "A starting budget helps us propose a realistic scope. It is not a fixed quote.",
+                "Check the details before sending them to the Rcentz team.",
               ][step]
             }
           </p>
@@ -239,7 +294,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
           >
             <Layers3 className="size-5 shrink-0 text-theme-accent" />
             <p className="min-w-0 truncate text-xs font-medium">
-              {brief.title || 'Your project canvas'}
+              {brief.title || "Your project canvas"}
             </p>
             <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
               Plan → Build → Launch
@@ -264,19 +319,19 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                       <label
                         key={option.value}
                         className={[
-                          'relative cursor-pointer rounded-xl border p-4 transition-colors',
+                          "relative cursor-pointer rounded-xl border p-4 transition-colors",
                           brief.build === option.value
-                            ? 'border-foreground bg-surface-muted'
-                            : 'border-border hover:bg-surface-subtle',
-                          'focus-within:ring-2 focus-within:ring-ring'
-                        ].join(' ')}
+                            ? "border-foreground bg-surface-muted"
+                            : "border-border hover:bg-surface-subtle",
+                          "focus-within:ring-2 focus-within:ring-ring",
+                        ].join(" ")}
                       >
                         <input
                           type="radio"
                           name="build"
                           value={option.value}
                           checked={brief.build === option.value}
-                          onChange={() => update('build', option.value)}
+                          onChange={() => update("build", option.value)}
                           className="sr-only"
                         />
                         <Icon
@@ -309,25 +364,25 @@ export function ProjectBriefWizard({ name }: { name: string }) {
             {step === 1 ? (
               <>
                 {field(
-                  'company',
-                  'Business or organisation name',
-                  'Your company name'
+                  "company",
+                  "Business or organisation name",
+                  "Your company name",
                 )}
                 {field(
-                  'title',
-                  'Give your project a name',
-                  'Customer operations platform'
+                  "title",
+                  "Give your project a name",
+                  "Customer operations platform",
                 )}
                 {field(
-                  'goals',
-                  'What should this solve for your business?',
-                  'What is difficult today, and what would a better result look like?',
-                  true
+                  "goals",
+                  "What should this solve for your business?",
+                  "What is difficult today, and what would a better result look like?",
+                  true,
                 )}
                 {field(
-                  'audience',
-                  'Who will use it?',
-                  'Customers, your team, partners, or a combination'
+                  "audience",
+                  "Who will use it?",
+                  "Customers, your team, partners, or a combination",
                 )}
               </>
             ) : null}
@@ -348,7 +403,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                           name="starting-point"
                           value={value}
                           checked={brief.startingPoint === value}
-                          onChange={() => update('startingPoint', value)}
+                          onChange={() => update("startingPoint", value)}
                           className="accent-foreground"
                         />
                         <span className="text-sm">{value}</span>
@@ -357,15 +412,15 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                   </div>
                 </fieldset>
                 {field(
-                  'website',
-                  'Existing website or application link (optional)',
-                  'https://your-company.com'
+                  "website",
+                  "Existing website or application link (optional)",
+                  "https://your-company.com",
                 )}
                 {field(
-                  'features',
-                  'What must the first version include?',
-                  'Accounts, bookings, reports, approvals, payments, integrations…',
-                  true
+                  "features",
+                  "What must the first version include?",
+                  "Accounts, bookings, reports, approvals, payments, integrations…",
+                  true,
                 )}
                 <p className="text-xs leading-5 text-muted-foreground">
                   Share public links here. Access details and project files can
@@ -380,7 +435,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                     type="checkbox"
                     checked={brief.guidance}
                     onChange={(event) =>
-                      update('guidance', event.target.checked)
+                      update("guidance", event.target.checked)
                     }
                   />
                   <span className="text-sm">
@@ -398,7 +453,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                     id="brief-currency"
                     className={inputClass}
                     value={brief.currency}
-                    onChange={(event) => update('currency', event.target.value)}
+                    onChange={(event) => update("currency", event.target.value)}
                   >
                     {currencies.map((value) => (
                       <option key={value}>{value}</option>
@@ -406,7 +461,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                   </select>
                 </div>
                 {!brief.guidance
-                  ? field('budget', 'Your starting budget', 'Enter an amount')
+                  ? field("budget", "Your starting budget", "Enter an amount")
                   : null}
                 <div>
                   <label
@@ -419,7 +474,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                     id="brief-timeline"
                     className={inputClass}
                     value={brief.timeline}
-                    onChange={(event) => update('timeline', event.target.value)}
+                    onChange={(event) => update("timeline", event.target.value)}
                   >
                     {timelines.map((value) => (
                       <option key={value}>{value}</option>
@@ -431,57 +486,90 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                     type="checkbox"
                     checked={brief.ongoingSupport}
                     onChange={(event) =>
-                      update('ongoingSupport', event.target.checked)
+                      update("ongoingSupport", event.target.checked)
                     }
                   />
                   Include ongoing support in our discussion.
                 </label>
                 {field(
-                  'notes',
-                  'Anything else we should know? (optional)',
-                  'Constraints, important dates, references or questions.',
-                  true
+                  "notes",
+                  "Anything else we should know? (optional)",
+                  "Constraints, important dates, references or questions.",
+                  true,
                 )}
               </>
             ) : null}
             {step === 4 ? (
-              <dl className="divide-y divide-border rounded-xl border border-border px-4">
-                {[
-                  [
-                    'Build',
-                    buildOptions.find((option) => option.value === brief.build)
-                      ?.title
-                  ],
-                  ['Business', brief.company],
-                  ['Project', brief.title],
-                  ['Goals', brief.goals],
-                  ['Audience', brief.audience],
-                  ['Starting point', brief.startingPoint],
-                  ['Existing link', brief.website || 'Not provided'],
-                  ['Must-have features', brief.features],
-                  [
-                    'Budget',
-                    brief.guidance
-                      ? 'Please advise'
-                      : `${brief.currency} ${brief.budget}`
-                  ],
-                  ['Timeline', brief.timeline],
-                  [
-                    'Ongoing support',
-                    brief.ongoingSupport
-                      ? 'Include in discussion'
-                      : 'Not requested yet'
-                  ],
-                  ['Additional notes', brief.notes || 'None']
-                ].map(([label, value]) => (
-                  <div key={label} className="py-3">
-                    <dt className="text-xs text-muted-foreground">{label}</dt>
-                    <dd className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">
-                      {value}
-                    </dd>
+              <>
+                <div className="rounded-2xl border border-border bg-surface-subtle p-5">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                    Your project canvas
+                  </p>
+                  <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+                    {brief.title || "Your next project"}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {brief.company} · {brief.timeline}
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {["Clear brief", "Shared scope", "Working software"].map(
+                      (label) => (
+                        <span
+                          key={label}
+                          className="rounded-full border border-border bg-background px-3 py-2 text-xs"
+                        >
+                          {label}
+                        </span>
+                      ),
+                    )}
                   </div>
-                ))}
-              </dl>
+                </div>
+                <dl className="divide-y divide-border rounded-xl border border-border px-4">
+                  {[
+                    [
+                      "Build",
+                      buildOptions.find(
+                        (option) => option.value === brief.build,
+                      )?.title,
+                    ],
+                    ["Business", brief.company],
+                    ["Project", brief.title],
+                    ["Goals", brief.goals],
+                    ["Audience", brief.audience],
+                    ["Starting point", brief.startingPoint],
+                    ["Existing link", brief.website || "Not provided"],
+                    ["Must-have features", brief.features],
+                    [
+                      "Budget",
+                      brief.guidance
+                        ? "Please advise"
+                        : `${brief.currency} ${brief.budget}`,
+                    ],
+                    ["Timeline", brief.timeline],
+                    [
+                      "Ongoing support",
+                      brief.ongoingSupport
+                        ? "Include in discussion"
+                        : "Not requested yet",
+                    ],
+                    ["Additional notes", brief.notes || "None"],
+                  ].map(([label, value]) => (
+                    <div key={label} className="py-3">
+                      <dt className="text-xs text-muted-foreground">{label}</dt>
+                      <dd className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <BriefFilePicker
+                  remaining={Math.max(0, 5 - existingFileCount)}
+                  files={files}
+                  onChange={setFiles}
+                  configured={uploadsEnabled}
+                  disabled={pending}
+                />
+              </>
             ) : null}
             {error ? (
               <div
@@ -489,7 +577,7 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                 className="rounded-xl border border-destructive/30 p-4 text-sm leading-6 text-destructive"
               >
                 {error}
-                {error.startsWith('Your session') ? (
+                {error.startsWith("Your session") ? (
                   <a
                     href="/login?next=%2Fstart-project"
                     target="_blank"
@@ -530,9 +618,11 @@ export function ProjectBriefWizard({ name }: { name: string }) {
                 ) : null}
                 {step === 4
                   ? pending
-                    ? 'Submitting…'
-                    : 'Submit project brief'
-                  : 'Continue'}
+                    ? "Submitting…"
+                    : requestId
+                      ? "Save brief changes"
+                      : "Submit project brief"
+                  : "Continue"}
                 {!pending ? (
                   <ArrowRight aria-hidden="true" className="size-4" />
                 ) : null}
@@ -553,6 +643,6 @@ export function ProjectBriefWizard({ name }: { name: string }) {
           </p>
         </aside>
       </div>
-    </main>
+    </div>
   );
 }

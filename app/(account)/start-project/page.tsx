@@ -1,4 +1,5 @@
 import { requireAuth } from '@/features/auth/server/require-auth';
+import { uploadsConfigured } from '@/features/onboarding/server/brief-data';
 import { ProjectBriefWizard } from '@/features/onboarding/components/ProjectBriefWizard';
 
 export const dynamic = 'force-dynamic';
@@ -8,5 +9,5 @@ export const metadata = {
 };
 export default async function StartProjectPage() {
   const user = await requireAuth('/start-project');
-  return <ProjectBriefWizard name={user.name} />;
+  return <ProjectBriefWizard name={user.name} uploadsEnabled={uploadsConfigured()} />;
 }

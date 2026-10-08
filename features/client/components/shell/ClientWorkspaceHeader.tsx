@@ -47,7 +47,7 @@ const quickActions = [
   {
     label: 'Start new project',
     description: 'Begin a new project request',
-    href: '/start-project',
+    href: '/dashboard/onboarding',
     icon: FolderPlus
   },
   {

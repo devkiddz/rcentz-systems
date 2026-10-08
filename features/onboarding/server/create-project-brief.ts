@@ -1,4 +1,5 @@
 import 'server-only';
+import { writeBriefData } from './brief-data';
 import {
   buildOptions,
   describeBrief,
@@ -32,7 +33,7 @@ export async function createProjectBrief(userId: string, brief: ProjectBrief) {
     });
     if (existing) return existing;
     const now = new Date();
-    return transaction.serviceRequest.create({
+    const request = await transaction.serviceRequest.create({
       data: {
         userId,
         serviceId: service.id,
@@ -44,7 +45,13 @@ export async function createProjectBrief(userId: string, brief: ProjectBrief) {
         submittedAt: now,
         onboardingCompletedAt: now
       },
-      select: { id: true }
+      select: { id: true, serviceId: true }
     });
+    await writeBriefData(transaction, request, {
+      version: 1,
+      brief,
+      attachments: []
+    });
+    return { id: request.id };
   });
 }

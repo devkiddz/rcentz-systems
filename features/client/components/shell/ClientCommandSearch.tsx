@@ -54,6 +54,12 @@ const destinations = [
     icon: ReceiptText
   },
   {
+    label: 'Project brief',
+    description: 'Create a project brief',
+    href: '/dashboard/onboarding',
+    icon: ClipboardList
+  },
+  {
     label: 'Requests',
     description: 'Services, projects and support',
     href: '/dashboard/requests',

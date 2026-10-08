@@ -46,6 +46,8 @@ async function check() {
     );
     // Dashboard tables must already exist in the canonical API database.
     for (const table of [
+      'ServiceOnboardingQuestion',
+      'ServiceRequestAnswer',
       'Project',
       'ProjectInfrastructure',
       'ProjectMilestone',

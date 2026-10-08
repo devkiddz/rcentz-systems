@@ -1,0 +1,25 @@
+Dashboard onboarding and editable project briefs
+
+Entry: /dashboard/onboarding. Saved briefs: /dashboard/requests.
+Customers can reopen and edit their own DRAFT/PENDING brief until a project
+is assigned. Once delivery review has progressed, the page becomes read-only
+and offers a contact link for scope changes. Saves reject stale tab revisions.
+Existing plain-text onboarding submissions are supported and convert to
+structured answers on their next save. No Prisma schema migration is needed.
+
+Optional private uploads
+Connect a PRIVATE Vercel Blob store to the hosting project and configure its
+BLOB_READ_WRITE_TOKEN in local .env.local and the hosting environment. Never
+commit the token. Redeploy after configuring it. Do not use a public store.
+The site shows a disabled optional uploader when credentials are absent;
+brief submission/editing still works. Private storage was tested using a local
+SDK-compatible fixture, not a provisioned production Blob store.
+
+Allowed: PDF, PNG, JPEG, WebP, maximum 2 MB/file and 5 files/brief.
+The server checks file signatures and body size. Blob paths are recorded in
+existing ServiceRequestAnswer metadata; bytes remain in private storage.
+Downloads and image previews are proxied through an authenticated owner check.
+Unsupported documents should be exported to PDF before upload.
+Uploading does not grant staff/general public access or create a ProjectFile.
+The current customer interface allows adding references, not deleting stored
+files. Failed uploads leave the saved brief intact and prompt re-selection.

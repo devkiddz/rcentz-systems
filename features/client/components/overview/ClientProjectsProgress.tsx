@@ -14,7 +14,7 @@ function formatStatus(status: string) {
   return status
     .toLowerCase()
     .split('_')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
 }
 
@@ -73,19 +73,26 @@ function getProgressPresentation(progress: number) {
   };
 }
 
-export function ClientProjectsProgress({ projects }: ClientProjectsProgressProps) {
+export function ClientProjectsProgress({
+  projects
+}: ClientProjectsProgressProps) {
   return (
     <section className="flex h-[320px] flex-col overflow-hidden rounded-[18px] border border-border bg-background">
       <div className="flex shrink-0 items-start justify-between gap-4 px-4 py-4 sm:px-5">
         <div>
-          <p className="text-sm font-semibold tracking-[-0.025em] text-foreground">Your Projects</p>
+          <p className="text-sm font-semibold tracking-[-0.025em] text-foreground">
+            Your Projects
+          </p>
 
-          <p className="mt-1 text-[11px] text-muted">Current delivery and project workspace</p>
+          <p className="mt-1 text-[11px] text-muted">
+            Current delivery and project workspace
+          </p>
         </div>
 
         <Link
           href="/dashboard/projects"
-          className="flex items-center gap-1 text-[11px] text-muted transition-colors hover:text-foreground">
+          className="flex items-center gap-1 text-[11px] text-muted transition-colors hover:text-foreground"
+        >
           View all
           <ArrowRight aria-hidden="true" className="size-3.5" />
         </Link>
@@ -102,9 +109,10 @@ export function ClientProjectsProgress({ projects }: ClientProjectsProgressProps
           [&::-webkit-scrollbar]:hidden
 
           sm:px-4
-        ">
+        "
+      >
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.map(project => {
+          {projects.map((project) => {
             const progress = clampProgress(project.progress);
 
             const presentation = getProgressPresentation(progress);
@@ -131,7 +139,8 @@ export function ClientProjectsProgress({ projects }: ClientProjectsProgressProps
                     p-[1px]
                     transition-transform
                     hover:-translate-y-px
-                  ">
+                  "
+              >
                 <div className="h-full rounded-[15px] bg-background px-3 py-3 transition-colors group-hover:bg-surface-raised">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -157,30 +166,39 @@ export function ClientProjectsProgress({ projects }: ClientProjectsProgressProps
                               ${presentation.ring} ${progress}%,
                               var(--border) 0
                             )`
-                      }}>
+                      }}
+                    >
                       <div className="absolute inset-[3px] rounded-full bg-background" />
 
                       <span
-                        className={`relative z-10 text-[11px] font-semibold ${presentation.textClassName}`}>
+                        className={`relative z-10 text-[11px] font-semibold ${presentation.textClassName}`}
+                      >
                         {progress}%
                       </span>
                     </div>
 
                     <div className="min-w-0">
-                      <p className="text-[8px] uppercase tracking-[0.1em] text-muted">Progress</p>
+                      <p className="text-[8px] uppercase tracking-[0.1em] text-muted">
+                        Progress
+                      </p>
 
-                      <p className={`mt-0.5 truncate text-[9px] font-medium ${presentation.textClassName}`}>
+                      <p
+                        className={`mt-0.5 truncate text-[9px] font-medium ${presentation.textClassName}`}
+                      >
                         {presentation.label}
                       </p>
 
                       <p className="mt-1 text-[9px] text-muted">
-                        {project.milestoneSummary.completed}/{project.milestoneSummary.total} milestones
+                        {project.milestoneSummary.completed}/
+                        {project.milestoneSummary.total} milestones
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-3 border-t border-border pt-2.5">
-                    <p className="text-[9px] uppercase tracking-[0.1em] text-muted">Current delivery</p>
+                    <p className="text-[9px] uppercase tracking-[0.1em] text-muted">
+                      Current delivery
+                    </p>
 
                     <p className="mt-1 truncate text-[10px] font-medium text-foreground">
                       {project.nextMilestone?.title ?? 'No open milestone'}
@@ -197,14 +215,14 @@ export function ClientProjectsProgress({ projects }: ClientProjectsProgressProps
             );
           })}
 
-          <NewProjectPlaceholder />
+          <NewProjectPlaceholder hasProjects={projects.length > 0} />
         </div>
       </div>
     </section>
   );
 }
 
-function NewProjectPlaceholder() {
+function NewProjectPlaceholder({ hasProjects }: { hasProjects: boolean }) {
   return (
     <div
       className="
@@ -221,7 +239,8 @@ function NewProjectPlaceholder() {
         px-5
         py-5
         text-center
-      ">
+      "
+    >
       <div
         className="
           flex
@@ -232,37 +251,41 @@ function NewProjectPlaceholder() {
           border
           border-theme-accent/20
           bg-theme-accent-faint
-        ">
+        "
+      >
         <FolderKanban aria-hidden="true" className="size-4 text-theme-accent" />
       </div>
 
-      <p className="mt-3 text-[12px] font-semibold text-foreground">Start another project</p>
+      <p className="mt-3 text-[12px] font-semibold text-foreground">
+        {hasProjects ? 'Start another project' : 'Start your first project'}
+      </p>
 
       <p className="mt-1 max-w-[190px] text-[9px] leading-4 text-muted">
         Tell Rcentz what you would like us to build, improve or manage.
       </p>
 
       <Link
-        href="/start-project"
+        href="/dashboard/onboarding"
         className="
           mt-4
           inline-flex
-          h-8
+          min-h-11
           items-center
           gap-1.5
           rounded-xl
-          bg-theme-accent
+          bg-foreground
           px-3
           text-[10px]
           font-semibold
-          text-white
+          text-background
           transition-all
           duration-150
           hover:-translate-y-px
           hover:opacity-90
-        ">
+        "
+      >
         <Plus aria-hidden="true" className="size-3.5" />
-        Add new project
+        {hasProjects ? 'Start another project' : 'Start your first project'}
       </Link>
     </div>
   );
