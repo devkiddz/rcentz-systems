@@ -8,10 +8,10 @@ const groups = [
   {
     title: 'Build with us',
     links: [
-      ['Solutions', '/#solutions'],
-      ['Our tools', '/#tools'],
-      ['How we work', '/#how-we-work'],
-      ['Scope & pricing', '/#pricing']
+      ['Solutions', '/solutions'],
+      ['Our tools', '/tools'],
+      ['How we work', '/how-we-work'],
+      ['Scope & pricing', '/pricing']
     ]
   },
   {
@@ -19,16 +19,16 @@ const groups = [
     links: [
       ['Start a project', projectEntryUrl],
       ['Your workspace', '/workspace'],
-      ['Remote delivery', '/#remote-delivery'],
-      ['Contact the team', 'mailto:dennis@rcentz.cc']
+      ['Remote delivery', '/remote-delivery'],
+      ['Contact the team', 'mailto:contact@rcentz.cc']
     ]
   },
   {
     title: 'Around Rcentz',
     links: [
-      ['Company', 'https://rcentz.cc'],
+      ['Company', 'https://rcentz.cc/about'],
       ['Products', 'https://products.rcentz.cc'],
-      ['Selected work', 'https://dennis.rcentz.cc'],
+      ['Contact', 'https://rcentz.cc/contact'],
       ['GitHub', 'https://github.com/devkiddz/rcentz-systems']
     ]
   }
@@ -55,7 +55,7 @@ export function RcentzFooter() {
           <ArrowUpRight aria-hidden="true" className="size-4" />
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-8 py-10 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-6 py-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div className="col-span-2 lg:col-span-1">
           <Link
             href="/"
@@ -73,7 +73,7 @@ export function RcentzFooter() {
           </p>
           <div className="mt-4 flex gap-2">
             <a
-              href="mailto:dennis@rcentz.cc"
+              href="mailto:contact@rcentz.cc"
               aria-label="Email Rcentz"
               className="flex size-11 items-center justify-center rounded-full border border-border hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -89,14 +89,28 @@ export function RcentzFooter() {
           </div>
         </div>
         {groups.map((group) => (
-          <nav key={group.title} aria-label={group.title + ' footer links'} className={group.title === 'Around Rcentz' ? 'col-span-2 lg:col-span-1' : undefined}>
-            <h3 className="text-sm font-semibold">{group.title}</h3>
-            <ul className={group.title === 'Around Rcentz' ? 'mt-3 grid grid-cols-2 gap-x-8 gap-y-1 lg:block lg:space-y-1' : 'mt-3 space-y-1'}>
+          <nav
+            key={group.title}
+            aria-label={group.title + ' footer links'}
+            className={
+              group.title === 'Around Rcentz'
+                ? 'col-span-2 lg:col-span-1'
+                : undefined
+            }
+          >
+            <h3 className="text-xs font-semibold">{group.title}</h3>
+            <ul
+              className={
+                group.title === 'Around Rcentz'
+                  ? 'mt-3 grid grid-cols-2 gap-x-8 gap-y-1 lg:block lg:space-y-1'
+                  : 'mt-3 space-y-1'
+              }
+            >
               {group.links.map(([label, href]) => (
                 <li key={label}>
                   <Link
                     href={href}
-                    className="inline-flex min-h-11 items-center text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex min-h-11 items-center text-xs text-muted-foreground sm:min-h-9 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {label}
                   </Link>
@@ -116,10 +130,10 @@ export function RcentzFooter() {
             Account access
           </Link>
           <a
-            href="mailto:dennis@rcentz.cc"
+            href="mailto:contact@rcentz.cc"
             className="inline-flex min-h-11 items-center hover:text-foreground"
           >
-            dennis@rcentz.cc
+            contact@rcentz.cc
           </a>
         </div>
       </div>

@@ -78,7 +78,7 @@ export default async function ProjectRequestPage({
           View your workspace
         </Link>
         <a
-          href="mailto:dennis@rcentz.cc"
+          href="mailto:contact@rcentz.cc"
           className="inline-flex min-h-11 items-center rounded-full border border-border px-5 text-sm"
         >
           Contact the team

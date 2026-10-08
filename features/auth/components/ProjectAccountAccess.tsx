@@ -72,8 +72,8 @@ export function ProjectAccountAccess({
             className="rounded-xl border border-border p-4 text-sm leading-6"
           >
             Account access is temporarily unavailable. Contact{' '}
-            <a className="underline" href="mailto:dennis@rcentz.cc">
-              dennis@rcentz.cc
+            <a className="underline" href="mailto:contact@rcentz.cc">
+              contact@rcentz.cc
             </a>{' '}
             to discuss your project.
           </div>

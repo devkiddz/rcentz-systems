@@ -1,0 +1,26 @@
+Rcentz navigation and footer update
+
+Changes
+- Smaller footer menu headings and links; closer desktop spacing while retaining mobile touch targets.
+- Public enquiry/help links now use contact@rcentz.cc. Personal correspondence can still use dennis@rcentz.cc. This package does not create an email mailbox: configure the contact mailbox or forwarding alias with your email provider before relying on these links.
+- Desktop dropdowns open on mouse hover. Click/tap, keyboard Enter/Space, Escape, focus and outside dismissal remain supported.
+- Products mega menu: sliding interface illustrations on the left; product names and destination links on the right. Previous/next and pause controls are included. Motion pauses while interacting with the preview, while the document is hidden, or under reduced-motion preferences.
+- Resources remains minimal (GitHub only). The personal portfolio / Selected work destination is removed.
+- Real local pages: /solutions, /how-we-work, /tools, /remote-delivery and /pricing.
+- Planned company routes: https://rcentz.cc/about and https://rcentz.cc/contact. Product detail routes: https://products.rcentz.cc/{slug}. These destinations are wired for the later Rcentz/product-site work; this package does not publish those other websites.
+
+Product catalogue
+The menu uses a small public catalogue snapshot, with stage labels, from the Rcentz API. No product galleries contained screenshots, so previews are explicitly labelled interface illustrations. Names/link destinations can be maintained in ui-shell/navigation/rcentz-menu-products.ts. The legacy Fintech Lab listing is excluded from the owned-product menu in line with your earlier correction.
+
+Installation
+Run from your rcentz-systems checkout with a clean working tree. The installer checks the bundle, creates a recovery branch, applies only missing commits, validates lint/build and existing onboarding configuration, then pushes systems HEAD:main. No force push, database migration/reset/seed, mailbox creation or hosting-variable changes occur.
+
+$zip = Join-Path $env:USERPROFILE 'Downloads\rcentz-navigation-update.zip'
+$folder = '..\Rcentz-Navigation-Update'
+Expand-Archive -LiteralPath $zip -DestinationPath $folder -Force
+& "$folder\Install-Rcentz-Navigation-And-Push.ps1"
+
+The ZIP files sit directly inside the extraction folder; there is no extra nested package directory.
+
+Checks
+Production build and lint pass. Browser checks cover mobile/tablet/desktop menu bounds, hover/tap opening, Escape/keyboard dismissal, carousel controls and autoplay, footer size and local page navigation. Authenticated onboarding was retained; only its public contact address changed.

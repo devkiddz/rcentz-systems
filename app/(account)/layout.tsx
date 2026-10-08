@@ -30,10 +30,10 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
       <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-xs text-muted-foreground sm:px-8">
         <p>Rcentz Systems · From brief to delivery.</p>
         <a
-          href="mailto:dennis@rcentz.cc"
+          href="mailto:contact@rcentz.cc"
           className="inline-flex min-h-11 items-center"
         >
-          Need help? dennis@rcentz.cc
+          Need help? contact@rcentz.cc
         </a>
       </footer>
     </div>

@@ -7,7 +7,7 @@ export default function AccountError({ reset }: { reset: () => void }) {
         We could not open your workspace.
       </h1>
       <p className="mt-4 text-sm leading-6 text-muted-foreground">
-        Please try again. If this continues, contact dennis@rcentz.cc.
+        Please try again. If this continues, contact contact@rcentz.cc.
       </p>
       <button
         type="button"
