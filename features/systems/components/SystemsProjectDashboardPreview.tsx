@@ -1,5 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
-import { Activity, Bell, BookOpen, Check, ChevronDown, ChevronRight, ExternalLink, FileText, GitBranch, Globe2, Layers3, MessageSquare, Search } from 'lucide-react';
+import { Activity, Bell, BookOpen, Check, ChevronDown, ChevronRight, ExternalLink, FileText, GitBranch, Globe2, Layers3, LifeBuoy, MessageSquare, Search, X } from 'lucide-react';
 import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
 import { RcentzGithubIcon } from '@/ui-shell/brand/RcentzGithubIcon';
 
@@ -12,9 +15,19 @@ const navigation = [
   { label: 'Support', icon: MessageSquare }
 ] as const;
 
+const performance = [42, 68, 51, 80, 64, 92];
+const chartColors = ['#38bdf8', '#818cf8', '#a78bfa', '#f59e0b', '#34d399', '#fb7185'];
+const messages = {
+  Review: 'Review the latest application preview and send your approval or feedback.',
+  Support: 'Keep support requests and delivery records connected to your project.',
+  Chat: 'Chat directly with the team building your application.'
+} as const;
+
 export function SystemsProjectDashboardPreview() {
+  const [activeAction, setActiveAction] = useState<keyof typeof messages | null>(null);
+
   return (
-    <div className="flex h-full bg-background text-left">
+    <div className="relative flex h-full bg-background text-left">
       <aside aria-label="Illustrated customer portal navigation" className="flex w-10 shrink-0 flex-col border-r border-border sm:w-12 xl:w-36">
         <div className="flex h-12 items-center justify-center gap-2 border-b border-border px-2 xl:justify-start xl:px-3">
           <RcentzBrandSymbol className="size-5 shrink-0" />
@@ -36,6 +49,14 @@ export function SystemsProjectDashboardPreview() {
           <span className="shrink-0 text-[9px] font-medium">Overview</span>
         </div>
         <div className="space-y-3 p-3 sm:p-4">
+          <div className="flex items-center justify-end gap-2">
+            {([{ label: 'Review', icon: MessageSquare }, { label: 'Support', icon: LifeBuoy }] as const).map(({ label, icon: Icon }) => (
+              <button key={label} type="button" aria-expanded={activeAction === label} aria-controls="portal-demo-message" onClick={() => setActiveAction(current => current === label ? null : label)} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-border px-2 text-[9px] font-medium hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Icon aria-hidden="true" className="size-3" />{label}</button>
+            ))}
+          </div>
+          <div id="portal-demo-message" hidden={!activeAction} className="rounded-lg border border-border bg-surface-muted p-3">
+            {activeAction ? <div className="flex items-start justify-between gap-3"><div role="status"><p className="text-[10px] font-semibold">{activeAction} · Workspace demo</p><p className="mt-1 text-[9px] leading-4 text-muted-foreground">{messages[activeAction]}</p></div><button type="button" onClick={() => setActiveAction(null)} aria-label="Close workspace message" className="flex size-8 shrink-0 items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><X aria-hidden="true" className="size-3" /></button></div> : null}
+          </div>
           <section className="overflow-hidden rounded-lg border border-border bg-surface-subtle">
             <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-3">
               <h4 className="text-[11px] font-semibold">Latest application preview</h4>
@@ -49,7 +70,7 @@ export function SystemsProjectDashboardPreview() {
               <dl className="min-w-0 space-y-3 text-[9px]">
                 <div><dt className="text-muted-foreground">Preview</dt><dd className="mt-1 break-all font-medium">customer-portal / latest build</dd></div>
                 <div><dt className="text-muted-foreground">Application access</dt><dd className="mt-1 flex items-center gap-1 font-medium">Working preview available <ExternalLink aria-hidden="true" className="size-3" /></dd></div>
-                <div className="grid grid-cols-2 gap-2"><div><dt className="text-muted-foreground">Status</dt><dd className="mt-1 flex items-center gap-1.5 font-medium"><span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-400" />Ready for review</dd></div><div><dt className="text-muted-foreground">Updated</dt><dd className="mt-1 font-medium">Today · Rcentz team</dd></div></div>
+                <div className="grid grid-cols-2 gap-2"><div><dt className="text-muted-foreground">Status</dt><dd className="mt-1 flex items-center gap-1.5 font-medium"><span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-400" />Ready for review</dd></div></div>
                 <div><dt className="text-muted-foreground">Latest change</dt><dd className="mt-1 flex items-center gap-1.5 font-medium"><GitBranch aria-hidden="true" className="size-3 shrink-0" />Customer accounts and team access</dd></div>
               </dl>
             </div>
@@ -65,18 +86,27 @@ export function SystemsProjectDashboardPreview() {
             </section>
             <section className="w-[88%] shrink-0 snap-start rounded-lg border border-border bg-surface-subtle p-3 sm:w-auto">
               <h4 className="text-[10px] font-semibold">Project progress</h4>
-              <p className="mt-3 text-lg font-semibold">62% <span className="text-[8px] font-normal text-muted-foreground">in development</span></p>
-              <div className="mt-2 h-1 rounded-full bg-border"><div className="h-full w-[62%] rounded-full bg-theme-accent" /></div>
-              <p className="mt-3 text-[9px] leading-4 text-muted-foreground">Next milestone: request tracking and team permissions.</p>
+              <div role="img" aria-label="Illustrative project progress: 62 percent completed" className="relative mx-auto mt-3 flex size-20 items-center justify-center rounded-full" style={{ background: 'conic-gradient(#38bdf8 0% 25%, #818cf8 25% 45%, #34d399 45% 62%, var(--border) 62% 100%)' }}>
+                <span className="absolute inset-2 rounded-full bg-surface-subtle" /><span className="relative text-lg font-semibold">62%</span>
+              </div>
+              <p className="mt-2 text-center text-[8px] text-muted-foreground">In development</p>
+              <p className="mt-3 text-center text-[8px] leading-4 text-muted-foreground">Last updated<br /><time dateTime="2026-10-08T14:20:00+01:00" className="font-medium text-foreground">08 Oct 2026 · 2:20 PM WAT</time></p>
             </section>
             <section className="w-[88%] shrink-0 snap-start rounded-lg border border-border bg-surface-subtle p-3 sm:w-auto">
-              <h4 className="text-[10px] font-semibold">Reviews &amp; support</h4>
-              <MessageSquare aria-hidden="true" className="mt-3 size-5 text-muted-foreground" />
-              <p className="mt-2 text-[9px] font-medium">Your feedback moves delivery forward.</p>
-              <p className="mt-2 text-[9px] leading-4 text-muted-foreground">Keep comments, approvals and support in one place.</p>
+              <h4 className="text-[10px] font-semibold">Performance analytics</h4>
+              <p className="mt-2 text-[9px] text-muted-foreground">Application activity · Last 6 days</p>
+              <svg role="img" aria-label="Illustrative application activity for October 3 to 8: 42, 68, 51, 80, 64 and 92 requests" viewBox="0 0 180 110" className="mt-3 h-28 w-full">
+                {[20, 50, 80].map(y => <path key={y} d={`M4 ${y}H176`} stroke="var(--border)" strokeWidth="1" />)}
+                {performance.map((value, index) => <g key={index}><rect x={8 + index * 28} y={95 - value * 0.8} width="17" height={value * 0.8} rx="3" fill={chartColors[index]} /><text x={16.5 + index * 28} y="107" textAnchor="middle" fontSize="7" fill="var(--muted-foreground)">{index + 3} Oct</text></g>)}
+              </svg>
+              <p className="mt-2 text-[9px] leading-4 text-muted-foreground"><span className="font-semibold text-foreground">99.9% uptime</span> · 240 ms response</p>
+              <p className="mt-1 text-[8px] text-muted-foreground">Illustrative performance readings</p>
             </section>
           </div>
-          <p className="text-[8px] leading-4 text-muted-foreground">Illustrative customer portal · RC-2048 · Project data is mocked.</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[8px] leading-4 text-muted-foreground">Illustrative customer portal · RC-2048 · Project data is mocked.</p>
+            <button type="button" aria-label="Open workspace chat" aria-expanded={activeAction === 'Chat'} aria-controls="portal-demo-message" onClick={() => setActiveAction(current => current === 'Chat' ? null : 'Chat')} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-foreground text-background shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><MessageSquare aria-hidden="true" className="size-4" /></button>
+          </div>
         </div>
       </div>
     </div>
