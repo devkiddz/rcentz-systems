@@ -6,13 +6,25 @@ import { Pause, Play } from 'lucide-react';
 import { useHydratedReducedMotion } from '@/hooks/use-hydrated-reduced-motion';
 import { SystemsProjectDashboardPreview } from './SystemsProjectDashboardPreview';
 
-export function SystemsProjectPreviewCarousel({ children }: { children: ReactNode }) {
+export function SystemsProjectPreviewCarousel({ children, header }: { children: ReactNode; header: ReactNode }) {
   const [selected, setSelected] = useState(0);
   const [paused, setPaused] = useState(false);
   const [focused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
   const visible = useInView(ref, { amount: 0.2 });
   const reducedMotion = useHydratedReducedMotion();
+
+  useEffect(() => {
+    const element = canvas.current;
+    if (!element) return;
+    const resize = () => setScale(element.clientWidth / 1040);
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!visible || paused || focused || reducedMotion) return;
@@ -24,10 +36,10 @@ export function SystemsProjectPreviewCarousel({ children }: { children: ReactNod
     <div ref={ref} role="region" aria-label="Website to project workspace preview" aria-roledescription="carousel"
       onFocusCapture={() => setFocused(true)}
       onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-      <div id="systems-cta-preview" className="grid min-h-[510px] sm:min-h-[480px]">
-        {[children, <SystemsProjectDashboardPreview key="project" />].map((panel, index) => (
-          <motion.div key={index} style={{ gridArea: '1 / 1', pointerEvents: selected === index ? 'auto' : 'none' }}
-            className="min-w-0" aria-hidden={selected !== index} inert={selected !== index}
+      <div ref={canvas} id="systems-cta-preview" className="relative aspect-[1132/710] overflow-hidden">
+        {[<div key="website" className="flex h-[652px] w-[1040px] flex-col" style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}>{header}{children}</div>, <SystemsProjectDashboardPreview key="project" />].map((panel, index) => (
+          <motion.div key={index} style={{ pointerEvents: selected === index ? 'auto' : 'none' }}
+            className="absolute inset-0 min-w-0" aria-hidden={selected !== index} inert={selected !== index}
             initial={false} animate={{ opacity: selected === index ? 1 : 0 }}
             transition={{ duration: reducedMotion ? 0 : 0.65 }}>
             {panel}

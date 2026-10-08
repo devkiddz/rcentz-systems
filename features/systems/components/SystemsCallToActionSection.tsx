@@ -42,10 +42,13 @@ export function SystemsCallToActionSection() {
 
         <div className="relative min-w-0 lg:col-start-2 lg:row-start-2">
           <div className="relative rounded-xl border border-border bg-background">
+
+
+            <SystemsProjectPreviewCarousel header={
             <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-3">
               <div className="flex min-w-0 items-center gap-4">
                 <RcentzBrandSymbol className="size-6 shrink-0 sm:size-7" />
-                <div className="hidden xl:block"><RcentzNavigation compact /></div>
+                <div className="block"><RcentzNavigation compact /></div>
               </div>
 
               <div className="flex shrink-0 items-center gap-3">
@@ -68,9 +71,8 @@ export function SystemsCallToActionSection() {
                 </Link>
               </div>
             </div>
-
-            <SystemsProjectPreviewCarousel>
-            <div className="relative flex h-full min-h-[510px] flex-col justify-center px-4 pb-12 pt-10 text-center sm:min-h-[480px] sm:px-6 sm:pb-14 sm:pt-12">
+            }>
+            <div className="relative flex min-h-0 flex-1 flex-col justify-center px-4 pb-12 pt-10 text-center sm:px-6 sm:pb-14 sm:pt-12">
               <p className="text-[8px] font-medium uppercase tracking-wider text-muted-foreground">
                 Digital infrastructure, built around you
               </p>
