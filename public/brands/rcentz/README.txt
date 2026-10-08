@@ -1,7 +1,7 @@
-Rcentz wordmark
+Rcentz brand artwork
 
-The symbol replaces the c and is flipped vertically so its stepped opening starts from the bottom. The r, e, n, t and z retain their approved outlines.
+Use the original six-letter wordmark on the website, including navbar, CTA and footer. No symbol is substituted for the c and no symbol is attached before the wordmark.
 
-SVG exports are the current master artwork. The standalone symbol and favicon are unchanged. Black and white PNG exports match the SVG artwork.
+Use the standalone C symbol separately for favicons, profile icons and other suitable icon placements. The current standalone symbol and favicon are unchanged.
 
-Website typography uses Geist Sans while the custom display family is refined. Archived Rcentz font binaries remain available but are not used for site headlines.
+SVG and black/white PNG wordmark exports match. Website typography uses Geist Sans while the custom display family is refined. Archived Rcentz font binaries remain available.
