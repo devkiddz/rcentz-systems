@@ -1,15 +1,16 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from "lucide-react";
 
-import type { ClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
+import type { ClientProjectAnalytics } from "@/features/analytics/server/read/get-client-project-analytics";
 
-import { ProjectDetailsSection } from '@/features/client/components/overview/ProjectDetailsSection';
+import { ProjectDetailsSection } from "@/features/client/components/overview/ProjectDetailsSection";
 
-import type { ClientProject } from '@/features/client/server/projects/get-client-project';
+import type { ClientProject } from "@/features/client/server/projects/get-client-project";
 
-import { ClientProjectAnalyticsSection } from './ClientProjectAnalyticsSection';
-import { ClientProjectFinanceSection } from './ClientProjectFinanceSection';
+import { ClientProjectAnalyticsSection } from "./ClientProjectAnalyticsSection";
+import { ClientProjectFinanceSection } from "./ClientProjectFinanceSection";
+import { ProjectSupportBubble } from "./ProjectSupportBubble";
 
 type ClientProjectPageProps = {
   project: ClientProject;
@@ -19,19 +20,23 @@ type ClientProjectPageProps = {
 function formatLabel(value: string) {
   return value
     .toLowerCase()
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
-export function ClientProjectPage({ project, analytics }: ClientProjectPageProps) {
+export function ClientProjectPage({
+  project,
+  analytics,
+}: ClientProjectPageProps) {
   return (
     <main className="py-6 sm:py-8">
       <div className="space-y-8">
         <section className="px-1">
           <Link
             href="/dashboard/projects"
-            className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+            className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
             <ArrowLeft aria-hidden="true" className="size-3.5" />
             Projects
           </Link>
@@ -49,7 +54,7 @@ export function ClientProjectPage({ project, analytics }: ClientProjectPageProps
               <p className="mt-1.5 max-w-2xl text-[13px] leading-6 text-muted-foreground">
                 {project.description ??
                   project.purpose ??
-                  'Project delivery, management and performance intelligence.'}
+                  "Project delivery, management and performance intelligence."}
               </p>
             </div>
 
@@ -59,11 +64,21 @@ export function ClientProjectPage({ project, analytics }: ClientProjectPageProps
           </div>
         </section>
 
-        <ClientProjectAnalyticsSection project={project} analytics={analytics} />
+        <ProjectDetailsSection project={project} analytics={analytics} />
 
-        <ProjectDetailsSection project={project} />
-
+        {project.slug === "demo-dennis-portfolio-complete-v1" ? (
+          <p className="rounded-xl border border-border bg-surface-muted px-5 py-3 text-xs leading-6 text-muted-foreground">
+            Demonstration only: the quoted budget, invoices, payment
+            confirmations, reviews and analytics are simulated. No funds were
+            charged or received.
+          </p>
+        ) : null}
         <ClientProjectFinanceSection project={project} />
+        <ClientProjectAnalyticsSection
+          project={project}
+          analytics={analytics}
+        />
+        <ProjectSupportBubble projectId={project.id} />
 
         {/*
           THEN:

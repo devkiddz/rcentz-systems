@@ -1,26 +1,17 @@
-import 'server-only';
+import "server-only";
 
-import { cache } from 'react';
+import { cache } from "react";
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
-const clientVisible = [
-  'CLIENT',
-  'PUBLIC'
-] as const;
+const clientVisible = ["CLIENT", "PUBLIC"] as const;
 
 export const getClientProject = cache(
-  async ({
-    userId,
-    projectId
-  }: {
-    userId: string;
-    projectId: string;
-  }) => {
+  async ({ userId, projectId }: { userId: string; projectId: string }) => {
     return prisma.project.findFirst({
       where: {
         id: projectId,
-        clientId: userId
+        clientId: userId,
       },
 
       select: {
@@ -52,8 +43,8 @@ export const getClientProject = cache(
             tagline: true,
             summary: true,
             liveUrl: true,
-            repositoryUrl: true
-          }
+            repositoryUrl: true,
+          },
         },
 
         infrastructure: {
@@ -70,18 +61,18 @@ export const getClientProject = cache(
             storageProvider: true,
 
             emailProvider: true,
-            sslProvider: true
-          }
+            sslProvider: true,
+          },
         },
 
         media: {
           orderBy: [
             {
-              sortOrder: 'asc'
+              sortOrder: "asc",
             },
             {
-              createdAt: 'asc'
-            }
+              createdAt: "asc",
+            },
           ],
 
           select: {
@@ -98,18 +89,18 @@ export const getClientProject = cache(
             width: true,
             height: true,
 
-            sortOrder: true
-          }
+            sortOrder: true,
+          },
         },
 
         technologies: {
           orderBy: [
             {
-              featured: 'desc'
+              featured: "desc",
             },
             {
-              sortOrder: 'asc'
-            }
+              sortOrder: "asc",
+            },
           ],
 
           select: {
@@ -126,26 +117,24 @@ export const getClientProject = cache(
             rationale: true,
 
             featured: true,
-            sortOrder: true
-          }
+            sortOrder: true,
+          },
         },
 
         deliverables: {
           where: {
             visibility: {
-              in: [
-                ...clientVisible
-              ]
-            }
+              in: [...clientVisible],
+            },
           },
 
           orderBy: [
             {
-              sortOrder: 'asc'
+              sortOrder: "asc",
             },
             {
-              dueDate: 'asc'
-            }
+              dueDate: "asc",
+            },
           ],
 
           select: {
@@ -180,28 +169,26 @@ export const getClientProject = cache(
             _count: {
               select: {
                 files: true,
-                processes: true
-              }
-            }
-          }
+                processes: true,
+              },
+            },
+          },
         },
 
         milestones: {
           where: {
             visibility: {
-              in: [
-                ...clientVisible
-              ]
-            }
+              in: [...clientVisible],
+            },
           },
 
           orderBy: [
             {
-              sortOrder: 'asc'
+              sortOrder: "asc",
             },
             {
-              dueDate: 'asc'
-            }
+              dueDate: "asc",
+            },
           ],
 
           select: {
@@ -226,7 +213,7 @@ export const getClientProject = cache(
 
             records: {
               orderBy: {
-                version: 'desc'
+                version: "desc",
               },
 
               take: 1,
@@ -246,8 +233,8 @@ export const getClientProject = cache(
                 preparingAt: true,
                 readyAt: true,
                 sentAt: true,
-                failedAt: true
-              }
+                failedAt: true,
+              },
             },
 
             _count: {
@@ -255,20 +242,44 @@ export const getClientProject = cache(
                 deliverables: true,
                 features: true,
                 files: true,
-                processes: true
-              }
-            }
-          }
+                processes: true,
+              },
+            },
+          },
         },
 
+        approvals: {
+          where: { clientId: userId, entityType: "PROJECT" },
+          orderBy: { requestedAt: "desc" },
+          take: 8,
+          select: { id: true, title: true, status: true, respondedAt: true },
+        },
+        supportTickets: {
+          where: {
+            creatorId: userId,
+            visibility: { in: ["CLIENT", "PUBLIC"] },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 4,
+          select: { id: true, subject: true, status: true },
+        },
+        conversations: {
+          where: {
+            status: "ACTIVE",
+            participants: { some: { userId, leftAt: null } },
+          },
+          orderBy: { updatedAt: "desc" },
+          take: 1,
+          select: { id: true },
+        },
         invoices: {
           orderBy: [
             {
-              dueAt: 'asc'
+              dueAt: "asc",
             },
             {
-              createdAt: 'desc'
-            }
+              createdAt: "desc",
+            },
           ],
 
           select: {
@@ -294,8 +305,8 @@ export const getClientProject = cache(
 
             pdfUrl: true,
 
-            createdAt: true
-          }
+            createdAt: true,
+          },
         },
 
         _count: {
@@ -306,19 +317,14 @@ export const getClientProject = cache(
             tasks: true,
             updates: true,
             files: true,
-            supportTickets: true
-          }
-        }
-      }
+            supportTickets: true,
+          },
+        },
+      },
     });
-  }
+  },
 );
 
-export type ClientProject =
-  NonNullable<
-    Awaited<
-      ReturnType<
-        typeof getClientProject
-      >
-    >
-  >;
+export type ClientProject = NonNullable<
+  Awaited<ReturnType<typeof getClientProject>>
+>;

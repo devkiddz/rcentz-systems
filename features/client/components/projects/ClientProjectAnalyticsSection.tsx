@@ -1,9 +1,9 @@
-import { BarChart3, ChevronDown, Radio } from 'lucide-react';
+import { BarChart3, ChevronDown, Radio } from "lucide-react";
 
-import { ProjectTrafficChart } from '@/features/analytics/components/charts/ProjectTrafficChart';
+import { ProjectTrafficChart } from "@/features/analytics/components/charts/ProjectTrafficChart";
 
-import type { ClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
-import type { ClientProject } from '@/features/client/server/projects/get-client-project';
+import type { ClientProjectAnalytics } from "@/features/analytics/server/read/get-client-project-analytics";
+import type { ClientProject } from "@/features/client/server/projects/get-client-project";
 
 type ClientProjectAnalyticsSectionProps = {
   project: ClientProject;
@@ -20,24 +20,30 @@ type AvailableAnalytics = Extract<
 function formatLabel(value: string) {
   return value
     .toLowerCase()
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 function formatNumber(value: number) {
-  return new Intl.NumberFormat('en-NG').format(value);
+  return new Intl.NumberFormat("en-NG").format(value);
 }
 
-function formatDateTime({ value, timeZone }: { value: Date | null; timeZone: string }) {
+function formatDateTime({
+  value,
+  timeZone,
+}: {
+  value: Date | null;
+  timeZone: string;
+}) {
   if (!value) {
-    return 'Not yet';
+    return "Not yet";
   }
 
-  return new Intl.DateTimeFormat('en-NG', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone
+  return new Intl.DateTimeFormat("en-NG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone,
   }).format(value);
 }
 
@@ -57,12 +63,21 @@ function getFunctionActions(analytics: AvailableAnalytics) {
   );
 }
 
-export function ClientProjectAnalyticsSection({ project, analytics }: ClientProjectAnalyticsSectionProps) {
+export function ClientProjectAnalyticsSection({
+  project,
+  analytics,
+}: ClientProjectAnalyticsSectionProps) {
   return (
-    <details id="analytics" className="group overflow-hidden rounded-[22px] border border-border bg-surface">
+    <details
+      id="analytics"
+      className="group overflow-hidden rounded-[22px] border border-border bg-surface"
+    >
       <summary className="flex min-h-[92px] cursor-pointer list-none items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-muted/40 sm:px-6 [&::-webkit-details-marker]:hidden">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
-          <BarChart3 aria-hidden="true" className="size-[18px] text-theme-accent" />
+          <BarChart3
+            aria-hidden="true"
+            className="size-[18px] text-theme-accent"
+          />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -72,7 +87,12 @@ export function ClientProjectAnalyticsSection({ project, analytics }: ClientProj
             </h2>
 
             <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-              {analytics.available ? formatLabel(analytics.collection.status) : 'Unavailable'}
+              {project.slug === "demo-dennis-portfolio-complete-v1" &&
+              analytics.available
+                ? "Sample data"
+                : analytics.available
+                  ? formatLabel(analytics.collection.status)
+                  : "Unavailable"}
             </span>
           </div>
 
@@ -83,11 +103,20 @@ export function ClientProjectAnalyticsSection({ project, analytics }: ClientProj
 
         {analytics.available ? (
           <div className="hidden shrink-0 items-center gap-6 lg:flex">
-            <SummaryMetric label="Sessions" value={formatNumber(analytics.summary.sessions)} />
+            <SummaryMetric
+              label="Sessions"
+              value={formatNumber(analytics.summary.sessions)}
+            />
 
-            <SummaryMetric label="Views" value={formatNumber(analytics.summary.pageViews)} />
+            <SummaryMetric
+              label="Views"
+              value={formatNumber(analytics.summary.pageViews)}
+            />
 
-            <SummaryMetric label="Clicks" value={formatNumber(analytics.summary.clicks)} />
+            <SummaryMetric
+              label="Clicks"
+              value={formatNumber(analytics.summary.clicks)}
+            />
           </div>
         ) : null}
 
@@ -112,7 +141,13 @@ export function ClientProjectAnalyticsSection({ project, analytics }: ClientProj
   );
 }
 
-function ProjectAnalysis({ project, analytics }: { project: ClientProject; analytics: AvailableAnalytics }) {
+function ProjectAnalysis({
+  project,
+  analytics,
+}: {
+  project: ClientProject;
+  analytics: AvailableAnalytics;
+}) {
   const { summary, daily, collection, activeGoals } = analytics;
 
   const functionActions = getFunctionActions(analytics);
@@ -121,10 +156,14 @@ function ProjectAnalysis({ project, analytics }: { project: ClientProject; analy
     <>
       <div className="flex flex-col gap-3 border-b border-border px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">Performance analysis</h3>
+          <h3 className="text-sm font-semibold text-foreground">
+            Performance analysis
+          </h3>
 
           <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-            Live intelligence collected from {project.name}.
+            {project.slug === "demo-dennis-portfolio-complete-v1"
+              ? "Simulated analytics for the customer demonstration. No live traffic is claimed."
+              : `Recorded intelligence from ${project.name}.`}
           </p>
         </div>
 
@@ -168,42 +207,56 @@ function ProjectAnalysis({ project, analytics }: { project: ClientProject; analy
 
             <AnalysisMetric
               label="Conversions"
-              description={activeGoals > 0 ? 'Completed configured goals' : 'No conversion goals configured'}
-              value={activeGoals > 0 ? formatNumber(summary.conversions) : '—'}
+              description={
+                activeGoals > 0
+                  ? "Completed configured goals"
+                  : "No conversion goals configured"
+              }
+              value={activeGoals > 0 ? formatNumber(summary.conversions) : "—"}
             />
 
-            <AnalysisMetric label="Traffic sources" description="Referrer intelligence" value="Pending" />
+            <AnalysisMetric
+              label="Traffic sources"
+              description="Referrer intelligence"
+              value="Pending"
+            />
           </div>
         </div>
       </div>
 
       <div className="grid border-t border-border bg-surface-muted/20 sm:grid-cols-2">
         <div className="flex items-start gap-3 px-5 py-5 sm:px-6">
-          <Radio aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-theme-accent" />
+          <Radio
+            aria-hidden="true"
+            className="mt-0.5 size-4 shrink-0 text-theme-accent"
+          />
 
           <div>
             <p className="text-[11px] font-medium text-foreground">
-              Analytics collection {formatLabel(collection.status).toLowerCase()}
+              Analytics collection{" "}
+              {formatLabel(collection.status).toLowerCase()}
             </p>
 
             <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
-              Last event:{' '}
+              Last event:{" "}
               {formatDateTime({
                 value: summary.lastEventAt,
-                timeZone: collection.timezone
+                timeZone: collection.timezone,
               })}
             </p>
           </div>
         </div>
 
         <div className="border-t border-border px-5 py-5 sm:border-l sm:border-t-0 sm:px-6">
-          <p className="text-[11px] font-medium text-foreground">Aggregation status</p>
+          <p className="text-[11px] font-medium text-foreground">
+            Aggregation status
+          </p>
 
           <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
-            Last rebuilt:{' '}
+            Last rebuilt:{" "}
             {formatDateTime({
               value: collection.lastAggregatedAt,
-              timeZone: collection.timezone
+              timeZone: collection.timezone,
             })}
           </p>
         </div>
@@ -211,8 +264,12 @@ function ProjectAnalysis({ project, analytics }: { project: ClientProject; analy
 
       <div className="flex items-center justify-between gap-4 border-t border-border px-5 py-4 sm:px-6">
         <p className="text-[10px] text-muted-foreground">
-          {formatNumber(summary.totalEvents)} raw-event
-          {summary.totalEvents === 1 ? '' : 's'} represented in the current aggregate.
+          {formatNumber(summary.totalEvents)}{" "}
+          {project.slug === "demo-dennis-portfolio-complete-v1"
+            ? "simulated event"
+            : "raw-event"}
+          {summary.totalEvents === 1 ? "" : "s"} represented in the current
+          aggregate.
         </p>
 
         <span className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-[9px] text-muted-foreground">
@@ -223,19 +280,30 @@ function ProjectAnalysis({ project, analytics }: { project: ClientProject; analy
   );
 }
 
-function AnalyticsUnavailable({ reason }: { reason: 'NOT_CONFIGURED' | 'CLIENT_HIDDEN' }) {
+function AnalyticsUnavailable({
+  reason,
+}: {
+  reason: "NOT_CONFIGURED" | "CLIENT_HIDDEN";
+}) {
   const message =
-    reason === 'NOT_CONFIGURED'
-      ? 'Rcentz analytics has not been configured for this project yet.'
-      : 'Client analytics access is currently unavailable for this project.';
+    reason === "NOT_CONFIGURED"
+      ? "Rcentz analytics has not been configured for this project yet."
+      : "Client analytics access is currently unavailable for this project.";
 
   return (
     <div className="px-7 py-12 text-center">
-      <BarChart3 aria-hidden="true" className="mx-auto size-7 text-muted-foreground" />
+      <BarChart3
+        aria-hidden="true"
+        className="mx-auto size-7 text-muted-foreground"
+      />
 
-      <h3 className="mt-4 text-base font-semibold text-foreground">Analytics unavailable</h3>
+      <h3 className="mt-4 text-base font-semibold text-foreground">
+        Analytics unavailable
+      </h3>
 
-      <p className="mx-auto mt-2 max-w-md text-[12px] leading-5 text-muted-foreground">{message}</p>
+      <p className="mx-auto mt-2 max-w-md text-[12px] leading-5 text-muted-foreground">
+        {message}
+      </p>
     </div>
   );
 }
@@ -243,9 +311,13 @@ function AnalyticsUnavailable({ reason }: { reason: 'NOT_CONFIGURED' | 'CLIENT_H
 function SummaryMetric({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[9px] uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+      <p className="text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </p>
 
-      <p className="mt-1 text-sm font-semibold tracking-[-0.02em] text-foreground">{value}</p>
+      <p className="mt-1 text-sm font-semibold tracking-[-0.02em] text-foreground">
+        {value}
+      </p>
     </div>
   );
 }
@@ -253,7 +325,7 @@ function SummaryMetric({ label, value }: { label: string; value: string }) {
 function AnalysisMetric({
   label,
   description,
-  value
+  value,
 }: {
   label: string;
   description: string;
@@ -264,10 +336,14 @@ function AnalysisMetric({
       <div className="min-w-0">
         <p className="text-[12px] font-medium text-foreground">{label}</p>
 
-        <p className="mt-1 text-[10px] leading-4 text-muted-foreground">{description}</p>
+        <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
+          {description}
+        </p>
       </div>
 
-      <span className="shrink-0 text-[14px] font-semibold tracking-[-0.02em] text-foreground">{value}</span>
+      <span className="shrink-0 text-[14px] font-semibold tracking-[-0.02em] text-foreground">
+        {value}
+      </span>
     </div>
   );
 }
