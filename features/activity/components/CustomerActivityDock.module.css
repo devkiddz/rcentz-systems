@@ -1,22 +1,37 @@
 .dock {
   position: fixed;
   z-index: 45;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding-bottom: env(safe-area-inset-bottom);
+  left: var(--dock-x);
+  top: var(--dock-y);
+  width: 160px;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
   background: var(--background);
-  border-top: 1px solid var(--border);
-  box-shadow: 0 -2px 12px rgb(0 0 0 / 4%);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 6%);
 }
-.actions { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 4px; gap: 2px; }
-.handle { display: none; }
-.mobileControls { position: absolute; right: 8px; bottom: 100%; display: flex; gap: 2px; border: 1px solid var(--border); border-radius: 10px 10px 0 0; background: var(--background); }
-.collapsed .actionLabel { display: none; }
-.hiddenDock { left: auto; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: 48px; border: 1px solid var(--border); border-radius: 50%; padding: 0; }
-.sheet { position: fixed; z-index: 46; left: 8px; right: 8px; bottom: calc(88px + env(safe-area-inset-bottom)); max-height: min(560px, calc(100dvh - 176px)); border: 1px solid var(--border); border-radius: 16px; background: var(--background); box-shadow: 0 8px 32px rgb(0 0 0 / 10%); overflow: auto; }
+.actions { display: grid; grid-template-columns: minmax(0, 1fr); padding: 6px; gap: 2px; }
+.actions > a, .actions > button { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 0 10px; }
+.handle { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; padding: 6px; border-bottom: 1px solid var(--border); }
+.dockTitle { grid-column: 1 / -1; grid-row: 1; padding-bottom: 4px; font-size: 11px; font-weight: 600; }
+.handle > button:first-child { width: 100%; }
+.actionLabel { font-size: 12px; }
+.collapsed { width: 56px; }
+.collapsed .actionLabel, .collapsed .dockTitle { display: none; }
+.collapsed .handle { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; }
+.collapsed .handle > button { width: 20px; height: 24px; }
+.collapsed .handle > button:first-child { grid-column: 1 / -1; width: 100%; height: 32px; }
+.collapsed .actions > button { justify-content: center; padding: 0; }
+.hiddenDock { width: 48px; border-radius: 50%; }
+.hiddenDock > button { cursor: grab; touch-action: none; }
+.sheet { position: fixed; z-index: 46; left: 8px; right: 8px; top: 80px; bottom: auto; max-height: min(560px, calc(100dvh - var(--customer-dock-space, 0px) - 96px)); border: 1px solid var(--border); border-radius: 16px; background: var(--background); box-shadow: 0 8px 32px rgb(0 0 0 / 10%); overflow: auto; }
 .chatSheet { border: 0; background: transparent; box-shadow: none; overflow: visible; }
-.chatSheet > div > section { width: 100%; max-height: min(520px, calc(100dvh - 176px)); margin: 0; }
+.chatSheet > div > section { width: 100%; max-height: min(520px, calc(100dvh - var(--customer-dock-space, 0px) - 96px)); margin: 0; }
+.mobileBar { position: fixed; z-index: 44; left: 0; right: 0; bottom: 0; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--background); }
+.mobileLinks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+.mobileControls { position: absolute; left: 8px; bottom: 100%; display: flex; gap: 2px; border: 1px solid var(--border); border-radius: 10px 10px 0 0; background: var(--background); }
+.mobileRestore { position: fixed; z-index: 44; left: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); border-radius: 50%; }
 @media (min-width: 768px) {
   .dock { left: var(--dock-x); top: var(--dock-y); right: auto; bottom: auto; width: 180px; max-height: calc(100dvh - 16px); overflow-y: auto; border: 1px solid var(--border); border-radius: 16px; padding: 0; box-shadow: 0 4px 18px rgb(0 0 0 / 6%); }
   .handle { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; padding: 6px; border-bottom: 1px solid var(--border); }
@@ -36,7 +51,7 @@
   .hiddenDock { width: 48px; border-radius: 50%; }
   .hiddenDock > button { cursor: grab; touch-action: none; }
   .hiddenDock > button:active { cursor: grabbing; }
-  .mobileControls { display: none; }
+  .mobileBar, .mobileRestore { display: none; }
   .sheet { left: var(--sheet-left); right: auto; top: var(--sheet-top); bottom: var(--sheet-bottom); width: var(--sheet-width); max-height: var(--sheet-height); }
   .chatSheet > div > section { max-height: min(520px, var(--sheet-height)); }
 }
