@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import { CheckSquare2, FilePlus2, FolderPlus, LoaderCircle, LogOut, Plus } from 'lucide-react';
+import { FilePlus2, FolderPlus, LoaderCircle, LogOut, Plus } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -34,12 +34,6 @@ const createActions = [
     description: 'Start and configure a client project',
     href: '/admin/projects/new',
     icon: FolderPlus
-  },
-  {
-    label: 'Create task',
-    description: 'Add a new operational task',
-    href: '/admin/tasks/new',
-    icon: CheckSquare2
   },
   {
     label: 'Create invoice',

@@ -20,26 +20,12 @@ type AdminOperationsTabsProps = {
 
 type OperationsTab = 'tasks' | 'clients' | 'notifications';
 
-const previewCounts = {
-  tasks: 5,
-  clients: 4,
-  notifications: 2
-} as const;
-
 export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOperationsTabsProps) {
   const [activeTab, setActiveTab] = useState<OperationsTab>('tasks');
 
-  const hasRealTasks = tasks.tasks.length > 0;
-
-  const hasRealClients = clients.length > 0;
-
-  const hasRealNotifications = notifications.notifications.length > 0;
-
-  const taskCount = hasRealTasks ? tasks.tasks.length : previewCounts.tasks;
-
-  const clientCount = hasRealClients ? clients.length : previewCounts.clients;
-
-  const notificationCount = hasRealNotifications ? notifications.unreadCount : previewCounts.notifications;
+  const taskCount = tasks.tasks.length;
+  const clientCount = clients.length;
+  const notificationCount = notifications.unreadCount;
 
   const tabs = [
     {

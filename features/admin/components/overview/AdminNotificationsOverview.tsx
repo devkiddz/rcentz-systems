@@ -15,43 +15,6 @@ type AdminNotificationsOverviewProps = {
   data: OverviewNotifications;
 };
 
-const previewNotifications = [
-  {
-    id: 'preview-notification-01',
-    type: 'PROJECT_UPDATE',
-    title: 'Project progress updated',
-    message:
-      'Rcentz Core project progress was updated. Review the latest delivery state and current milestone health.',
-    href: null,
-    entityType: 'PROJECT',
-    entityId: 'preview-project-01',
-    readAt: null,
-    createdAt: new Date()
-  },
-  {
-    id: 'preview-notification-02',
-    type: 'MESSAGE',
-    title: 'New client message',
-    message: 'A client sent a new project message requesting clarification on the next delivery milestone.',
-    href: null,
-    entityType: 'MESSAGE',
-    entityId: 'preview-message-01',
-    readAt: null,
-    createdAt: new Date(Date.now() - 1000 * 60 * 42)
-  },
-  {
-    id: 'preview-notification-03',
-    type: 'SERVICE',
-    title: 'Service request submitted',
-    message: 'A new website development request has been submitted and is waiting for review.',
-    href: null,
-    entityType: 'SERVICE_REQUEST',
-    entityId: 'preview-request-01',
-    readAt: new Date(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3)
-  }
-] satisfies OverviewNotification[];
-
 function formatNotificationTime(date: Date) {
   return new Intl.DateTimeFormat('en', {
     month: 'short',
@@ -120,9 +83,9 @@ function NotificationListItem({
 }
 
 export function AdminNotificationsOverview({ data }: AdminNotificationsOverviewProps) {
-  const isPreview = data.notifications.length === 0;
+  const isPreview = false;
 
-  const visibleNotifications = isPreview ? previewNotifications : data.notifications;
+  const visibleNotifications = data.notifications;
 
   const [selectedNotificationId, setSelectedNotificationId] = useState(visibleNotifications[0]?.id ?? null);
 

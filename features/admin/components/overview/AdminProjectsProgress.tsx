@@ -130,7 +130,7 @@ export function AdminProjectsProgress({ projects }: AdminProjectsProgressProps) 
               return (
                 <Link
                   key={project.id}
-                  href={`/admin/projects/${project.slug}`}
+                  href={`/admin/projects/${project.id}`}
                   style={progressStyle}
                   className="
                     group

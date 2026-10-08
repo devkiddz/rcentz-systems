@@ -114,7 +114,7 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
           </div>
 
           <Link
-            href={`/admin/projects/${currentProject.slug}`}
+            href={`/admin/projects/${currentProject.id}`}
             className="flex items-center gap-1 text-[10px] text-muted transition-colors hover:text-foreground">
             Open
             <ArrowRight aria-hidden="true" className="size-3" />

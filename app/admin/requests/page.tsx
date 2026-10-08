@@ -1,0 +1,8 @@
+import Link from 'next/link';
+import { requireAdmin } from '@/features/auth/server/require-admin';
+import { prisma } from '@/lib/prisma';
+export default async function Page() {
+  await requireAdmin();
+  const requests = await prisma.serviceRequest.findMany({ where: { status: { not: 'DRAFT' } }, orderBy: [{ submittedAt: 'desc' }, { id: 'desc' }], take: 100, select: { id: true, title: true, status: true, updatedAt: true, user: { select: { name: true, email: true } }, service: { select: { name: true } } } });
+  return <main className="mx-auto w-full max-w-6xl space-y-6 p-4 sm:p-6"><h1 className="text-2xl font-semibold">Project briefs</h1><p className="text-sm text-muted-foreground">Latest 100 submitted requests. Customer drafts remain private until submitted.</p><div className="grid gap-4 md:grid-cols-2">{requests.map(item => <Link key={item.id} href={'/admin/requests/' + item.id} className="rounded-2xl border border-border bg-surface-raised p-5 hover:border-theme-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><p className="text-xs font-semibold text-theme-accent">{item.status}</p><h2 className="mt-2 text-lg font-semibold">{item.title}</h2><p className="mt-3 text-sm">{item.user.name} · {item.service.name}</p><p className="mt-1 break-all text-xs text-muted-foreground">{item.user.email}</p><p className="mt-3 text-xs text-muted-foreground">Updated {item.updatedAt.toLocaleString('en-GB', { timeZone: 'Africa/Lagos' })}</p></Link>)}</div>{requests.length === 0 ? <p className="rounded-2xl border border-border p-8 text-sm text-muted-foreground">No submitted briefs yet.</p> : null}</main>;
+}

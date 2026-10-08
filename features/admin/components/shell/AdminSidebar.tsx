@@ -6,25 +6,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import {
-  BarChart3,
   Bell,
   BriefcaseBusiness,
   ChevronDown,
-  CreditCard,
   Eye,
   FileText,
   FolderKanban,
   LayoutDashboard,
   ListTodo,
   MessageSquareText,
-  MessagesSquare,
   Plus,
-  ReceiptText,
   Settings,
   ShieldCheck,
   UsersRound,
   WalletCards,
-  Wrench
 } from 'lucide-react';
 
 import { useTranslations } from 'next-intl';
@@ -72,12 +67,6 @@ const workspaceNavigation = [
     icon: LayoutDashboard
   },
   {
-    key: 'analytics',
-    label: 'Analytics',
-    href: '/admin/analytics',
-    icon: BarChart3
-  },
-  {
     key: 'requests',
     label: 'Service Requests',
     href: '/admin/requests',
@@ -115,12 +104,6 @@ const workspaceNavigation = [
         href: '/admin/tasks',
         icon: Eye
       },
-      {
-        key: 'create-task',
-        label: 'Create Task',
-        href: '/admin/tasks/new',
-        icon: Plus
-      }
     ]
   },
   {
@@ -144,12 +127,6 @@ const communicationNavigation = [
         href: '/admin/messages',
         icon: Eye
       },
-      {
-        key: 'create-message',
-        label: 'Create Message',
-        href: '/admin/messages/new',
-        icon: Plus
-      }
     ]
   },
   {
@@ -158,12 +135,6 @@ const communicationNavigation = [
     href: '/admin/notifications',
     icon: Bell
   },
-  {
-    key: 'feedback',
-    label: 'Feedback',
-    href: '/admin/feedback',
-    icon: MessagesSquare
-  }
 ] satisfies AdminNavigationItem[];
 
 const financeNavigation = [
@@ -172,12 +143,6 @@ const financeNavigation = [
     label: 'Finance',
     href: '/admin/finance',
     icon: WalletCards
-  },
-  {
-    key: 'transactions',
-    label: 'Transactions',
-    href: '/admin/transactions',
-    icon: ReceiptText
   },
   {
     key: 'invoice',
@@ -199,21 +164,9 @@ const financeNavigation = [
       }
     ]
   },
-  {
-    key: 'subscriptions',
-    label: 'Subscriptions',
-    href: '/admin/subscriptions',
-    icon: CreditCard
-  }
 ] satisfies AdminNavigationItem[];
 
 const managementNavigation = [
-  {
-    key: 'services',
-    label: 'Services',
-    href: '/admin/services',
-    icon: Wrench
-  },
   {
     key: 'settings',
     label: 'Settings',
@@ -448,7 +401,7 @@ export function AdminSidebar() {
               render={<Link href="/admin" onClick={handleNavigate} />}
               className="transition-colors duration-150 hover:bg-sidebar-accent">
               <div className="flex size-8 shrink-0 items-center justify-center">
-                <RcentzLogo compact />
+                <RcentzLogo />
               </div>
 
               <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">

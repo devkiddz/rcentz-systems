@@ -16,100 +16,6 @@ type TaskStatusPresentation = {
   textClassName: string;
 };
 
-const previewTasks = [
-  {
-    id: 'preview-task-01',
-    title: 'Refine admin overview monitor',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    progress: 72,
-    dueDate: new Date('2026-09-09'),
-    updatedAt: new Date(),
-    project: {
-      id: 'preview-project-01',
-      name: 'Rcentz Core',
-      slug: 'rcentz-core'
-    },
-    assignedTo: {
-      id: 'preview-user-01',
-      name: 'Preview Admin',
-      image: null
-    }
-  },
-  {
-    id: 'preview-task-02',
-    title: 'Review project milestone structure',
-    status: 'REVIEW',
-    priority: 'NORMAL',
-    progress: 90,
-    dueDate: new Date('2026-09-10'),
-    updatedAt: new Date(),
-    project: {
-      id: 'preview-project-02',
-      name: 'JobRcentz',
-      slug: 'jobrcentz'
-    },
-    assignedTo: {
-      id: 'preview-user-02',
-      name: 'Preview Developer',
-      image: null
-    }
-  },
-  {
-    id: 'preview-task-03',
-    title: 'Prepare service request workflow',
-    status: 'TODO',
-    priority: 'NORMAL',
-    progress: 20,
-    dueDate: new Date('2026-09-13'),
-    updatedAt: new Date(),
-    project: {
-      id: 'preview-project-03',
-      name: 'Rcentz Core',
-      slug: 'rcentz-core'
-    },
-    assignedTo: null
-  },
-  {
-    id: 'preview-task-04',
-    title: 'Resolve checkout integration dependency',
-    status: 'BLOCKED',
-    priority: 'URGENT',
-    progress: 35,
-    dueDate: new Date('2026-09-08'),
-    updatedAt: new Date(),
-    project: {
-      id: 'preview-project-04',
-      name: 'Preview Commerce',
-      slug: 'preview-commerce'
-    },
-    assignedTo: {
-      id: 'preview-user-03',
-      name: 'Preview Engineer',
-      image: null
-    }
-  },
-  {
-    id: 'preview-task-05',
-    title: 'Finalize client account navigation',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    progress: 65,
-    dueDate: new Date('2026-09-12'),
-    updatedAt: new Date(),
-    project: {
-      id: 'preview-project-05',
-      name: 'Preview Platform',
-      slug: 'preview-platform'
-    },
-    assignedTo: {
-      id: 'preview-user-04',
-      name: 'Preview Admin',
-      image: null
-    }
-  }
-] satisfies OverviewTask[];
-
 function getInitials(name: string) {
   return name
     .trim()
@@ -318,16 +224,16 @@ function TaskRow({ task, isPreview }: { task: OverviewTask; isPreview: boolean }
   }
 
   return (
-    <Link href={`/admin/projects/${task.project.slug}`} className="block">
+    <Link href={`/admin/projects/${task.project.id}`} className="block">
       {content}
     </Link>
   );
 }
 
 export function AdminTasksOverview({ data }: AdminTasksOverviewProps) {
-  const isPreview = data.tasks.length === 0;
+  const isPreview = false;
 
-  const visibleTasks = isPreview ? previewTasks : data.tasks;
+  const visibleTasks = data.tasks;
 
   const summary = {
     todo: visibleTasks.filter(task => task.status === 'TODO').length,

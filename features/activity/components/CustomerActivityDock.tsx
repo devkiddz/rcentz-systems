@@ -106,9 +106,9 @@ export function CustomerActivityDock() {
     return () => document.removeEventListener('keydown', escape);
   }, [sheet, closeSheet]);
   useEffect(() => {
-    document.documentElement.style.setProperty('--customer-dock-space', feed && navMode !== 'hidden' ? '88px' : '0px');
+    document.documentElement.style.setProperty('--customer-dock-space', feed && !pathname.startsWith('/admin') && navMode !== 'hidden' ? '88px' : '0px');
     return () => { document.documentElement.style.removeProperty('--customer-dock-space'); };
-  }, [feed, navMode]);
+  }, [feed, navMode, pathname]);
 
   function save(nextMode: Mode, nextPosition = position) {
     try { if (preferenceKey.current) localStorage.setItem(preferenceKey.current, JSON.stringify({ mode: nextMode, position: nextPosition })); } catch { /* Keep usable without storage. */ }
@@ -140,7 +140,7 @@ export function CustomerActivityDock() {
     setNavMode(next);
     try { if (feed) localStorage.setItem('rcentz:mobile-nav:v1:' + feed.accountKey, next); } catch { /* Keep usable without storage. */ }
   }
-  if (!feed) return null;
+  if (!feed || pathname.startsWith('/admin')) return null;
   const projectParts = pathname.split('/');
   const projectId = projectParts[1] === 'dashboard' && projectParts[2] === 'projects' && projectParts[3] ? projectParts[3] : undefined;
   const dockStyle = { '--dock-x': position.x + 'px', '--dock-y': position.y + 'px' } as CSSProperties;

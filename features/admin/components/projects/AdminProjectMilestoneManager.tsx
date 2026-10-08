@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { CalendarDays, CheckCircle2, CircleDot, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import { CheckCircle2, CircleDot, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 

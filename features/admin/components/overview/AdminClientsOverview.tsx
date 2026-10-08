@@ -10,93 +10,6 @@ type AdminClientsOverviewProps = {
   clients: OverviewClient[];
 };
 
-const previewClients = [
-  {
-    id: 'preview-client-01',
-    name: 'Amara Cole',
-    email: 'amara@example.com',
-    image: null,
-    createdAt: new Date('2026-08-20'),
-    updatedAt: new Date(),
-    lastSeenAt: new Date(),
-    companyName: 'Atlas Studio',
-    companyLogo: null,
-    activeProjects: [
-      {
-        id: 'preview-project-01',
-        name: 'Atlas Commerce',
-        slug: 'atlas-commerce',
-        status: 'DEVELOPMENT',
-        progress: 72
-      }
-    ],
-    activeProjectCount: 1,
-    openRequestCount: 2,
-    averageProjectProgress: 72
-  },
-  {
-    id: 'preview-client-02',
-    name: 'Daniel Rowe',
-    email: 'daniel@example.com',
-    image: null,
-    createdAt: new Date('2026-08-24'),
-    updatedAt: new Date(),
-    lastSeenAt: new Date(),
-    companyName: 'Nova Retail',
-    companyLogo: null,
-    activeProjects: [
-      {
-        id: 'preview-project-02',
-        name: 'Nova Platform',
-        slug: 'nova-platform',
-        status: 'TESTING',
-        progress: 96
-      }
-    ],
-    activeProjectCount: 1,
-    openRequestCount: 0,
-    averageProjectProgress: 96
-  },
-  {
-    id: 'preview-client-03',
-    name: 'Maya Bennett',
-    email: 'maya@example.com',
-    image: null,
-    createdAt: new Date('2026-08-27'),
-    updatedAt: new Date(),
-    lastSeenAt: null,
-    companyName: 'Northstar Labs',
-    companyLogo: null,
-    activeProjects: [
-      {
-        id: 'preview-project-03',
-        name: 'Northstar Portal',
-        slug: 'northstar-portal',
-        status: 'DESIGN',
-        progress: 48
-      }
-    ],
-    activeProjectCount: 1,
-    openRequestCount: 1,
-    averageProjectProgress: 48
-  },
-  {
-    id: 'preview-client-04',
-    name: 'Jordan Ellis',
-    email: 'jordan@example.com',
-    image: null,
-    createdAt: new Date('2026-09-01'),
-    updatedAt: new Date(),
-    lastSeenAt: new Date(),
-    companyName: 'Vertex Consulting',
-    companyLogo: null,
-    activeProjects: [],
-    activeProjectCount: 0,
-    openRequestCount: 1,
-    averageProjectProgress: 0
-  }
-] satisfies OverviewClient[];
-
 function getInitials(name: string) {
   return name
     .trim()
@@ -217,16 +130,16 @@ function ClientRow({ client, isPreview }: { client: OverviewClient; isPreview: b
   }
 
   return (
-    <Link href={`/admin/clients/${client.id}`} className="block">
+    <Link id={"client-" + client.id} href={`/admin/clients#client-${client.id}`} className="block">
       {content}
     </Link>
   );
 }
 
 export function AdminClientsOverview({ clients }: AdminClientsOverviewProps) {
-  const isPreview = clients.length === 0;
+  const isPreview = false;
 
-  const visibleClients = isPreview ? previewClients : clients;
+  const visibleClients = clients;
 
   const clientsWithProjects = visibleClients.filter(client => client.activeProjectCount > 0).length;
 

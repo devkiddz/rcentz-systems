@@ -53,9 +53,11 @@ const clock = (value: string) =>
 export function MessageWorkspace({
   initialThreads,
   initialId,
+  allowNewSupport = true,
 }: {
   initialThreads: Thread[];
   initialId?: string;
+  allowNewSupport?: boolean;
 }) {
   const [threads, setThreads] = useState(initialThreads);
   const [selected, setSelected] = useState(initialId || "");
@@ -266,15 +268,16 @@ export function MessageWorkspace({
       >
         <div className="flex items-center justify-between p-4">
           <h1 className="text-lg font-semibold">Messages</h1>
-          <button
+          {allowNewSupport ? (<button
             type="button"
+
             onClick={start}
             disabled={pending}
             aria-label="Start a support conversation"
             className="flex size-10 items-center justify-center rounded-full bg-surface-muted hover:bg-theme-accent-soft disabled:opacity-50"
           >
             <Plus className="size-5" />
-          </button>
+          </button>) : null}
         </div>
         <label className="mx-4 mb-3">
           <span className="sr-only">Search conversations</span>
@@ -333,7 +336,7 @@ export function MessageWorkspace({
             <p className="px-4 py-8 text-center text-xs leading-6 text-muted-foreground">
               Your project conversations appear here.
               <br />
-              Start a conversation to contact Rcentz.
+              {allowNewSupport ? "Start a conversation to contact Rcentz." : "Customer support and project conversations assigned to you will appear here."}
             </p>
           ) : null}
         </div>
@@ -496,16 +499,17 @@ export function MessageWorkspace({
               Keep the conversation connected.
             </h2>
             <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-              Choose a project conversation or message the Rcentz team.
+              {allowNewSupport ? "Choose a project conversation or message the Rcentz team." : "Choose an assigned conversation to reply to your customer."}
             </p>
-            <button
+            {allowNewSupport ? (<button
               type="button"
-              onClick={start}
+
+            onClick={start}
               disabled={pending}
               className="mt-6 rounded-full bg-foreground px-5 py-3 text-xs font-medium text-background"
             >
               Message Rcentz
-            </button>
+            </button>) : null}
             {error ? (
               <p role="alert" className="mt-4 text-xs text-red-500">
                 {error}

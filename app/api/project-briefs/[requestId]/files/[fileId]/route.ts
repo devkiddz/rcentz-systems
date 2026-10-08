@@ -14,7 +14,7 @@ export async function GET(
     return new Response('Sign in required', { status: 401 });
   const { requestId, fileId } = await params;
   const saved = await prisma.serviceRequest.findFirst({
-    where: { id: requestId, userId: user.id },
+    where: { id: requestId, ...(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' ? { status: { not: 'DRAFT' as const } } : { userId: user.id }) },
     select: {
       answers: {
         where: { question: { key: BRIEF_KEY } },

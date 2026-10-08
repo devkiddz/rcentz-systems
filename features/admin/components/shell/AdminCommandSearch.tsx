@@ -40,12 +40,6 @@ const adminSearchDestinations = [
     icon: UsersRound
   },
   {
-    label: 'Services',
-    description: 'Manage available services',
-    href: '/admin/services',
-    icon: BriefcaseBusiness
-  },
-  {
     label: 'Settings',
     description: 'Admin and system settings',
     href: '/admin/settings',
