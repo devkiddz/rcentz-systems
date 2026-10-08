@@ -3,16 +3,18 @@
 import { RcentzBrandLogo } from '../brand/RcentzBrandLogo';
 
 import Link from 'next/link';
-import { Grid2X2, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { RcentzGithubIcon } from '../brand/RcentzGithubIcon';
 import { useEffect, useRef, useState } from 'react';
 
 import { RcentzThemeControl } from '../theme/RcentzThemeControl';
 import { RcentzLanguageControl } from './RcentzLanguageControl';
 import { RcentzNavigation } from './RcentzNavigation';
-import { RcentzStartProjectAction } from './RcentzStartProjectAction';
+import { RcentzAccountActions } from './RcentzAccountActions';
+import { useAccountNavigation } from './use-account-navigation';
 
 export function RcentzHeader() {
+  const account = useAccountNavigation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -86,13 +88,9 @@ export function RcentzHeader() {
                 className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <RcentzGithubIcon aria-hidden="true" className="size-4" />
               </a>
-              <a href="/dashboard" aria-label="Your customer dashboard"
-                className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <Grid2X2 aria-hidden="true" className="size-4" />
-              </a>
               <RcentzLanguageControl />
               <RcentzThemeControl />
-              <RcentzStartProjectAction compact={scrolled} />
+              <RcentzAccountActions account={account} compact={scrolled} />
             </div>
 
             <div className="flex shrink-0 items-center gap-1 xl:hidden">
@@ -119,10 +117,10 @@ export function RcentzHeader() {
             {mobileOpen ? (
               <>
                 <RcentzNavigation mobile onNavigate={closeMobileNavigation} />
-                <div className="mt-3 flex items-center justify-between gap-3 border-t border-border pt-3">
+                <div className="mt-3 space-y-3 border-t border-border pt-3">
                   <RcentzThemeControl mobile />
                   <div className="min-w-0 flex-1">
-                    <RcentzStartProjectAction mobile onNavigate={closeMobileNavigation} />
+                    <RcentzAccountActions account={account} mobile onNavigate={closeMobileNavigation} />
                   </div>
                 </div>
               </>
