@@ -72,7 +72,7 @@ export default async function ProjectRequestPage({
       </section>
       <div className="mt-7 flex flex-wrap gap-3">
         <Link
-          href="/workspace"
+          href="/dashboard/requests"
           className="inline-flex min-h-11 items-center rounded-full bg-foreground px-5 text-sm font-medium text-background"
         >
           View your workspace

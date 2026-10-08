@@ -243,7 +243,7 @@ function NewProjectPlaceholder() {
       </p>
 
       <Link
-        href="/dashboard/requests"
+        href="/start-project"
         className="
           mt-4
           inline-flex

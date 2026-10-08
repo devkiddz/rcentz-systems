@@ -14,7 +14,7 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const next = resolveSafeRedirect((await searchParams).next, '/start-project');
+  const next = resolveSafeRedirect((await searchParams).next, '/dashboard');
   const user = await getCurrentUser();
   if (user?.status === 'ACTIVE') redirect(next);
   return (

@@ -1,9 +1,7 @@
-import Link from 'next/link';
 
 import {
   Box,
   CalendarDays,
-  CheckCircle2,
   Clock3,
   CreditCard,
   Download,

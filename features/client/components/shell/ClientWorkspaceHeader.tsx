@@ -41,29 +41,29 @@ const quickActions = [
   {
     label: 'Start conversation',
     description: 'Message the Rcentz team',
-    href: '/dashboard/messages?compose=1',
+    href: 'mailto:contact@rcentz.cc',
     icon: MessageSquarePlus
   },
   {
     label: 'Start new project',
     description: 'Begin a new project request',
-    href: '/dashboard/requests?type=project',
+    href: '/start-project',
     icon: FolderPlus
   },
   {
     label: 'Request service',
     description: 'Explore and request a Rcentz service',
-    href: '/services',
+    href: '/solutions',
     icon: BriefcaseBusiness
   },
   {
     label: 'Open support ticket',
     description: 'Request help or report an issue',
-    href: '/dashboard/requests?type=support',
+    href: 'mailto:contact@rcentz.cc?subject=Support%20request',
     icon: Headphones
   },
   {
-    label: 'Buy product',
+    label: 'Explore products',
     description: 'Browse available Rcentz products',
     href: '/dashboard/products',
     icon: ShoppingBag
@@ -142,9 +142,9 @@ export function ClientWorkspaceHeader({ user }: Props) {
                 Client Workspace
               </p>
 
-              <h1 className="mt-1 truncate text-[17px] font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
+              <h2 className="mt-1 truncate text-[17px] font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
                 Welcome back, {firstName}
-              </h1>
+              </h2>
 
               <p className="mt-1 hidden text-[11px] text-muted sm:block">
                 Projects, billing and communication with Rcentz.
@@ -187,7 +187,8 @@ export function ClientWorkspaceHeader({ user }: Props) {
                       <DropdownMenuItem
                         key={action.label}
                         onClick={() => {
-                          router.push(action.href);
+                          if (action.href.startsWith('mailto:')) window.location.assign(action.href);
+                          else router.push(action.href);
                         }}
                         className="cursor-pointer gap-3 rounded-xl px-3 py-3">
                         <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
@@ -208,6 +209,7 @@ export function ClientWorkspaceHeader({ user }: Props) {
 
             <button
               type="button"
+              aria-label={signingOut ? 'Signing out' : 'Sign out'}
               disabled={signingOut}
               onClick={signOut}
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl px-3 text-[13px] font-medium text-muted transition-colors hover:bg-surface-muted hover:text-foreground disabled:opacity-50">

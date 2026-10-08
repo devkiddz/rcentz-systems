@@ -67,7 +67,7 @@ import type { ClientHeaderFeed } from '@/features/client/types/client-header';
 
 import { authClient } from '@/lib/auth-client';
 
-import { RcentzLogo } from '@/ui-shell/brand/RcentzLogo';
+import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
 import { RcentzThemeControl } from '@/ui-shell/theme/RcentzThemeControl';
 
 type ClientShellProps = {
@@ -287,13 +287,13 @@ function ClientSidebar() {
               tooltip="Rcentz workspace"
               render={<Link href="/dashboard" />}
               className="transition-colors duration-150 hover:bg-sidebar-accent">
-              <div className="flex size-8 shrink-0 items-center justify-center">
-                <RcentzLogo compact />
+              <div className="flex shrink-0 items-center justify-center group-data-[collapsible=icon]:hidden">
+                <RcentzBrandLogo className="w-20" />
               </div>
 
               <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold tracking-[-0.02em] text-sidebar-foreground">
-                  Rcentz
+                  Workspace
                 </span>
 
                 <span className="truncate text-[10px] text-sidebar-foreground/55">Client workspace</span>

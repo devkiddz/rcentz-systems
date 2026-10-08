@@ -86,7 +86,7 @@ export function RcentzHeader() {
                 className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <RcentzGithubIcon aria-hidden="true" className="size-4" />
               </a>
-              <a href="https://products.rcentz.cc" aria-label="Explore Rcentz products"
+              <a href="/dashboard" aria-label="Your customer dashboard"
                 className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <Grid2X2 aria-hidden="true" className="size-4" />
               </a>

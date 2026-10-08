@@ -1,0 +1,11 @@
+Customer dashboard connection
+
+/dashboard activates the original customer shell and overview. Projects, project details and analytics, billing and invoices, products and owned digital deliveries, notifications, project files, conversation history, profile and display settings now have active routes.
+
+/workspace remains an authenticated alias to /dashboard. General sign-in defaults to /dashboard; the Start a project sign-in flow retains its onboarding destination. Submitted briefs link to /dashboard/requests, with a project link only when the request has a project assigned to that same customer. Submission does not automatically create or approve a project.
+
+Queries use the canonical signed-in user ID, client ownership and client-visible filters. No schema change or migration is included. The installer checks existing dashboard tables before pushing. Production requires DATABASE_URL, BETTER_AUTH_SECRET and BETTER_AUTH_URL for systems.rcentz.cc.
+
+Messaging currently reads existing active conversations for current participants. New conversation / support actions use contact@rcentz.cc; an in-app composer and new support-ticket form are future work. Profile is read-only with an email update link. Display theme and sign-out are functional. No payment gateway is enabled by this connection.
+
+Existing dashboard layouts are preserved for the next page-by-page design pass. Screenshot/analytics views show actual stored records or empty/unconfigured states; no demo projects are inserted into the real database. Admin routes remain inactive.

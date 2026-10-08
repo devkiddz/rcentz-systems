@@ -18,7 +18,7 @@ const groups = [
     title: 'Your project',
     links: [
       ['Start a project', projectEntryUrl],
-      ['Your workspace', '/workspace'],
+      ['Your workspace', '/dashboard'],
       ['Remote delivery', '/remote-delivery'],
       ['Contact the team', 'mailto:contact@rcentz.cc']
     ]

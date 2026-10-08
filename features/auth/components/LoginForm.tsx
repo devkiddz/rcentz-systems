@@ -43,7 +43,7 @@ export function LoginForm() {
       }
       const destination = resolveSafeRedirect(
         searchParams.get('next'),
-        '/start-project'
+        '/dashboard'
       );
       router.push(destination);
       router.refresh();
