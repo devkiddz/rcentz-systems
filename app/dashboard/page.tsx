@@ -4,8 +4,6 @@ import { ClientFinanceOverview } from '@/features/client/components/overview/Cli
 
 import { ClientOperationsTabs } from '@/features/client/components/overview/ClientOperationsTabs';
 
-import { ClientOverviewHeader } from '@/features/client/components/overview/ClientOverviewHeader';
-
 import { ClientProjectMonitor } from '@/features/client/components/overview/ClientProjectMonitor';
 
 import { ClientProjectsProgress } from '@/features/client/components/overview/ClientProjectsProgress';
@@ -20,16 +18,7 @@ export default async function DashboardPage() {
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-[var(--section-max)] space-y-5">
-        <ClientOverviewHeader
-          user={{
-            name: user.name,
 
-            email: user.email,
-
-            image: user.image
-          }}
-          projectCount={overview.summary.projectCount}
-        />
 
         <section className="grid items-start gap-5 lg:grid-cols-2">
           <div className="min-w-0 space-y-5">

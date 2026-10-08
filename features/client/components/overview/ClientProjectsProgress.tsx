@@ -225,7 +225,7 @@ export function ClientProjectsProgress({
 function NewProjectPlaceholder({ hasProjects }: { hasProjects: boolean }) {
   return (
     <div
-      className="
+      className="col-span-full w-full sm:col-span-2
         flex
         min-h-[190px]
         flex-col
@@ -266,7 +266,7 @@ function NewProjectPlaceholder({ hasProjects }: { hasProjects: boolean }) {
 
       <Link
         href="/dashboard/onboarding"
-        className="
+        className="whitespace-nowrap
           mt-4
           inline-flex
           min-h-11
@@ -285,7 +285,7 @@ function NewProjectPlaceholder({ hasProjects }: { hasProjects: boolean }) {
         "
       >
         <Plus aria-hidden="true" className="size-3.5" />
-        {hasProjects ? 'Start another project' : 'Start your first project'}
+        Start a project
       </Link>
     </div>
   );
