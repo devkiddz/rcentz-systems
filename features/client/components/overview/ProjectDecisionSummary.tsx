@@ -35,7 +35,7 @@ export function ProjectDecisionSummary({
       (day, index) => `${12 + index * 44},${78 - (day.pageViews / max) * 58}`,
     )
     .join(" ");
-  const demo = project.slug === "demo-dennis-portfolio-complete-v1";
+  const demo = available?.collection.sample ?? false;
   return (
     <div className="grid gap-3 lg:grid-cols-3">
       <SummaryCard title="Delivery checklist">

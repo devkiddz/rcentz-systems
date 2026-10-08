@@ -1,163 +1,135 @@
-(function () {
-  'use strict';
-
-  var currentScript = document.currentScript;
-
-  if (!currentScript) {
+/* Rcentz first-party project analytics. No query strings, form values or persistent visitor IDs. */
+(() => {
+  "use strict";
+  if (
+    window.__rcentzTracker ||
+    navigator.doNotTrack === "1" ||
+    navigator.globalPrivacyControl
+  )
     return;
+  const script = document.currentScript;
+  const base =
+    script?.getAttribute("data-collector") || "https://systems.rcentz.cc";
+  const site = script?.getAttribute("data-site");
+  if (!site || location.origin !== site) return; // Production site only; previews and localhost are excluded.
+  window.__rcentzTracker = true;
+  const pending = [];
+  let referrerHost = "direct";
+  try {
+    const host = document.referrer ? new URL(document.referrer).hostname : "";
+    if (host && host !== location.hostname) referrerHost = host;
+  } catch {
+    /* No valid referring site. */
   }
-
-  var projectId = currentScript.getAttribute('data-project-id');
-
-  var analyticsEndpoint = currentScript.getAttribute('data-endpoint');
-
-  if (!projectId || !analyticsEndpoint) {
-    return;
+  let key = "",
+    session = "",
+    ready = false;
+  let storageAvailable = true;
+  function newSession() {
+    return crypto.randomUUID();
   }
-
-  var sessionStorageKey = 'rcentz_analytics_session';
-
-  function createSessionKey() {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-
-    return [Date.now(), Math.random().toString(36).slice(2), Math.random().toString(36).slice(2)].join('-');
-  }
-
-  function getSessionKey() {
+  function touchSession() {
+    const now = Date.now();
     try {
-      var existingSession = sessionStorage.getItem(sessionStorageKey);
-
-      if (existingSession) {
-        return existingSession;
-      }
-
-      var newSession = createSessionKey();
-
-      sessionStorage.setItem(sessionStorageKey, newSession);
-
-      return newSession;
+      const stored = JSON.parse(
+        sessionStorage.getItem("rcentz-session:" + site) || "null",
+      );
+      session =
+        stored && now - stored.last < 30 * 60 * 1000 ? stored.id : newSession();
+      sessionStorage.setItem(
+        "rcentz-session:" + site,
+        JSON.stringify({ id: session, last: now }),
+      );
     } catch {
-      return createSessionKey();
+      if (storageAvailable || !session) session = newSession();
+      storageAvailable = false;
     }
+    return session;
   }
-
-  var sessionKey = getSessionKey();
-
-  function sendEvent(type, metadata) {
-    var payload = {
-      projectId: projectId,
-      sessionKey: sessionKey,
-      type: type,
-      path: window.location.pathname + window.location.search,
-      metadata: metadata || {}
-    };
-
-    var serializedPayload = JSON.stringify(payload);
-
-    if (typeof navigator.sendBeacon === 'function') {
-      var analyticsBlob = new Blob([serializedPayload], {
-        type: 'application/json'
+  async function deliver(event) {
+    const payload = JSON.stringify({ ...event, trackingKey: key });
+    try {
+      // No auth cookies are sent to the collector.
+      await fetch(base + "/api/analytics/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        credentials: "omit",
+        keepalive: true,
       });
-
-      var sent = navigator.sendBeacon(analyticsEndpoint, analyticsBlob);
-
-      if (sent) {
-        return;
-      }
+    } catch {
+      /* Analytics never interrupts the application. */
     }
-
-    fetch(analyticsEndpoint, {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: serializedPayload,
-
-      keepalive: true
-    }).catch(function () {
-      // Analytics must never interrupt
-      // the host application.
-    });
   }
-
-  function getElementIdentity(element) {
-    if (!element) {
-      return {};
+  function track(type, action) {
+    if (
+      document.visibilityState === "prerender" ||
+      /^(\/login|\/register|\/dashboard|\/api|\/start-project)(\/|$)/.test(
+        location.pathname,
+      )
+    )
+      return;
+    const event = {
+      type,
+      action,
+      ...(type === "PAGE_VIEW" ? { referrerHost } : {}),
+      eventId: crypto.randomUUID(),
+      sessionKey: touchSession(),
+      path: location.pathname.slice(0, 512),
+    };
+    if (ready) void deliver(event);
+    else if (pending.length < 20) pending.push(event);
+  }
+  let path = location.pathname;
+  function route() {
+    if (path !== location.pathname) {
+      path = location.pathname;
+      track("PAGE_VIEW");
     }
-
-    return {
-      tag: element.tagName?.toLowerCase() ?? null,
-
-      id: element.id || null,
-
-      name: element.getAttribute('name'),
-
-      href: element.getAttribute('href'),
-
-      analyticsAction: element.getAttribute('data-rcentz-action'),
-
-      analyticsLabel: element.getAttribute('data-rcentz-label')
+  }
+  for (const method of ["pushState", "replaceState"]) {
+    const original = history[method];
+    history[method] = function (...args) {
+      const result = original.apply(this, args);
+      route();
+      return result;
     };
   }
-
-  function handleDocumentClick(event) {
-    var target =
-      event.target instanceof Element
-        ? event.target.closest(['a', 'button', '[data-rcentz-action]'].join(','))
-        : null;
-
-    if (!target) {
-      return;
+  addEventListener("popstate", route);
+  document.addEventListener(
+    "click",
+    (event) => {
+      const element =
+        event.target instanceof Element
+          ? event.target.closest("a,button,[data-rcentz-action]")
+          : null;
+      if (!element || element.closest("form,input,textarea,[contenteditable]"))
+        return;
+      const action = element.getAttribute("data-rcentz-action");
+      track(
+        "CLICK",
+        action && /^[a-zA-Z0-9_-]{1,48}$/.test(action) ? action : undefined,
+      );
+    },
+    { passive: true },
+  );
+  track("PAGE_VIEW");
+  async function connect(attempt = 0) {
+    try {
+      const response = await fetch(base + "/api/analytics/config", {
+        credentials: "omit",
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error("paused");
+      const data = await response.json();
+      if (typeof data.trackingKey !== "string") return;
+      key = data.trackingKey;
+      ready = true;
+      for (const event of pending.splice(0)) void deliver(event);
+    } catch {
+      if (attempt < 3)
+        setTimeout(() => connect(attempt + 1), 5000 * (attempt + 1));
     }
-
-    sendEvent('CLICK', getElementIdentity(target));
   }
-
-  function trackFunction(functionName, metadata) {
-    if (!functionName) {
-      return;
-    }
-
-    sendEvent(
-      'OTHER',
-      Object.assign({}, metadata || {}, {
-        eventCategory: 'FUNCTION',
-        functionName: functionName
-      })
-    );
-  }
-
-  function trackConversion(conversionType, metadata) {
-    var allowedConversions = ['CHECKOUT_STARTED', 'PURCHASE', 'SERVICE_REQUEST', 'SIGN_UP'];
-
-    var eventType = allowedConversions.indexOf(conversionType) >= 0 ? conversionType : 'OTHER';
-
-    sendEvent(
-      eventType,
-      Object.assign({}, metadata || {}, {
-        eventCategory: 'CONVERSION',
-        conversionType: conversionType
-      })
-    );
-  }
-
-  window.RcentzAnalytics = {
-    track: sendEvent,
-    trackFunction: trackFunction,
-    trackConversion: trackConversion
-  };
-
-  sendEvent('PAGE_VIEW', {
-    title: document.title,
-
-    referrer: document.referrer || null
-  });
-
-  document.addEventListener('click', handleDocumentClick, {
-    passive: true
-  });
+  void connect();
 })();

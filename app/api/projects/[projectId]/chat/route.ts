@@ -1,14 +1,30 @@
-import { getCurrentUser } from "@/features/auth/server/get-current-user";
 import { prisma } from "@/lib/prisma";
-
+import {
+  readMessages,
+  sendMessage,
+  openSupport,
+  ChatError,
+} from "@/features/messaging/server/conversations";
+import {
+  chatUser,
+  chatBody,
+  chatFailure,
+  privateHeaders,
+} from "@/features/messaging/server/http";
 export const runtime = "nodejs";
 type Context = { params: Promise<{ projectId: string }> };
-async function findConversation(projectId: string, userId: string) {
+async function existing(projectId: string, userId: string) {
+  if (
+    !(await prisma.project.findFirst({
+      where: { id: projectId, clientId: userId },
+      select: { id: true },
+    }))
+  )
+    throw new ChatError("Project not found.", 404);
   return prisma.conversation.findFirst({
     where: {
       projectId,
       status: "ACTIVE",
-      project: { clientId: userId },
       participants: { some: { userId, leftAt: null } },
     },
     orderBy: { updatedAt: "desc" },
@@ -16,125 +32,42 @@ async function findConversation(projectId: string, userId: string) {
   });
 }
 export async function GET(_request: Request, { params }: Context) {
-  const user = await getCurrentUser();
-  if (!user || user.status !== "ACTIVE")
+  try {
+    const user = await chatUser();
+    const { projectId } = await params;
+    const thread = await existing(projectId, user.id);
     return Response.json(
-      { error: "Sign in to read support messages." },
-      { status: 401 },
+      thread
+        ? await readMessages(thread.id, user.id)
+        : { messages: [], conversationId: null },
+      { headers: privateHeaders },
     );
-  const { projectId } = await params;
-  const conversation = await findConversation(projectId, user.id);
-  if (!conversation)
-    return Response.json(
-      { error: "No active support conversation. Contact contact@rcentz.cc." },
-      { status: 404 },
-    );
-  const messages = await prisma.message.findMany({
-    where: { conversationId: conversation.id, deletedAt: null },
-    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    take: 30,
-    select: {
-      id: true,
-      body: true,
-      createdAt: true,
-      senderId: true,
-      sender: { select: { name: true } },
-    },
-  });
-  return Response.json(
-    {
-      messages: messages
-        .reverse()
-        .map((message) => ({
-          ...message,
-          mine: message.senderId === user.id,
-          senderId: undefined,
-        })),
-    },
-    { headers: { "Cache-Control": "private, no-store" } },
-  );
+  } catch (error) {
+    return chatFailure(error);
+  }
 }
 export async function POST(request: Request, { params }: Context) {
-  const trustedOrigin = new URL(process.env.BETTER_AUTH_URL || request.url)
-    .origin;
-  if (request.headers.get("origin") !== trustedOrigin)
-    return Response.json({ error: "Unverified request." }, { status: 403 });
-  if (!request.headers.get("content-type")?.startsWith("application/json"))
-    return Response.json({ error: "Send JSON." }, { status: 415 });
-  // Bound the streamed request before parsing, even when Content-Length is absent.
-  const reader = request.body?.getReader();
-  if (!reader)
-    return Response.json({ error: "Write a message." }, { status: 400 });
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    size += value.byteLength;
-    if (size > 12000) {
-      await reader.cancel();
-      return Response.json({ error: "Message is too long." }, { status: 413 });
-    }
-    chunks.push(value);
-  }
-  let body: unknown;
   try {
-    body = JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  } catch {
-    return Response.json({ error: "Invalid message." }, { status: 400 });
-  }
-  const text =
-    body &&
-    typeof body === "object" &&
-    "message" in body &&
-    typeof body.message === "string"
-      ? body.message.trim()
-      : "";
-  if (!text || text.length > 2000)
-    return Response.json(
-      { error: "Use between 1 and 2,000 characters." },
-      { status: 400 },
-    );
-  const user = await getCurrentUser();
-  if (!user || user.status !== "ACTIVE")
-    return Response.json(
-      { error: "Sign in to send messages." },
-      { status: 401 },
-    );
-  const { projectId } = await params;
-  const conversation = await findConversation(projectId, user.id);
-  if (!conversation)
+    const user = await chatUser();
+    const body = await chatBody(request);
+    const { projectId } = await params;
+    const text = typeof body.message === "string" ? body.message : "";
+    if (!text.trim() || text.length > 2000)
+      throw new ChatError("Use between 1 and 2,000 characters.");
+    const thread = await openSupport(user.id, projectId);
     return Response.json(
       {
-        error:
-          "Support conversation is not available. Contact contact@rcentz.cc.",
+        ...(await sendMessage(
+          thread.id,
+          user.id,
+          text,
+          typeof body.messageId === "string" ? body.messageId : undefined,
+        )),
+        conversationId: thread.id,
       },
-      { status: 404 },
+      { status: 201, headers: privateHeaders },
     );
-  // A per-conversation transaction lock serialises burst checks across instances.
-  const saved = await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${conversation.id}))`;
-    const recent = await tx.message.count({
-      where: {
-        conversationId: conversation.id,
-        senderId: user.id,
-        createdAt: { gte: new Date(Date.now() - 60000) },
-      },
-    });
-    if (recent >= 10) return false;
-    await tx.message.create({
-      data: { conversationId: conversation.id, senderId: user.id, body: text },
-    });
-    await tx.conversation.update({
-      where: { id: conversation.id },
-      data: { updatedAt: new Date() },
-    });
-    return true;
-  });
-  return saved
-    ? Response.json({ sent: true }, { status: 201 })
-    : Response.json(
-        { error: "Please wait a minute before sending more messages." },
-        { status: 429 },
-      );
+  } catch (error) {
+    return chatFailure(error);
+  }
 }

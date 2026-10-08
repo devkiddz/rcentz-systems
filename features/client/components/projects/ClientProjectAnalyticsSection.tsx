@@ -1,3 +1,4 @@
+import { AnalyticsLiveRefresh } from "@/features/analytics/components/AnalyticsLiveRefresh";
 import { BarChart3, ChevronDown, Radio } from "lucide-react";
 
 import { ProjectTrafficChart } from "@/features/analytics/components/charts/ProjectTrafficChart";
@@ -72,6 +73,9 @@ export function ClientProjectAnalyticsSection({
       id="analytics"
       className="group overflow-hidden rounded-[22px] border border-border bg-surface"
     >
+      <AnalyticsLiveRefresh
+        active={analytics.available && analytics.collection.status === "ACTIVE"}
+      />
       <summary className="flex min-h-[92px] cursor-pointer list-none items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-muted/40 sm:px-6 [&::-webkit-details-marker]:hidden">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
           <BarChart3
@@ -87,8 +91,7 @@ export function ClientProjectAnalyticsSection({
             </h2>
 
             <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-              {project.slug === "demo-dennis-portfolio-complete-v1" &&
-              analytics.available
+              {analytics.available && analytics.collection.sample
                 ? "Sample data"
                 : analytics.available
                   ? formatLabel(analytics.collection.status)
@@ -97,7 +100,7 @@ export function ClientProjectAnalyticsSection({
           </div>
 
           <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-            Traffic, engagement and managed website performance.
+            Recorded traffic and engagement. Updates every 30 seconds.
           </p>
         </div>
 
@@ -148,7 +151,7 @@ function ProjectAnalysis({
   project: ClientProject;
   analytics: AvailableAnalytics;
 }) {
-  const { summary, daily, collection, activeGoals } = analytics;
+  const { summary, daily, collection, activeGoals, sources } = analytics;
 
   const functionActions = getFunctionActions(analytics);
 
@@ -161,14 +164,14 @@ function ProjectAnalysis({
           </h3>
 
           <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-            {project.slug === "demo-dennis-portfolio-complete-v1"
+            {collection.sample
               ? "Simulated analytics for the customer demonstration. No live traffic is claimed."
               : `Recorded intelligence from ${project.name}.`}
           </p>
         </div>
 
         <span className="w-fit rounded-full border border-border bg-background px-3 py-1.5 text-[10px] text-muted-foreground">
-          Last 30 days
+          Chart: last 30 days
         </span>
       </div>
 
@@ -177,7 +180,7 @@ function ProjectAnalysis({
 
         <div className="rounded-[18px] border border-border bg-background/35 p-6">
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Analysis coverage
+            Totals since tracking began
           </p>
 
           <div className="mt-5 divide-y divide-border">
@@ -201,8 +204,12 @@ function ProjectAnalysis({
 
             <AnalysisMetric
               label="Functions"
-              description="Tracked feature and action usage"
-              value={formatNumber(functionActions)}
+              description={
+                functionActions
+                  ? "Recorded feature and action usage"
+                  : "Feature outcome tracking is not connected"
+              }
+              value={functionActions ? formatNumber(functionActions) : "—"}
             />
 
             <AnalysisMetric
@@ -217,10 +224,28 @@ function ProjectAnalysis({
 
             <AnalysisMetric
               label="Traffic sources"
-              description="Referrer intelligence"
-              value="Pending"
+              description="Referring domains · last 30 days"
+              value={
+                sources.length
+                  ? `${sources.length} recorded`
+                  : "Awaiting traffic"
+              }
             />
           </div>
+          {sources.length ? (
+            <ul className="mt-3 space-y-2 text-[10px] text-muted-foreground">
+              {sources.map((source) => (
+                <li key={source.source} className="flex justify-between gap-3">
+                  <span className="truncate">
+                    {source.source === "direct"
+                      ? "Direct / unreported"
+                      : source.source}
+                  </span>
+                  <span>{formatNumber(source.views)} views</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       </div>
 
@@ -265,9 +290,7 @@ function ProjectAnalysis({
       <div className="flex items-center justify-between gap-4 border-t border-border px-5 py-4 sm:px-6">
         <p className="text-[10px] text-muted-foreground">
           {formatNumber(summary.totalEvents)}{" "}
-          {project.slug === "demo-dennis-portfolio-complete-v1"
-            ? "simulated event"
-            : "raw-event"}
+          {collection.sample ? "simulated event" : "raw-event"}
           {summary.totalEvents === 1 ? "" : "s"} represented in the current
           aggregate.
         </p>

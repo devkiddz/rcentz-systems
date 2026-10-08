@@ -1,3 +1,4 @@
+import { WorkspacePageChrome } from '@/features/messaging/components/WorkspacePageChrome';
 import type { ReactNode } from 'react';
 
 import { requireAuth } from '@/features/auth/server/require-auth';
@@ -47,7 +48,9 @@ export default async function DashboardLayout({
 
       <DashboardCanvas>
         <div className="pb-24 md:pb-0">
-          <ClientDashboardIdentityRail summary={dashboardIdentity} />
+          <WorkspacePageChrome>
+            <ClientDashboardIdentityRail summary={dashboardIdentity} />
+          </WorkspacePageChrome>
 
           {children}
         </div>

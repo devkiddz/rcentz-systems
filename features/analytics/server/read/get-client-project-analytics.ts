@@ -204,10 +204,12 @@ export const getClientProjectAnalytics =
 
           select: {
             id: true,
+            slug: true,
 
             analyticsConfig: {
               select: {
                 status: true,
+                allowedOrigins: true,
                 clientVisible: true,
                 timezone: true,
                 startedAt: true,
@@ -269,7 +271,8 @@ export const getClientProjectAnalytics =
       const [
         summaryRecord,
         dailyRecords,
-        activeGoals
+        activeGoals,
+        sourceRecords
       ] =
         await Promise.all([
           prisma.projectAnalytics.findUnique({
@@ -339,11 +342,9 @@ export const getClientProjectAnalytics =
           }),
 
           prisma.projectAnalyticsGoal.count({
-            where: {
-              projectId,
-              active: true
-            }
-          })
+            where: { projectId, active: true }
+          }),
+          prisma.$queryRaw<Array<{ source: string; views: bigint }>>`SELECT COALESCE(metadata->>'referrerHost', 'direct') AS source, COUNT(*) AS views FROM "AnalyticsEvent" WHERE "projectId" = ${projectId} AND type = 'PAGE_VIEW' AND ("createdAt" AT TIME ZONE 'UTC' AT TIME ZONE ${config.timezone})::date >= ${firstDate}::date GROUP BY source ORDER BY views DESC LIMIT 5`
         ]);
 
       const emptySummary =
@@ -425,6 +426,7 @@ export const getClientProjectAnalytics =
           true as const,
 
         collection: {
+          sample: project.slug === 'demo-dennis-portfolio-complete-v1' && config.allowedOrigins.length === 0 && config.status === 'PAUSED',
           status:
             config.status,
 
@@ -445,6 +447,7 @@ export const getClientProjectAnalytics =
         },
 
         activeGoals,
+        sources: sourceRecords.map(row => ({ source: row.source, views: Number(row.views) })),
 
         summary,
 

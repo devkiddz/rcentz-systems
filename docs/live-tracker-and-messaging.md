@@ -1,0 +1,15 @@
+# Live tracker and messaging
+
+Customer and team members use `/dashboard/messages` with their own accounts. Only active conversation participants can read/send. Team replies use the same page; existing project membership is preserved. New customer support threads go to the oldest active administrator. No role bypass exposes another client’s conversations. No account or password is reset.
+
+Messages persist in PostgreSQL. The workspace and support bubble refresh every five seconds while visible. Connected describes collector connectivity, not a staff-online promise. Text messages include sent/read state, unread counts, older-message pagination and retry-safe identifiers. This release does not add voice calls or messaging attachments. Existing onboarding document uploads remain separate.
+
+The portfolio loads `/rcentz-analytics.js` after hydration. Runtime origin lookup discovers the public tracking identifier. Collection permits only active exact-origin configurations and accepts page views and clicks; no server financial or enquiry outcome is inferred from a browser click. Traffic sources retain the referring hostname only, never the full referring URL. Form values, element text, visitor IPs and URL queries are excluded. Sessions expire after 30 minutes idle and use tab session storage. Do Not Track and Global Privacy Control are honored. Session counts are not unique people. Browser blockers and forged/browser-generated events mean these are approximate engagement measures, not billing or verified business-outcome records.
+
+Events, session counts and daily/lifetime aggregates are written in one transaction with deduplication and bounded per-project/session bursts. Dashboard refreshes every 30 seconds while visible. Collection has no schema migration or external analytics subscription requirement. Existing raw-event retention settings are not a scheduled pruning job.
+
+`node --import tsx scripts/activate-dennis-tracker.ts` is read-only. With `--apply` it verifies the reserved Dennis project owner, archives its exact synthetic analytics into AuditLog, clears only those synthetic aggregates, disables the synthetic conversion goal and enables https://dennis.rcentz.cc. Financial, approval, project and account records are untouched. Activation reruns preserve live counters. Stop on altered/custom analytics instead of replacing it. Use the archived metadata if an administrator later needs the original sample figures.
+
+Production requires the already configured DATABASE_URL, BETTER_AUTH_SECRET and BETTER_AUTH_URL. Both repositories must be deployed: Systems receives events; the portfolio sends them. `node scripts/verify-live-tracker.mjs` checks deployed script, configuration and persisted ingress without generating fake traffic. Open the real portfolio in a browser to produce the first genuine visit.
+
+Verification: production builds, authenticated customer/staff messaging, ownership and CSRF guards, read receipts, duplicate retries, sample archive safety, browser tracker/aggregate persistence, desktop/tablet/mobile layouts, light/dark themes and matching sidebar/header separators.

@@ -67,7 +67,7 @@ import type { ClientHeaderFeed } from '@/features/client/types/client-header';
 
 import { authClient } from '@/lib/auth-client';
 
-import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
+import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
 import { RcentzThemeControl } from '@/ui-shell/theme/RcentzThemeControl';
 
 type ClientShellProps = {
@@ -284,7 +284,7 @@ function ClientSidebar() {
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" className="border-r border-sidebar-border bg-sidebar">
-      <SidebarHeader className="border-b border-sidebar-border bg-sidebar">
+      <SidebarHeader className="h-16 shrink-0 justify-center border-b border-border/70 bg-sidebar px-2 py-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -292,8 +292,8 @@ function ClientSidebar() {
               tooltip="Rcentz workspace"
               render={<Link href="/dashboard" />}
               className="transition-colors duration-150 hover:bg-sidebar-accent">
-              <div className="flex shrink-0 items-center justify-center group-data-[collapsible=icon]:hidden">
-                <RcentzBrandLogo className="w-20" />
+              <div className="flex shrink-0 items-center justify-center">
+                <RcentzBrandSymbol className="size-9! group-data-[collapsible=icon]:size-6!" />
               </div>
 
               <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
@@ -420,7 +420,7 @@ function ClientHeader({
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur-md">
-      <div className="flex min-h-14 min-w-0 items-center gap-3 px-3 sm:px-4">
+      <div className="flex h-16 min-w-0 items-center gap-3 px-3 sm:px-4">
         <Tooltip>
           <TooltipTrigger
             render={

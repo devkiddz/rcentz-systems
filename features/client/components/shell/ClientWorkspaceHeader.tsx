@@ -41,7 +41,7 @@ const quickActions = [
   {
     label: 'Start conversation',
     description: 'Message the Rcentz team',
-    href: 'mailto:contact@rcentz.cc',
+    href: '/dashboard/messages?new=1',
     icon: MessageSquarePlus
   },
   {
@@ -57,9 +57,9 @@ const quickActions = [
     icon: BriefcaseBusiness
   },
   {
-    label: 'Open support ticket',
+    label: 'Contact support',
     description: 'Request help or report an issue',
-    href: 'mailto:contact@rcentz.cc?subject=Support%20request',
+    href: '/dashboard/messages?new=support',
     icon: Headphones
   },
   {
@@ -101,7 +101,7 @@ export function ClientWorkspaceHeader({ user }: Props) {
 
   const [signingOut, setSigningOut] = useState(false);
 
-  if (!shouldShow(pathname)) {
+  if (pathname === '/dashboard/messages' || !shouldShow(pathname)) {
     return null;
   }
 

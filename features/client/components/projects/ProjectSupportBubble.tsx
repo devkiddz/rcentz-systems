@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Link from 'next/link';
 import { MessageSquare, Send, X } from "lucide-react";
 type Message = {
   id: string;
@@ -15,6 +16,8 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const requestId = useRef('');
   const input = useRef<HTMLTextAreaElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const end = useRef<HTMLDivElement>(null);
@@ -34,6 +37,8 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
         if (!response.ok)
           throw new Error(data.error || "Support is temporarily unavailable.");
         setMessages(data.messages);
+        setConversationId(data.conversationId);
+        if (data.conversationId && document.hasFocus()) await fetch(`/api/conversations/${data.conversationId}/read`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ through: data.readThrough }), signal: controller.signal });
         setError("");
         setLoading(false);
       } catch (cause) {
@@ -46,7 +51,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
       }
     }
     void load();
-    const timer = window.setInterval(load, 10000);
+    const timer = window.setInterval(load, 5000);
     function escape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setOpen(false);
@@ -72,12 +77,13 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, messageId: requestId.current ||= crypto.randomUUID() }),
       });
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Message could not be sent.");
-      setText("");
+      setText(""); requestId.current = '';
+      setConversationId(data.conversationId);
       const latest = await fetch(endpoint, { cache: "no-store" });
       const history = await latest.json();
       if (latest.ok) setMessages(history.messages);
@@ -170,8 +176,9 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
             <textarea
               ref={input}
               id="support-message"
+              disabled={pending}
               value={text}
-              onChange={(event) => setText(event.target.value)}
+              onChange={(event) => { setText(event.target.value); requestId.current = ''; }}
               maxLength={2000}
               rows={2}
               placeholder="Message the team…"
@@ -186,7 +193,7 @@ export function ProjectSupportBubble({ projectId }: { projectId: string }) {
             </button>
           </form>
           <p className="px-4 pb-3 text-[10px] text-muted-foreground">
-            Replies depend on team availability.{" "}
+            {conversationId ? <Link href={`/dashboard/messages?conversation=${conversationId}`} className="mr-2 underline">Open full conversation</Link> : null}Replies depend on team availability.{" "}
             <a href="mailto:contact@rcentz.cc" className="underline">
               Email support
             </a>
