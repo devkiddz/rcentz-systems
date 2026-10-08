@@ -409,6 +409,7 @@ export function SystemsToolsSection() {
 
   return (
     <section
+      id="tools"
       aria-labelledby="systems-tools-title"
       className="rcentz-section border-b border-border py-12 sm:py-20">
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.7fr] lg:gap-12">

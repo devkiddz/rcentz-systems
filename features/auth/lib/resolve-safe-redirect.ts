@@ -17,6 +17,10 @@ export function resolveSafeRedirect(
       return fallback;
     }
 
+    if (resolved.pathname === '/login' || resolved.pathname === '/register') {
+      return fallback;
+    }
+
     return `${resolved.pathname}${resolved.search}${resolved.hash}`;
   } catch {
     return fallback;

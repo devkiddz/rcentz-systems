@@ -4,8 +4,7 @@ import { cache } from 'react';
 
 import { headers } from 'next/headers';
 
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { isAuthConfigured } from '@/features/auth/lib/auth-configuration';
 
 /**
  * Canonical server-side identity resolver.
@@ -20,6 +19,9 @@ import { prisma } from '@/lib/prisma';
  * Authorization belongs to require-auth / require-admin.
  */
 export const getCurrentUser = cache(async () => {
+  if (!isAuthConfigured()) return null;
+  const { auth } = await import('@/lib/auth');
+  const { prisma } = await import('@/lib/prisma');
   const session = await auth.api.getSession({
     headers: await headers()
   });

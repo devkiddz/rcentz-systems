@@ -1,0 +1,21 @@
+Rcentz footer and authenticated onboarding
+
+Includes a grouped footer, account registration/sign-in, a five-step illustrated project brief, an owner-only submission receipt and a request workspace. Existing public UI improvements are included when not already installed.
+
+The installer creates a recovery branch, applies missing commits, runs lint/build, checks local auth/database readiness, then pushes systems HEAD:main. It never force-pushes and never migrates, resets or seeds your database.
+
+Before running:
+- Commit/stash any local changes.
+- Configure DATABASE_URL, BETTER_AUTH_SECRET (a strong secret), and BETTER_AUTH_URL in .env.local or the shell. Use the canonical existing Rcentz database with the current Prisma schema.
+- Configure the same required variables in your hosting environment. BETTER_AUTH_URL must be the actual public origin (https://systems.rcentz.cc in production). Local development can use http://localhost:3000. Local checks cannot verify hosting settings.
+- The existing user/session/account tables and active Service records must be available. Build choices use the existing service catalogue; the installer checks the required slugs and stops rather than inventing records.
+
+Run from the rcentz-systems checkout:
+$zip = Join-Path $env:USERPROFILE 'Downloads\rcentz-onboarding-update.zip'
+$folder = '..\Rcentz-Onboarding-Update'
+Expand-Archive -LiteralPath $zip -DestinationPath $folder -Force
+& "$folder\Install-Rcentz-Onboarding-And-Push.ps1"
+
+After deployment, test Start a project -> Create account -> Sign in -> complete brief -> receipt -> workspace. Confirm a second account cannot open the first account's brief.
+
+This release saves real requests; it does not pretend to create an approved project, working preview, payment, or full delivery dashboard. Uploaded files and email password-reset are not part of this release. File exchange can be arranged during scope review. Form answers remain while navigating steps; refreshing an unsubmitted form clears them.
