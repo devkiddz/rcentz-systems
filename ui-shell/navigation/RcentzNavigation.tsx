@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown, ArrowUpRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { rcentzNavigationItems } from './rcentz-navigation-items';
 import { RcentzProductsMenu } from './RcentzProductsMenu';
+import { RcentzIllustratedMenu } from './RcentzIllustratedMenu';
 
 type RcentzNavigationProps = {
   mobile?: boolean;
@@ -118,7 +119,9 @@ export function RcentzNavigation({
             </summary>
             <div
               className={
-                mobile ? 'mx-1 pb-2 pt-1' : 'absolute left-0 top-full z-50 pt-2'
+                mobile
+                  ? 'mx-1 pb-2 pt-1'
+                  : 'absolute left-0 top-full z-50 pt-2'
               }
             >
               <div
@@ -130,7 +133,7 @@ export function RcentzNavigation({
                       ? 'w-full'
                       : compact
                         ? 'w-64'
-                        : 'w-96'
+                        : 'w-[800px] max-w-[calc(100vw-2rem)]'
                 ].join(' ')}
               >
                 {item.label === 'Products' && !compact ? (
@@ -138,22 +141,18 @@ export function RcentzNavigation({
                     <RcentzProductsMenu onNavigate={navigate} />
                   ) : null
                 ) : (
-                  <div className="grid grid-cols-2 gap-1 p-2">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        onClick={navigate}
-                        className="flex min-h-11 items-center justify-between gap-3 rounded-lg px-3 text-xs font-semibold hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        {child.label}
-                        <ArrowUpRight
-                          aria-hidden="true"
-                          className="size-3 shrink-0 text-muted-foreground"
-                        />
-                      </Link>
-                    ))}
-                  </div>
+                  <RcentzIllustratedMenu
+                    kind={
+                      item.label === 'Resources'
+                        ? 'resources'
+                        : item.label === 'Products'
+                          ? 'products'
+                          : 'solutions'
+                    }
+                    items={item.children}
+                    compact={compact}
+                    onNavigate={navigate}
+                  />
                 )}
               </div>
             </div>
