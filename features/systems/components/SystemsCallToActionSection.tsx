@@ -2,7 +2,7 @@ import { RcentzNavigation } from '@/ui-shell/navigation/RcentzNavigation';
 import { SystemsProjectPreviewCarousel } from './SystemsProjectPreviewCarousel';
 import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 import { rcentzTypography } from '@/ui-shell/brand/rcentz-typography';
-import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
+import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
 import Link from 'next/link';
 import { ArrowUpRight, Grid2X2 } from 'lucide-react';
 import { RcentzGithubIcon } from '@/ui-shell/brand/RcentzGithubIcon';
@@ -44,7 +44,7 @@ export function SystemsCallToActionSection() {
           <div className="relative rounded-xl border border-border bg-background">
             <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-3">
               <div className="flex min-w-0 items-center gap-4">
-                <RcentzBrandLogo className="h-auto w-14 shrink-0 sm:w-16" />
+                <RcentzBrandSymbol className="size-6 shrink-0 sm:size-7" />
                 <div className="hidden xl:block"><RcentzNavigation compact /></div>
               </div>
 

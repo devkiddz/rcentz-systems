@@ -62,6 +62,17 @@
   width: 88%;
 }
 
+@media (max-width: 639px) {
+  .globe {
+    height: min(48vw, 240px);
+  }
+
+  .globe > figure {
+    width: 120%;
+    top: -12vw;
+  }
+}
+
 @media (min-width: 1024px) {
   .layout {
     padding-top: 5rem;

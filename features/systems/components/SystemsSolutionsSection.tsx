@@ -1,6 +1,5 @@
 'use client';
 
-import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
 import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
 
 import { projectEntryUrl } from '@/features/systems/lib/project-entry';
@@ -64,7 +63,6 @@ function WorkspacePreview({ selected }: { selected: number }) {
       <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-4">
         <div className="flex min-w-0 items-center gap-2">
           <RcentzBrandSymbol className="size-5 shrink-0" />
-          <RcentzBrandLogo className="h-auto w-16 shrink-0" />
           <span className="text-[10px] text-muted-foreground">workspace</span>
         </div>
         <span className="shrink-0 rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground">
