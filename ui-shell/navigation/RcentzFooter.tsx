@@ -8,7 +8,7 @@ export function RcentzFooter() {
       <div className="grid gap-8 sm:grid-cols-[1fr_auto]">
         <div>
           <Link href="/" aria-label="Rcentz Systems home" className="inline-flex min-h-11 items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <RcentzBrandLogo className="h-auto w-24" />
+            <RcentzBrandLogo className="h-auto w-20" />
           </Link>
           <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
             Software built around your business.

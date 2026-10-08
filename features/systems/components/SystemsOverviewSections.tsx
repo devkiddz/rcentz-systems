@@ -27,7 +27,7 @@ export function SystemsOverviewSections() {
             </p>
           </div>
           <div>
-            <h2 id="systems-pricing-title" className={rcentzTypography.className + ' text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'}>
+            <h2 id="systems-pricing-title" className={rcentzTypography.className + ' text-3xl font-extrabold leading-tight sm:text-4xl lg:text-[2.5rem]'}>
               A clear scope. An agreed project cost.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">

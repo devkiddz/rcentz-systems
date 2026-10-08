@@ -48,11 +48,11 @@ export function SystemsRemoteSection() {
             </p>
             <h2
               id="systems-remote-title"
-              className={rcentzTypography.className + ' mt-4 font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
-              <span className="block font-medium text-muted-foreground">
+              className={rcentzTypography.className + ' mt-4 font-extrabold tracking-normal text-3xl sm:text-4xl lg:text-[2.5rem] leading-[1.18]'}>
+              <span className="block font-semibold text-muted-foreground">
                 Built for your business.
               </span>
-              <span className="mt-2 block font-bold text-foreground">
+              <span className="mt-2 block font-extrabold text-foreground">
                 Delivered across borders.
               </span>
             </h2>

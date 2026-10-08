@@ -16,7 +16,7 @@ export function SystemsCallToActionSection() {
       <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-12">
         <h2
           id="systems-cta-title"
-          className={rcentzTypography.className + ' max-w-3xl lg:col-start-2 font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
+          className={rcentzTypography.className + ' max-w-3xl lg:col-start-2 font-extrabold tracking-normal text-3xl sm:text-4xl lg:text-[2.5rem] leading-[1.18]'}>
           Your next business move.
           <span className="block">Built into software.</span>
         </h2>
@@ -42,7 +42,7 @@ export function SystemsCallToActionSection() {
           <div className="relative overflow-hidden rounded-xl border border-border bg-background">
             <div className="flex h-12 items-center justify-between gap-3 border-b border-border px-3">
               <div className="flex min-w-0 items-center gap-4">
-                <RcentzBrandLogo className="h-auto w-20 shrink-0 sm:w-24" />
+                <RcentzBrandLogo className="h-auto w-16 shrink-0 sm:w-20" />
                 <div
                   aria-hidden="true"
                   className="hidden items-center gap-3 text-[9px] text-muted-foreground xl:flex">

@@ -332,11 +332,11 @@ export function SystemsSolutionsSection() {
         <div className="min-w-0">
           <h2
             id="systems-solutions-title"
-            className={rcentzTypography.className + ' font-bold tracking-normal text-2xl sm:text-3xl lg:text-4xl leading-[1.18]'}>
-            <span className="block font-medium text-muted-foreground lg:pl-12">
+            className={rcentzTypography.className + ' font-extrabold tracking-normal text-3xl sm:text-4xl lg:text-[2.5rem] leading-[1.18]'}>
+            <span className="block font-semibold text-muted-foreground lg:pl-12">
               Built for your customers.
             </span>
-            <span className="mt-2 block font-bold text-foreground">
+            <span className="mt-2 block font-extrabold text-foreground">
               Connected to your operations.
             </span>
           </h2>
