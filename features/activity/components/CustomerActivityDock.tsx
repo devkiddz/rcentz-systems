@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Activity, Bell, ChevronDown, GripVertical, Headphones, LayoutDashboard, MessageSquare, X } from 'lucide-react';
@@ -19,8 +19,10 @@ const tools = [
 ] as const;
 const buttonClass = 'relative flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-muted-foreground hover:bg-surface-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const controlClass = 'flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
-function bounded(position: Position): Position {
-  return { x: Math.max(8, Math.min(window.innerWidth - 308, position.x)), y: Math.max(8, Math.min(window.innerHeight - 156, position.y)) };
+function bounded(position: Position, element?: HTMLElement | null): Position {
+  const width = element?.offsetWidth ?? 180;
+  const height = element?.offsetHeight ?? 332;
+  return { x: Math.max(8, Math.min(window.innerWidth - width - 8, position.x)), y: Math.max(8, Math.min(window.innerHeight - height - 8, position.y)) };
 }
 function badge(count: number) { return count > 99 ? '99+' : String(count); }
 
@@ -33,9 +35,11 @@ export function CustomerActivityDock() {
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const preferenceKey = useRef('');
-  const drag = useRef<{ pointerId: number; x: number; y: number; start: Position } | null>(null);
+  const drag = useRef<{ pointerId: number; x: number; y: number; start: Position; last: Position } | null>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const dragged = useRef(false);
   const sheetRef = useRef<HTMLElement>(null);
+  const dockRef = useRef<HTMLElement>(null);
   const closeSheet = useCallback(() => { setSheet(null); returnFocus.current?.focus(); }, []);
 
   useEffect(() => {
@@ -59,13 +63,13 @@ export function CustomerActivityDock() {
         if (key !== preferenceKey.current) {
           preferenceKey.current = key;
           let nextMode: Mode = 'expanded';
-          let nextPosition = { x: window.innerWidth - 324, y: window.innerHeight - 224 };
+          let nextPosition = { x: window.innerWidth - 196, y: window.innerHeight - 348 };
           try {
             const value = JSON.parse(localStorage.getItem(key) || 'null');
             if (value && ['expanded', 'collapsed', 'hidden'].includes(value.mode)) nextMode = value.mode;
             if (value?.position && Number.isFinite(value.position.x) && Number.isFinite(value.position.y)) nextPosition = value.position;
           } catch { /* Browser storage is optional. */ }
-          setMode(nextMode); setPosition(bounded(nextPosition)); setSheet(null);
+          setMode(nextMode); setPosition(bounded(nextPosition, dockRef.current)); setSheet(null);
         }
         setFeed(data); setError('');
       } catch (cause) {
@@ -87,10 +91,11 @@ export function CustomerActivityDock() {
   }, [pathname]);
 
   useEffect(() => {
-    const resize = () => setPosition(value => bounded(value));
+    const resize = () => setPosition(value => bounded(value, dockRef.current));
+    resize();
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
-  }, []);
+  }, [mode, feed?.accountKey]);
   useEffect(() => {
     if (!sheet) return;
     if (sheet !== 'chat') sheetRef.current?.focus();
@@ -105,6 +110,24 @@ export function CustomerActivityDock() {
 
   function save(nextMode: Mode, nextPosition = position) {
     try { if (preferenceKey.current) localStorage.setItem(preferenceKey.current, JSON.stringify({ mode: nextMode, position: nextPosition })); } catch { /* Keep usable without storage. */ }
+  }
+  function startDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (event.button !== 0 || !window.matchMedia('(min-width: 768px)').matches) return;
+    dragged.current = false;
+    drag.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, start: position, last: position };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+  function moveDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    const active = drag.current;
+    if (!active || active.pointerId !== event.pointerId) return;
+    const dx = event.clientX - active.x, dy = event.clientY - active.y;
+    if (Math.hypot(dx, dy) > 4) dragged.current = true;
+    active.last = bounded({ x: active.start.x + dx, y: active.start.y + dy }, dockRef.current);
+    setPosition(active.last);
+  }
+  function finishDrag() {
+    if (drag.current) save(mode, drag.current.last);
+    drag.current = null;
   }
   function changeMode(next: Mode) { setMode(next); save(next); if (next === 'hidden') closeSheet(); }
   function openSheet(next: Sheet, element: HTMLElement) {
@@ -128,19 +151,28 @@ export function CustomerActivityDock() {
   const projectId = projectParts[1] === 'dashboard' && projectParts[2] === 'projects' && projectParts[3] ? projectParts[3] : undefined;
   const items = sheet && sheet !== 'chat' ? feed[sheet] : [];
   const dockStyle = { '--dock-x': position.x + 'px', '--dock-y': position.y + 'px' } as CSSProperties;
-  const above = position.y > 360;
+  const dockWidth = mode === 'collapsed' ? 56 : mode === 'hidden' ? 48 : 180;
+  const sheetTop = Math.max(80, Math.min(window.innerHeight - 180, position.y));
+  const leftSpace = position.x;
+  const rightSpace = window.innerWidth - position.x - dockWidth;
+  const sheetWidth = Math.min(360, Math.max(220, Math.max(leftSpace, rightSpace) - 20));
+  const sheetLeft = rightSpace >= leftSpace
+    ? position.x + dockWidth + 12
+    : Math.max(8, position.x - sheetWidth - 12);
   const sheetStyle = {
-    '--sheet-left': Math.max(8, Math.min(window.innerWidth - 368, position.x)) + 'px',
-    '--sheet-top': above ? 'auto' : position.y + 144 + 'px',
-    '--sheet-bottom': above ? window.innerHeight - position.y + 12 + 'px' : 'auto',
-    '--sheet-height': Math.max(120, Math.min(560, above ? position.y - 80 : window.innerHeight - position.y - 160)) + 'px',
+    '--sheet-left': sheetLeft + 'px',
+    '--sheet-width': sheetWidth + 'px',
+    '--sheet-top': sheetTop + 'px',
+    '--sheet-bottom': 'auto',
+    '--sheet-height': Math.max(120, Math.min(560, window.innerHeight - sheetTop - 16)) + 'px',
   } as CSSProperties;
 
   return (
     <>
-      <aside aria-label="Customer activity panel" style={dockStyle} className={[styles.dock, mode === 'collapsed' ? styles.collapsed : '', mode === 'hidden' ? styles.hiddenDock : ''].join(' ')}>
+      <aside ref={dockRef} aria-label="Customer activity panel" style={dockStyle} className={[styles.dock, mode === 'collapsed' ? styles.collapsed : '', mode === 'hidden' ? styles.hiddenDock : ''].join(' ')}>
         {mode === 'hidden' ? (
-          <button type="button" aria-label={`Show customer activity panel${total ? ', ' + total + ' unread updates' : ''}`} onClick={() => changeMode('expanded')} className="relative flex size-12 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <button type="button" aria-label={`Show customer activity panel${total ? ', ' + total + ' unread updates' : ''}`} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag} onLostPointerCapture={() => { drag.current = null; }}
+            onClick={event => { if (!dragged.current || event.detail === 0) changeMode('expanded'); dragged.current = false; }} className="relative flex size-12 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <Bell aria-hidden="true" className="size-5" />
             {total ? <span className="absolute -right-1 -top-1 rounded-full bg-theme-accent px-1.5 text-[10px] font-semibold text-background">{badge(total)}</span> : null}
           </button>
@@ -148,13 +180,11 @@ export function CustomerActivityDock() {
           <>
             <div className={styles.handle}>
               <button type="button" aria-label="Move activity panel; use arrow keys to reposition" className={controlClass + ' cursor-grab touch-none active:cursor-grabbing'}
-                onPointerDown={event => { if (event.button !== 0) return; drag.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, start: position }; event.currentTarget.setPointerCapture(event.pointerId); }}
-                onPointerMove={event => { const active = drag.current; if (!active || active.pointerId !== event.pointerId) return; setPosition(bounded({ x: active.start.x + event.clientX - active.x, y: active.start.y + event.clientY - active.y })); }}
-                onPointerUp={() => { drag.current = null; save(mode); }} onPointerCancel={() => { drag.current = null; save(mode); }} onLostPointerCapture={() => { drag.current = null; }}
-                onKeyDown={event => { const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key]; if (!delta) return; event.preventDefault(); const next = bounded({ x: position.x + delta[0], y: position.y + delta[1] }); setPosition(next); save(mode, next); }}>
+                onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag} onLostPointerCapture={() => { drag.current = null; }}
+                onKeyDown={event => { const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key]; if (!delta) return; event.preventDefault(); const next = bounded({ x: position.x + delta[0], y: position.y + delta[1] }, dockRef.current); setPosition(next); save(mode, next); }}>
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
-              <p className="flex-1 text-xs font-semibold">Your workspace</p>
+              <p className={styles.dockTitle}>Your workspace</p>
               <button type="button" aria-label={mode === 'collapsed' ? 'Expand activity panel' : 'Collapse activity panel'} onClick={() => changeMode(mode === 'collapsed' ? 'expanded' : 'collapsed')} className={controlClass}><ChevronDown aria-hidden="true" className="size-4" /></button>
               <button type="button" aria-label="Hide activity panel" onClick={() => changeMode('hidden')} className={controlClass}><X aria-hidden="true" className="size-4" /></button>
             </div>
