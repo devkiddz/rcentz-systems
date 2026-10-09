@@ -127,7 +127,7 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
               ">
               {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
 
-              <AvatarFallback className="bg-surface-muted text-[9px] font-semibold text-foreground">
+              <AvatarFallback className="bg-surface-muted text-xs font-semibold text-foreground">
                 {initials}
               </AvatarFallback>
 
@@ -135,9 +135,9 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             </Avatar>
 
             <div className="hidden min-w-0 sm:block">
-              <p className="max-w-32 truncate text-[11px] font-semibold text-foreground">{user.name}</p>
+              <p className="max-w-32 truncate text-xs font-semibold text-foreground">{user.name}</p>
 
-              <p className="max-w-32 truncate text-[9px] text-muted">{t(`account.roles.${user.role}`)}</p>
+              <p className="max-w-32 truncate text-xs text-muted">{t(`account.roles.${user.role}`)}</p>
             </div>
 
             <ChevronDown
@@ -177,7 +177,7 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
               <Avatar className="size-10 shrink-0 ring-1 ring-border">
                 {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
 
-                <AvatarFallback className="bg-surface-muted text-[10px] font-semibold text-foreground">
+                <AvatarFallback className="bg-surface-muted text-xs font-semibold text-foreground">
                   {initials}
                 </AvatarFallback>
 
@@ -185,14 +185,14 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
               </Avatar>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[12px] font-semibold text-foreground">{user.name}</p>
+                <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
 
-                <p className="mt-0.5 truncate text-[9px] font-normal text-muted">{user.email}</p>
+                <p className="mt-0.5 truncate text-xs font-normal text-muted">{user.email}</p>
 
                 <div className="mt-1.5 flex items-center gap-1.5">
                   <ShieldCheck aria-hidden="true" className="size-3 text-theme-accent" />
 
-                  <span className="text-[9px] font-medium text-theme-accent">
+                  <span className="text-xs font-medium text-theme-accent">
                     {t(`account.roles.${user.role}`)}
                   </span>
                 </div>
@@ -221,9 +221,9 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             <UserRound aria-hidden="true" className="size-4 text-muted" />
 
             <div className="min-w-0">
-              <p className="text-[11px] font-medium text-foreground">Admin profile</p>
+              <p className="text-xs font-medium text-foreground">Admin profile</p>
 
-              <p className="mt-0.5 text-[8px] text-muted">Account and personal information</p>
+              <p className="mt-0.5 text-xs text-muted">Account and personal information</p>
             </div>
           </DropdownMenuItem>
 
@@ -244,9 +244,9 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             <Settings aria-hidden="true" className="size-4 text-muted" />
 
             <div className="min-w-0">
-              <p className="text-[11px] font-medium text-foreground">Settings</p>
+              <p className="text-xs font-medium text-foreground">Settings</p>
 
-              <p className="mt-0.5 text-[8px] text-muted">Workspace preferences</p>
+              <p className="mt-0.5 text-xs text-muted">Workspace preferences</p>
             </div>
           </DropdownMenuItem>
 
@@ -267,9 +267,9 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             <ExternalLink aria-hidden="true" className="size-4 text-muted" />
 
             <div className="min-w-0">
-              <p className="text-[11px] font-medium text-foreground">{t('account.viewSite')}</p>
+              <p className="text-xs font-medium text-foreground">{t('account.viewSite')}</p>
 
-              <p className="mt-0.5 text-[8px] text-muted">Open the public Rcentz website</p>
+              <p className="mt-0.5 text-xs text-muted">Open the public Rcentz website</p>
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -283,9 +283,9 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             </div>
 
             <div className="min-w-0">
-              <p className="text-[9px] font-semibold text-foreground">Protected admin session</p>
+              <p className="text-xs font-semibold text-foreground">Protected admin session</p>
 
-              <p className="mt-0.5 text-[8px] leading-3 text-muted">Authenticated Rcentz workspace</p>
+              <p className="mt-0.5 text-xs leading-3 text-muted">Authenticated Rcentz workspace</p>
             </div>
           </div>
         </div>
@@ -313,11 +313,11 @@ export function AdminAccountMenu({ user }: AdminAccountMenuProps) {
             )}
 
             <div className="min-w-0">
-              <p className="text-[11px] font-medium">
+              <p className="text-xs font-medium">
                 {isSigningOut ? t('account.signingOut') : t('account.signOut')}
               </p>
 
-              <p className="mt-0.5 text-[8px] opacity-70">End this admin session</p>
+              <p className="mt-0.5 text-xs opacity-70">End this admin session</p>
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>

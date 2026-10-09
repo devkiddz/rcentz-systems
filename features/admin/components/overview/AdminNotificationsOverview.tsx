@@ -64,18 +64,18 @@ function NotificationListItem({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <p
-              className={`truncate text-[12px] ${
+              className={`truncate text-sm ${
                 isUnread ? 'font-semibold text-foreground' : 'font-medium text-foreground'
               }`}>
               {notification.title}
             </p>
 
-            <span className="shrink-0 text-[9px] text-muted">
+            <span className="shrink-0 text-xs text-muted">
               {formatNotificationTime(notification.createdAt)}
             </span>
           </div>
 
-          <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-muted">{notification.message}</p>
+          <p className="mt-1 line-clamp-2 text-xs leading-4 text-muted">{notification.message}</p>
         </div>
       </div>
     </button>
@@ -104,9 +104,9 @@ export function AdminNotificationsOverview({ data }: AdminNotificationsOverviewP
       <div className="flex flex-1 flex-col items-center justify-center text-center">
         <Inbox className="size-5 text-theme-accent" />
 
-        <p className="mt-3 text-[13px] font-semibold text-foreground">No notifications</p>
+        <p className="mt-3 text-sm font-semibold text-foreground">No notifications</p>
 
-        <p className="mt-1 text-[11px] text-muted">New system activity will appear here.</p>
+        <p className="mt-1 text-xs text-muted">New system activity will appear here.</p>
       </div>
     );
   }
@@ -115,22 +115,22 @@ export function AdminNotificationsOverview({ data }: AdminNotificationsOverviewP
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="shrink-0 px-1 pb-4">
         <div className="flex items-center gap-2">
-          <p className="text-[13px] font-semibold text-foreground">Notification reader</p>
+          <p className="text-sm font-semibold text-foreground">Notification reader</p>
 
           {isPreview ? (
-            <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">
+            <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-muted">
               Preview
             </span>
           ) : null}
 
           {unreadCount > 0 ? (
-            <span className="rounded-full bg-theme-accent-faint px-2 py-0.5 text-[9px] font-semibold text-theme-accent">
+            <span className="rounded-full bg-theme-accent-faint px-2 py-0.5 text-xs font-semibold text-theme-accent">
               {unreadCount} unread
             </span>
           ) : null}
         </div>
 
-        <p className="mt-1 text-[11px] text-muted">Select an item to inspect its full message.</p>
+        <p className="mt-1 text-xs text-muted">Select an item to inspect its full message.</p>
       </div>
 
       <div className="grid min-h-0 flex-1 gap-3 md:grid-cols-[0.9fr_1.1fr]">
@@ -153,7 +153,7 @@ export function AdminNotificationsOverview({ data }: AdminNotificationsOverviewP
               <MessageSquareText className="size-4 text-theme-accent" />
             </div>
 
-            <div className="flex items-center gap-1.5 text-[9px] text-muted">
+            <div className="flex items-center gap-1.5 text-xs text-muted">
               <Circle
                 className={`size-2 ${
                   selectedNotification.readAt
@@ -166,23 +166,23 @@ export function AdminNotificationsOverview({ data }: AdminNotificationsOverviewP
             </div>
           </div>
 
-          <p className="mt-4 text-[9px] font-medium uppercase tracking-[0.12em] text-theme-accent">
+          <p className="mt-4 text-xs font-medium uppercase tracking-[0.12em] text-theme-accent">
             {formatNotificationType(selectedNotification.type)}
           </p>
 
-          <h3 className="mt-2 text-[14px] font-semibold tracking-[-0.02em] text-foreground">
+          <h3 className="mt-2 text-sm font-semibold tracking-[-0.02em] text-foreground">
             {selectedNotification.title}
           </h3>
 
-          <p className="mt-3 text-[11px] leading-5 text-muted">{selectedNotification.message}</p>
+          <p className="mt-3 text-xs leading-5 text-muted">{selectedNotification.message}</p>
 
           <div className="mt-5 border-t border-border pt-3">
-            <p className="text-[10px] text-muted">{formatNotificationTime(selectedNotification.createdAt)}</p>
+            <p className="text-xs text-muted">{formatNotificationTime(selectedNotification.createdAt)}</p>
 
             {selectedNotification.href && !isPreview ? (
               <Link
                 href={selectedNotification.href}
-                className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-theme-accent">
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-theme-accent">
                 Open related item
                 <ExternalLink className="size-3" />
               </Link>

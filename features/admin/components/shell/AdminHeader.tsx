@@ -58,8 +58,8 @@ export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
   }, [router]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur-md">
-      <div className="flex min-h-14 min-w-0 items-center gap-2 px-3 sm:px-4">
+    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/95 backdrop-blur-md">
+      <div className="flex h-16 min-w-0 items-center gap-2 px-3 sm:px-4">
         <Tooltip>
           <TooltipTrigger
             render={
@@ -77,11 +77,11 @@ export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
         <div className="h-5 w-px shrink-0 bg-border" />
 
         <div className="min-w-0">
-          <p className="truncate text-[11px] font-semibold tracking-[-0.02em] text-foreground sm:text-[12px]">
+          <p className="truncate text-xs font-semibold tracking-[-0.02em] text-foreground sm:text-sm">
             Admin
           </p>
 
-          <p className="hidden truncate text-[9px] text-muted sm:block">Rcentz Systems</p>
+          <p className="hidden truncate text-xs text-muted sm:block">Rcentz Systems</p>
         </div>
 
         <div className="ml-auto flex min-w-0 items-center gap-0.5">

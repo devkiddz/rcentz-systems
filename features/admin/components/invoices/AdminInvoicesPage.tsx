@@ -136,7 +136,7 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
     <main className="px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-[var(--section-max)] space-y-6">
         <section>
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-theme-accent">Finance</p>
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">Finance</p>
 
           <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -150,14 +150,14 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <p className="hidden text-[9px] text-muted sm:block">
+              <p className="hidden text-xs text-muted sm:block">
                 <span className="font-semibold text-foreground">{data.summary.total}</span> invoice
                 {data.summary.total === 1 ? '' : 's'}
               </p>
 
               <Link
                 href="/admin/invoices/new"
-                className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40">
+                className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40">
                 <FilePlus2 aria-hidden="true" className="size-3.5" />
                 Create invoice
               </Link>
@@ -208,7 +208,7 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
             <div>
               <p className="text-sm font-semibold text-foreground">Financial position</p>
 
-              <p className="mt-1 text-[10px] text-muted">
+              <p className="mt-1 text-xs text-muted">
                 Currency totals are kept separate to avoid mixing financial values.
               </p>
             </div>
@@ -227,7 +227,7 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
               <div>
                 <p className="text-sm font-semibold text-foreground">Invoice records</p>
 
-                <p className="mt-1 text-[10px] text-muted">Search and review client billing records.</p>
+                <p className="mt-1 text-xs text-muted">Search and review client billing records.</p>
               </div>
 
               <div className="relative w-full lg:max-w-[320px]">
@@ -238,7 +238,7 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
                   value={search}
                   onChange={event => setSearch(event.target.value)}
                   placeholder="Invoice, client or item..."
-                  className="h-9 w-full rounded-xl border border-border bg-background pl-9 pr-3 text-[10px] text-foreground outline-none placeholder:text-muted focus:border-foreground/30"
+                  className="h-9 w-full rounded-xl border border-border bg-background pl-9 pr-3 text-xs text-foreground outline-none placeholder:text-muted focus:border-foreground/30"
                 />
               </div>
             </div>
@@ -254,8 +254,8 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
                     onClick={() => setFilter(item.key)}
                     className={
                       active
-                        ? 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-foreground bg-foreground px-3 text-[9px] font-medium text-background'
-                        : 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-background px-3 text-[9px] font-medium text-muted transition-colors hover:text-foreground'
+                        ? 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-foreground bg-foreground px-3 text-xs font-medium text-background'
+                        : 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-background px-3 text-xs font-medium text-muted transition-colors hover:text-foreground'
                     }>
                     {item.label}
 
@@ -273,7 +273,7 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
 
                 <p className="mt-3 text-xs font-semibold text-foreground">No matching invoices</p>
 
-                <p className="mt-1 text-[10px] text-muted">Try another filter or search term.</p>
+                <p className="mt-1 text-xs text-muted">Try another filter or search term.</p>
               </div>
             ) : (
               <div className="grid gap-4 xl:grid-cols-2">
@@ -286,11 +286,11 @@ export function AdminInvoicesPage({ data }: AdminInvoicesPageProps) {
 
           <div className="border-t border-border bg-surface-muted/40 px-5 py-3">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-[9px] text-muted">
+              <p className="text-xs text-muted">
                 Showing {filteredInvoices.length} of {data.summary.total} invoice records.
               </p>
 
-              <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{formatStatus(filter)}</p>
+              <p className="text-xs uppercase tracking-[0.08em] text-muted">{formatStatus(filter)}</p>
             </div>
           </div>
         </section>
@@ -305,14 +305,14 @@ function AdminInvoiceCard({ invoice }: { invoice: AdminInvoiceListItem }) {
   return (
     <Link
       href={`/admin/invoices/${invoice.id}`}
-      className="group block overflow-hidden rounded-[18px] border border-border bg-background transition-[border-color,transform] hover:-translate-y-0.5 hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40">
+      className="group block overflow-hidden rounded-2xl border border-border bg-background transition-[border-color,transform] hover:-translate-y-0.5 hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40">
       <div className="flex items-start justify-between gap-4 border-b border-border bg-surface-raised px-4 py-3.5">
         <div className="min-w-0">
-          <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-foreground">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-foreground">
             {invoice.invoiceNumber}
           </p>
 
-          <p className="mt-1 truncate text-[9px] text-muted">{invoice.client.displayName}</p>
+          <p className="mt-1 truncate text-xs text-muted">{invoice.client.displayName}</p>
         </div>
 
         <StatusBadge status={invoice.effectiveStatus} />
@@ -320,13 +320,13 @@ function AdminInvoiceCard({ invoice }: { invoice: AdminInvoiceListItem }) {
 
       <div className="p-4">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.08em] text-muted">Billed for</p>
+          <p className="text-xs uppercase tracking-[0.08em] text-muted">Billed for</p>
 
-          <h2 className="mt-1.5 text-[13px] font-semibold text-foreground">
+          <h2 className="mt-1.5 text-sm font-semibold text-foreground">
             {primaryItem?.name ?? invoice.source.label}
           </h2>
 
-          <p className="mt-1 text-[9px] text-muted">
+          <p className="mt-1 text-xs text-muted">
             {invoice.source.label}
             {' · '}
             {invoice.itemCount} item{invoice.itemCount === 1 ? '' : 's'}
@@ -336,7 +336,7 @@ function AdminInvoiceCard({ invoice }: { invoice: AdminInvoiceListItem }) {
         </div>
 
         {primaryItem?.description ? (
-          <p className="mt-3 line-clamp-2 text-[10px] leading-5 text-muted">{primaryItem.description}</p>
+          <p className="mt-3 line-clamp-2 text-xs leading-5 text-muted">{primaryItem.description}</p>
         ) : null}
 
         <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-border">
@@ -356,16 +356,16 @@ function AdminInvoiceCard({ invoice }: { invoice: AdminInvoiceListItem }) {
 
       <div className="flex items-center justify-between gap-4 border-t border-border bg-surface-muted/40 px-4 py-3">
         <div className="min-w-0">
-          <p className="truncate text-[9px] font-medium text-foreground">
+          <p className="truncate text-xs font-medium text-foreground">
             {invoice.client.email ?? 'No client email'}
           </p>
 
           {invoice.source.reference ? (
-            <p className="mt-0.5 truncate text-[8px] text-muted">Ref: {invoice.source.reference}</p>
+            <p className="mt-0.5 truncate text-xs text-muted">Ref: {invoice.source.reference}</p>
           ) : null}
         </div>
 
-        <span className="inline-flex shrink-0 items-center gap-1 text-[9px] font-semibold text-theme-accent">
+        <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-theme-accent">
           View invoice
           <span className="transition-transform group-hover:translate-x-0.5">→</span>
         </span>
@@ -395,7 +395,7 @@ function SummaryCard({
       onClick={onClick}
       aria-pressed={active}
       className={[
-        'group w-full cursor-pointer overflow-hidden rounded-[18px] border bg-background text-left',
+        'group w-full cursor-pointer overflow-hidden rounded-2xl border bg-background text-left',
         'transition-[border-color,transform] duration-200',
         'hover:-translate-y-0.5 hover:border-foreground/25',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40',
@@ -410,7 +410,7 @@ function SummaryCard({
         <div className="flex items-center gap-2">
           {active ? <span className="size-1.5 shrink-0 rounded-full bg-theme-accent" /> : null}
 
-          <p className="text-[10px] font-semibold text-foreground">{label}</p>
+          <p className="text-xs font-semibold text-foreground">{label}</p>
         </div>
 
         <SummaryIcon icon={icon} />
@@ -419,7 +419,7 @@ function SummaryCard({
       <div className="px-4 py-4">
         <p className="text-xl font-semibold tracking-[-0.04em] text-foreground">{value}</p>
 
-        <p className="mt-1 text-[9px] text-muted">{note}</p>
+        <p className="mt-1 text-xs text-muted">{note}</p>
       </div>
 
       <div
@@ -428,15 +428,15 @@ function SummaryCard({
           active ? 'border-foreground/15 bg-surface-muted' : 'border-border bg-surface-muted/40'
         ].join(' ')}>
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[8px] uppercase tracking-[0.08em] text-muted">
+          <p className="text-xs uppercase tracking-[0.08em] text-muted">
             {active ? 'Currently viewing' : 'View invoices'}
           </p>
 
           <span
             className={
               active
-                ? 'text-[9px] font-semibold text-theme-accent'
-                : 'text-[9px] text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-foreground'
+                ? 'text-xs font-semibold text-theme-accent'
+                : 'text-xs text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-foreground'
             }>
             →
           </span>
@@ -467,7 +467,7 @@ function CurrencyPositionCard({ position }: { position: AdminInvoicesData['total
   return (
     <div className="overflow-hidden rounded-[16px] border border-border bg-background">
       <div className="border-b border-border bg-surface-raised px-4 py-3">
-        <p className="text-[10px] font-semibold text-foreground">{position.currency} position</p>
+        <p className="text-xs font-semibold text-foreground">{position.currency} position</p>
       </div>
 
       <div className="grid grid-cols-2">
@@ -481,7 +481,7 @@ function CurrencyPositionCard({ position }: { position: AdminInvoicesData['total
       </div>
 
       <div className="border-t border-border bg-surface-muted/40 px-4 py-2.5">
-        <p className="text-[8px] text-muted">Values are calculated from current invoice records.</p>
+        <p className="text-xs text-muted">Values are calculated from current invoice records.</p>
       </div>
     </div>
   );
@@ -490,9 +490,9 @@ function CurrencyPositionCard({ position }: { position: AdminInvoicesData['total
 function PositionValue({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-b border-r border-border px-4 py-3 even:border-r-0 last:border-b-0">
-      <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-xs uppercase tracking-[0.08em] text-muted">{label}</p>
 
-      <p className="mt-1 text-[11px] font-semibold text-foreground">{value}</p>
+      <p className="mt-1 text-xs font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -500,9 +500,9 @@ function PositionValue({ label, value }: { label: string; value: string }) {
 function MoneyCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0 border-r border-border px-3 py-3 last:border-r-0">
-      <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-xs uppercase tracking-[0.08em] text-muted">{label}</p>
 
-      <p className="mt-1 truncate text-[10px] font-semibold text-foreground">{value}</p>
+      <p className="mt-1 truncate text-xs font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -510,9 +510,9 @@ function MoneyCell({ label, value }: { label: string; value: string }) {
 function InformationCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-border bg-surface px-3 py-2.5">
-      <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-xs uppercase tracking-[0.08em] text-muted">{label}</p>
 
-      <p className="mt-1 text-[9px] font-medium text-foreground">{value}</p>
+      <p className="mt-1 text-xs font-medium text-foreground">{value}</p>
     </div>
   );
 }
@@ -526,7 +526,7 @@ function StatusBadge({ status }: { status: string }) {
         className={attention ? 'size-1.5 rounded-full bg-rose-500' : 'size-1.5 rounded-full bg-theme-accent'}
       />
 
-      <span className="text-[8px] font-semibold text-foreground">{formatStatus(status)}</span>
+      <span className="text-xs font-semibold text-foreground">{formatStatus(status)}</span>
     </span>
   );
 }

@@ -82,12 +82,12 @@ export function AdminCommandSearch() {
         type="button"
         aria-label="Search Rcentz"
         onClick={() => setIsCommandSearchOpen(true)}
-        className="group hidden h-8 w-[180px] cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface px-3 text-left transition-colors hover:border-border-strong md:flex lg:w-[200px]">
+        className="group hidden h-8 w-[180px] cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface px-3 text-left transition-colors hover:border-border-strong xl:flex xl:w-[200px]">
         <Search aria-hidden="true" className="size-3.5 shrink-0 text-theme-accent" />
 
-        <span className="min-w-0 flex-1 truncate text-[11px] text-muted">Search</span>
+        <span className="min-w-0 flex-1 truncate text-xs text-muted">Search</span>
 
-        <span className="flex h-5 items-center rounded-md border border-border bg-background px-1.5 font-mono text-[9px] text-muted">
+        <span className="flex h-5 items-center rounded-md border border-border bg-background px-1.5 font-mono text-xs text-muted">
           Ctrl K
         </span>
       </button>
@@ -136,7 +136,7 @@ export function AdminCommandSearch() {
                           {destination.label}
                         </p>
 
-                        <p className="mt-0.5 truncate text-[11px] text-muted transition-colors group-hover:text-background/70 group-data-[selected=true]:text-background/70">
+                        <p className="mt-0.5 truncate text-xs text-muted transition-colors group-hover:text-background/70 group-data-[selected=true]:text-background/70">
                           {destination.description}
                         </p>
                       </div>

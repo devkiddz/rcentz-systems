@@ -33,13 +33,13 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
 
   if (projects.length === 0) {
     return (
-      <section className="flex min-h-[460px] items-center justify-center rounded-[18px] border border-border bg-background">
+      <section className="flex min-h-[460px] items-center justify-center rounded-2xl border border-border bg-background">
         <div className="text-center">
           <CircleDot aria-hidden="true" className="mx-auto size-5 text-theme-accent" />
 
           <p className="mt-3 text-sm font-medium text-foreground">No active projects</p>
 
-          <p className="mt-1 text-[11px] text-muted">Active project monitoring will appear here.</p>
+          <p className="mt-1 text-xs text-muted">Active project monitoring will appear here.</p>
         </div>
       </section>
     );
@@ -64,7 +64,7 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
   }
 
   return (
-    <section className="flex max-h-[920px] min-h-[760px] flex-col overflow-hidden rounded-[18px] border border-border bg-background">
+    <section className="flex max-h-[920px] min-h-[760px] flex-col overflow-hidden rounded-2xl border border-border bg-background">
       <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border px-5 py-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
@@ -72,17 +72,17 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
               {currentProject.name}
             </p>
 
-            <span className="rounded-full bg-theme-accent-faint px-2 py-0.5 text-[9px] font-medium text-theme-accent">
+            <span className="rounded-full bg-theme-accent-faint px-2 py-0.5 text-xs font-medium text-theme-accent">
               {formatStatus(currentProject.status)}
             </span>
           </div>
 
           <div className="mt-1 flex items-center gap-2">
-            <span className="text-[10px] text-muted">Active project health monitor</span>
+            <span className="text-xs text-muted">Active project health monitor</span>
 
             <span className="size-1 rounded-full bg-border" />
 
-            <span className="text-[10px] font-medium text-foreground">{projects.length} active</span>
+            <span className="text-xs font-medium text-foreground">{projects.length} active</span>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
               <ArrowLeft aria-hidden="true" className="size-3.5" />
             </button>
 
-            <span className="min-w-12 px-1 text-center text-[9px] font-medium tabular-nums text-muted">
+            <span className="min-w-12 px-1 text-center text-xs font-medium tabular-nums text-muted">
               {safeProjectIndex + 1}
               {' / '}
               {projects.length}
@@ -115,7 +115,7 @@ export function AdminCurrentProjectProgress({ projects }: AdminCurrentProjectPro
 
           <Link
             href={`/admin/projects/${currentProject.id}`}
-            className="flex items-center gap-1 text-[10px] text-muted transition-colors hover:text-foreground">
+            className="flex items-center gap-1 text-xs text-muted transition-colors hover:text-foreground">
             Open
             <ArrowRight aria-hidden="true" className="size-3" />
           </Link>

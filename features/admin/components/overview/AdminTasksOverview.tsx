@@ -151,15 +151,15 @@ function TaskRow({ task, isPreview }: { task: OverviewTask; isPreview: boolean }
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-semibold tracking-[-0.015em] text-foreground">
+              <p className="truncate text-sm font-semibold tracking-[-0.015em] text-foreground">
                 {task.title}
               </p>
 
-              <p className="mt-1 truncate text-[11px] text-muted">{task.project.name}</p>
+              <p className="mt-1 truncate text-xs text-muted">{task.project.name}</p>
             </div>
 
             <span
-              className={`shrink-0 text-[10px] font-semibold uppercase tracking-[0.08em] ${getPriorityClassName(
+              className={`shrink-0 text-xs font-semibold uppercase tracking-[0.08em] ${getPriorityClassName(
                 task.priority
               )}`}>
               {task.priority}
@@ -177,7 +177,7 @@ function TaskRow({ task, isPreview }: { task: OverviewTask; isPreview: boolean }
             </div>
 
             <span
-              className={`w-9 text-right text-[10px] font-semibold tabular-nums ${getProgressTextClassName(
+              className={`w-9 text-right text-xs font-semibold tabular-nums ${getProgressTextClassName(
                 progress
               )}`}>
               {progress}%
@@ -191,23 +191,23 @@ function TaskRow({ task, isPreview }: { task: OverviewTask; isPreview: boolean }
                   <AvatarImage src={task.assignedTo.image} alt={assigneeName} />
                 ) : null}
 
-                <AvatarFallback className="bg-surface-muted text-[8px] font-semibold">
+                <AvatarFallback className="bg-surface-muted text-xs font-semibold">
                   {task.assignedTo ? getInitials(assigneeName) : <UserRound className="size-3" />}
                 </AvatarFallback>
               </Avatar>
 
-              <span className="truncate text-[10px] text-muted">{assigneeName}</span>
+              <span className="truncate text-xs text-muted">{assigneeName}</span>
             </div>
 
             <div className="flex items-center gap-4">
               <span
-                className={`flex items-center gap-1.5 text-[10px] font-medium ${statusPresentation.textClassName}`}>
+                className={`flex items-center gap-1.5 text-xs font-medium ${statusPresentation.textClassName}`}>
                 <CircleDot className="size-3" />
 
                 {statusPresentation.label}
               </span>
 
-              <span className="flex items-center gap-1.5 text-[10px] text-muted">
+              <span className="flex items-center gap-1.5 text-xs text-muted">
                 <CalendarDays className="size-3" />
 
                 {formatDate(task.dueDate)}
@@ -251,26 +251,26 @@ export function AdminTasksOverview({ data }: AdminTasksOverviewProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-foreground">Execution queue</p>
+              <p className="text-sm font-semibold text-foreground">Execution queue</p>
 
               {isPreview ? (
-                <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">
+                <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-muted">
                   Preview
                 </span>
               ) : null}
             </div>
 
-            <p className="mt-1 text-[11px] text-muted">Current project work requiring attention.</p>
+            <p className="mt-1 text-xs text-muted">Current project work requiring attention.</p>
           </div>
 
           <Link
             href="/admin/tasks"
-            className="text-[11px] font-medium text-muted transition-colors hover:text-foreground">
+            className="text-xs font-medium text-muted transition-colors hover:text-foreground">
             View all
           </Link>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[10px]">
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs">
           <span className="text-amber-500">Todo {summary.todo}</span>
 
           <span className="text-sky-500">Active {summary.inProgress}</span>

@@ -143,7 +143,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
         <section>
           <Link
             href="/admin/projects"
-            className="inline-flex items-center gap-1.5 text-[10px] font-medium text-muted transition-colors hover:text-foreground">
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground">
             <ArrowLeft className="size-3.5" />
             Projects
           </Link>
@@ -156,17 +156,17 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   className={['size-1.5 rounded-full', getStatusDotClass(project.status)].join(' ')}
                 />
 
-                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-theme-accent">
+                <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">
                   Project Management
                 </p>
               </div>
 
-              <h1 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-foreground sm:text-[28px]">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-[28px]">
                 {project.name}
               </h1>
 
-              <p className="mt-1.5 max-w-3xl text-[12px] leading-6 text-muted">
-                {project.description ?? project.purpose ?? 'Administrative project delivery workspace.'}
+              <p className="mt-1.5 max-w-3xl text-sm leading-6 text-muted">
+                {project.serviceRequest ? 'Manage delivery, milestones and decisions for this project.' : (project.purpose ?? project.description ?? 'Project delivery workspace.').slice(0, 180)}
               </p>
             </div>
 
@@ -175,9 +175,15 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
 
               <StatusBadge>{humanize(project.visibility)}</StatusBadge>
 
+              {project.serviceRequest && project.serviceRequest.status !== 'DRAFT' ? (
+                <Link href={`/admin/projects/${project.id}/onboarding`} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <FileStack aria-hidden="true" className="size-4" />
+                  Preview onboarding
+                </Link>
+              ) : null}
               <Link
                 href={`/admin/projects/${project.id}/edit`}
-                className="inline-flex h-9 items-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90">
+                className="inline-flex h-9 items-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90">
                 <Pencil className="size-3.5" />
                 Edit project
               </Link>
@@ -190,7 +196,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                 <Link
                   href={`/portfolio/${project.slug}`}
                   target="_blank"
-                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-[10px] font-semibold text-foreground transition-colors hover:bg-surface-muted">
+                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
                   Public preview
                   <ArrowUpRight className="size-3.5" />
                 </Link>
@@ -201,7 +207,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   href={liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-[10px] font-semibold text-foreground transition-colors hover:bg-surface-muted">
+                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
                   Live project
                   <ArrowUpRight className="size-3.5" />
                 </a>
@@ -240,25 +246,25 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           />
         </section>
 
-        <section className="overflow-hidden rounded-[22px] border border-border bg-surface">
+        <section className="overflow-hidden rounded-2xl border border-border bg-surface">
           <header className="border-b border-border bg-surface-raised px-5 py-5 sm:px-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">Project control</h2>
 
-                <p className="mt-1 text-[10px] text-muted">
-                  Canonical project state shared across Admin and Client.
+                <p className="mt-1 text-xs text-muted">
+                  Delivery status and agreed project details.
                 </p>
               </div>
 
-              <span className="font-mono text-[8px] text-muted">{project.id}</span>
+              <span className="text-xs text-muted">Updated {formatDate(project.updatedAt)}</span>
             </div>
           </header>
 
           <div className="grid xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
             <div className="border-b border-border p-5 sm:p-6 xl:border-b-0 xl:border-r">
               <div>
-                <p className="text-[9px] font-medium uppercase tracking-[0.1em] text-muted">
+                <p className="text-xs font-medium uppercase tracking-[0.1em] text-muted">
                   Overall progress
                 </p>
 
@@ -267,7 +273,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                     {clampProgress(project.progress)}%
                   </span>
 
-                  <span className="text-[10px] font-medium text-muted">{humanize(project.status)}</span>
+                  <span className="text-xs font-medium text-muted">{humanize(project.status)}</span>
                 </div>
 
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-muted">
@@ -301,14 +307,14 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-[9px] font-medium uppercase tracking-[0.08em] text-muted">Client</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">Client</p>
 
-                    <p className="mt-1 truncate text-[12px] font-semibold text-foreground">{clientLabel}</p>
+                    <p className="mt-1 truncate text-sm font-semibold text-foreground">{clientLabel}</p>
 
                     {project.client ? (
-                      <p className="mt-1 truncate text-[10px] text-muted">{project.client.email}</p>
+                      <p className="mt-1 truncate text-xs text-muted">{project.client.email}</p>
                     ) : (
-                      <p className="mt-1 text-[10px] text-muted">Client assignment is pending.</p>
+                      <p className="mt-1 text-xs text-muted">Client assignment is pending.</p>
                     )}
                   </div>
                 </div>
@@ -457,22 +463,22 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                 <article key={deliverable.id} className="rounded-xl border border-border bg-background p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="font-mono text-[8px] uppercase tracking-[0.1em] text-theme-accent">
+                      <p className="font-mono text-xs uppercase tracking-[0.1em] text-theme-accent">
                         {humanize(deliverable.type)}
                       </p>
 
-                      <h3 className="mt-1.5 text-[12px] font-semibold text-foreground">
+                      <h3 className="mt-1.5 text-sm font-semibold text-foreground">
                         {deliverable.title}
                       </h3>
                     </div>
 
-                    <span className="shrink-0 rounded-full border border-border bg-surface-muted px-2.5 py-1 text-[8px] font-medium text-muted">
+                    <span className="shrink-0 rounded-full border border-border bg-surface-muted px-2.5 py-1 text-xs font-medium text-muted">
                       {humanize(deliverable.status)}
                     </span>
                   </div>
 
                   {(deliverable.summary ?? deliverable.description) ? (
-                    <p className="mt-3 line-clamp-2 text-[10px] leading-5 text-muted">
+                    <p className="mt-3 line-clamp-2 text-xs leading-5 text-muted">
                       {deliverable.summary ?? deliverable.description}
                     </p>
                   ) : null}
@@ -523,7 +529,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                 <span
                   key={technology.id}
                   className={[
-                    'rounded-full border px-3 py-1.5 font-mono text-[8px]',
+                    'rounded-full border px-3 py-1.5 font-mono text-xs',
                     technology.featured
                       ? 'border-theme-accent/30 bg-theme-accent-faint text-theme-accent-strong'
                       : 'border-border bg-background text-muted'
@@ -545,7 +551,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
 
 function StatusBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full border border-border bg-surface px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-muted">
+    <span className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-muted">
       {children}
     </span>
   );
@@ -572,9 +578,9 @@ function OverviewMetric({
         <span className="text-xl font-semibold tracking-[-0.04em] text-foreground">{value}</span>
       </div>
 
-      <p className="mt-4 text-[10px] font-semibold text-foreground">{label}</p>
+      <p className="mt-4 text-xs font-semibold text-foreground">{label}</p>
 
-      <p className="mt-1 text-[9px] leading-4 text-muted">{note}</p>
+      <p className="mt-1 text-xs leading-4 text-muted">{note}</p>
     </div>
   );
 }
@@ -598,9 +604,9 @@ function ManagementCard({
         </div>
 
         <div>
-          <p className="text-[10px] font-semibold text-foreground">{label}</p>
+          <p className="text-xs font-semibold text-foreground">{label}</p>
 
-          <p className="mt-1 text-[9px] leading-4 text-muted">{note}</p>
+          <p className="mt-1 text-xs leading-4 text-muted">{note}</p>
         </div>
 
         <span className="ml-auto text-lg font-semibold tabular-nums text-foreground">{value}</span>
@@ -615,10 +621,10 @@ function ProjectMeta({ icon: Icon, label, value }: { icon: LucideIcon; label: st
       <div className="flex items-center gap-2">
         <Icon className="size-3.5 text-muted" />
 
-        <span className="text-[9px] text-muted">{label}</span>
+        <span className="text-xs text-muted">{label}</span>
       </div>
 
-      <p className="mt-2 text-[11px] font-semibold text-foreground">{value}</p>
+      <p className="mt-2 text-xs font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -635,9 +641,9 @@ function AdminInformationPanel({
   return (
     <section className="overflow-hidden rounded-2xl border border-border bg-surface">
       <header className="border-b border-border bg-surface-raised px-5 py-4">
-        <h2 className="text-[12px] font-semibold text-foreground">{title}</h2>
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
 
-        <p className="mt-1 text-[9px] text-muted">{description}</p>
+        <p className="mt-1 text-xs text-muted">{description}</p>
       </header>
 
       <div className="divide-y divide-border px-5">{children}</div>
@@ -661,7 +667,7 @@ function InfoRow({
       <div className="flex min-w-0 items-center gap-2">
         <Icon className="size-3.5 shrink-0 text-muted" />
 
-        <span className="truncate text-[10px] text-muted">{label}</span>
+        <span className="truncate text-xs text-muted">{label}</span>
       </div>
 
       {href ? (
@@ -669,13 +675,13 @@ function InfoRow({
           href={href}
           target="_blank"
           rel="noreferrer"
-          className="flex min-w-0 items-center justify-end gap-1.5 text-[10px] font-semibold text-foreground transition-colors hover:text-theme-accent">
+          className="flex min-w-0 items-center justify-end gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent">
           <span className="truncate">{value}</span>
 
           <ArrowUpRight className="size-3 shrink-0" />
         </a>
       ) : (
-        <p className="truncate text-right text-[10px] font-semibold text-foreground">{value}</p>
+        <p className="truncate text-right text-xs font-semibold text-foreground">{value}</p>
       )}
     </div>
   );
@@ -685,9 +691,9 @@ function AdminDetails({ title, meta, children }: { title: string; meta: string; 
   return (
     <details className="group overflow-hidden rounded-2xl border border-border bg-surface">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 bg-surface-raised px-5 transition-colors hover:bg-surface-muted sm:px-6 [&::-webkit-details-marker]:hidden">
-        <span className="text-[11px] font-semibold text-foreground">{title}</span>
+        <span className="text-xs font-semibold text-foreground">{title}</span>
 
-        <span className="text-[9px] text-muted">{meta}</span>
+        <span className="text-xs text-muted">{meta}</span>
       </summary>
 
       <div className="border-t border-border p-4 sm:p-5">{children}</div>
@@ -698,9 +704,9 @@ function AdminDetails({ title, meta, children }: { title: string; meta: string; 
 function RecordStat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-xs uppercase tracking-[0.08em] text-muted">{label}</p>
 
-      <p className="mt-1 text-[10px] font-semibold text-foreground">{value}</p>
+      <p className="mt-1 text-xs font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -708,9 +714,9 @@ function RecordStat({ label, value }: { label: string; value: string }) {
 function ScopeCard({ title, value }: { title: string; value: string }) {
   return (
     <article className="rounded-xl border border-border bg-background p-4">
-      <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-theme-accent">{title}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-theme-accent">{title}</p>
 
-      <p className="mt-2 text-[11px] leading-5 text-foreground">{value}</p>
+      <p className="mt-2 text-xs leading-5 text-foreground">{value}</p>
     </article>
   );
 }
@@ -718,7 +724,7 @@ function ScopeCard({ title, value }: { title: string; value: string }) {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="rounded-xl border border-dashed border-border px-6 py-10 text-center">
-      <p className="text-[11px] text-muted">{message}</p>
+      <p className="text-xs text-muted">{message}</p>
     </div>
   );
 }

@@ -45,6 +45,8 @@ export const getAdminProject =
           createdAt: true,
           updatedAt: true,
 
+          serviceRequest: { select: { id: true, status: true } },
+
           client: {
             select: {
               id: true,

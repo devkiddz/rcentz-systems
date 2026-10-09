@@ -80,9 +80,9 @@ export function AdminMessagesMenu({
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-4 py-3.5">
             <div>
-              <p className="text-[13px] font-semibold text-foreground">Messages</p>
+              <p className="text-sm font-semibold text-foreground">Messages</p>
 
-              <p className="mt-0.5 text-[11px] font-normal text-muted">Recent client conversations</p>
+              <p className="mt-0.5 text-xs font-normal text-muted">Recent client conversations</p>
             </div>
           </DropdownMenuLabel>
         </DropdownMenuGroup>
@@ -95,9 +95,9 @@ export function AdminMessagesMenu({
               <MessageSquareText className="size-4 text-muted" />
             </div>
 
-            <p className="mt-3 text-[13px] font-semibold text-foreground">No conversations yet</p>
+            <p className="mt-3 text-sm font-semibold text-foreground">No conversations yet</p>
 
-            <p className="mt-1 text-[11px] leading-5 text-muted">Client conversations will appear here.</p>
+            <p className="mt-1 text-xs leading-5 text-muted">Client conversations will appear here.</p>
           </div>
         ) : (
           <DropdownMenuGroup>
@@ -117,7 +117,7 @@ export function AdminMessagesMenu({
                           <AvatarImage src={message.senderImage} alt={message.senderName} />
                         ) : null}
 
-                        <AvatarFallback className="bg-surface-muted text-[10px] font-semibold text-foreground">
+                        <AvatarFallback className="bg-surface-muted text-xs font-semibold text-foreground">
                           {getInitials(message.senderName)}
                         </AvatarFallback>
                       </Avatar>
@@ -134,18 +134,18 @@ export function AdminMessagesMenu({
                       <div className="flex items-start justify-between gap-3">
                         <p
                           className={[
-                            'truncate text-[13px]',
+                            'truncate text-sm',
                             message.unread ? 'font-semibold text-foreground' : 'font-medium text-foreground'
                           ].join(' ')}>
                           {message.title}
                         </p>
 
-                        <span className="shrink-0 text-[10px] text-muted">{message.timeLabel}</span>
+                        <span className="shrink-0 text-xs text-muted">{message.timeLabel}</span>
                       </div>
 
-                      <p className="mt-0.5 text-[10px] font-medium text-muted">{message.senderName}</p>
+                      <p className="mt-0.5 text-xs font-medium text-muted">{message.senderName}</p>
 
-                      <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-muted">{message.preview}</p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">{message.preview}</p>
                     </div>
 
                     {message.unread ? (
@@ -161,7 +161,7 @@ export function AdminMessagesMenu({
         <DropdownMenuSeparator />
 
         <div className="px-4 py-3">
-          <p className="text-[10px] text-muted">Recent workspace conversations</p>
+          <p className="text-xs text-muted">Recent workspace conversations</p>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

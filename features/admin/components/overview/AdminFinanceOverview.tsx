@@ -78,7 +78,7 @@ function FinanceMetric({
   return (
     <div className="rounded-2xl border border-border bg-surface-raised p-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[10px] font-medium text-muted">{label}</p>
+        <p className="text-xs font-medium text-muted">{label}</p>
 
         <div className="flex size-7 items-center justify-center rounded-lg bg-theme-accent-faint">
           <Icon aria-hidden="true" className="size-3.5 text-theme-accent" />
@@ -87,7 +87,7 @@ function FinanceMetric({
 
       <p className={`mt-3 text-lg font-semibold tracking-[-0.04em] ${valueClassName}`}>{value}</p>
 
-      <p className="mt-1 text-[9px] text-muted">{note}</p>
+      <p className="mt-1 text-xs text-muted">{note}</p>
     </div>
   );
 }
@@ -101,7 +101,7 @@ function ReceivableRow({ receivable }: { receivable: FinanceReceivable }) {
         <Avatar className="size-8 shrink-0">
           {receivable.client?.image ? <AvatarImage src={receivable.client.image} alt={clientName} /> : null}
 
-          <AvatarFallback className="bg-surface-muted text-[8px] font-semibold">
+          <AvatarFallback className="bg-surface-muted text-xs font-semibold">
             {getInitials(clientName)}
           </AvatarFallback>
         </Avatar>
@@ -109,17 +109,17 @@ function ReceivableRow({ receivable }: { receivable: FinanceReceivable }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate text-[11px] font-semibold text-foreground">{clientName}</p>
+              <p className="truncate text-xs font-semibold text-foreground">{clientName}</p>
 
-              <p className="mt-0.5 text-[9px] text-muted">{receivable.invoiceNumber}</p>
+              <p className="mt-0.5 text-xs text-muted">{receivable.invoiceNumber}</p>
             </div>
 
-            <p className="shrink-0 text-[11px] font-semibold text-rose-500">
+            <p className="shrink-0 text-xs font-semibold text-rose-500">
               {formatMoney(receivable.balanceDue, receivable.currency)}
             </p>
           </div>
 
-          <div className="mt-2 flex items-center justify-between gap-3 text-[9px]">
+          <div className="mt-2 flex items-center justify-between gap-3 text-xs">
             <span className="text-muted">Paid {formatMoney(receivable.amountPaid, receivable.currency)}</span>
 
             <span className={receivable.isOverdue ? 'font-medium text-rose-500' : 'text-muted'}>
@@ -153,17 +153,17 @@ function PaymentRow({ payment }: { payment: FinancePayment }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate text-[11px] font-semibold text-foreground">{payerName}</p>
+            <p className="truncate text-xs font-semibold text-foreground">{payerName}</p>
 
-            <p className="mt-0.5 text-[9px] text-muted">{payment.invoiceNumber}</p>
+            <p className="mt-0.5 text-xs text-muted">{payment.invoiceNumber}</p>
           </div>
 
-          <p className="shrink-0 text-[11px] font-semibold text-foreground">
+          <p className="shrink-0 text-xs font-semibold text-foreground">
             {formatMoney(payment.amount, payment.currency)}
           </p>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 text-[9px]">
+        <div className="mt-2 flex items-center justify-between gap-3 text-xs">
           <span className="text-muted">{formatEnum(payment.method)}</span>
 
           <span className={`font-medium ${statusClassName}`}>{formatEnum(payment.status)}</span>
@@ -187,25 +187,25 @@ function SubscriptionRow({ subscription }: { subscription: FinanceSubscription }
     <div className="rounded-xl border border-border bg-background p-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-[11px] font-semibold text-foreground">
+          <p className="truncate text-xs font-semibold text-foreground">
             {subscription.client.displayName}
           </p>
 
-          <p className="mt-0.5 truncate text-[9px] text-muted">{subscription.plan.name}</p>
+          <p className="mt-0.5 truncate text-xs text-muted">{subscription.plan.name}</p>
         </div>
 
-        <span className={`shrink-0 text-[9px] font-semibold ${statusClassName}`}>
+        <span className={`shrink-0 text-xs font-semibold ${statusClassName}`}>
           {formatEnum(subscription.status)}
         </span>
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold text-foreground">
+          <p className="text-xs font-semibold text-foreground">
             {formatMoney(subscription.amount, subscription.currency)}
           </p>
 
-          <p className="mt-0.5 text-[8px] text-muted">
+          <p className="mt-0.5 text-xs text-muted">
             every {subscription.intervalCount > 1 ? `${subscription.intervalCount} ` : ''}
             {subscription.intervalUnit.toLowerCase()}
             {subscription.intervalCount > 1 ? 's' : ''}
@@ -213,9 +213,9 @@ function SubscriptionRow({ subscription }: { subscription: FinanceSubscription }
         </div>
 
         <div className="text-right">
-          <p className="text-[8px] text-muted">Next billing</p>
+          <p className="text-xs text-muted">Next billing</p>
 
-          <p className="mt-0.5 text-[9px] font-medium text-foreground">
+          <p className="mt-0.5 text-xs font-medium text-foreground">
             {formatDate(subscription.nextBillingAt)}
           </p>
         </div>
@@ -231,7 +231,7 @@ export function AdminFinanceOverview({ finance }: AdminFinanceOverviewProps) {
   const isPreview = false;
 
   return (
-    <section className="overflow-hidden rounded-[18px] border border-border bg-background">
+    <section className="overflow-hidden rounded-2xl border border-border bg-background">
       <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
         <div>
           <div className="flex items-center gap-2">
@@ -240,18 +240,18 @@ export function AdminFinanceOverview({ finance }: AdminFinanceOverviewProps) {
             <p className="text-sm font-semibold tracking-[-0.025em] text-foreground">Financial operations</p>
 
             {isPreview ? (
-              <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">
+              <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-muted">
                 Preview
               </span>
             ) : null}
           </div>
 
-          <p className="mt-1 text-[10px] text-muted">Revenue, receivables, payments and subscriptions</p>
+          <p className="mt-1 text-xs text-muted">Revenue, receivables, payments and subscriptions</p>
         </div>
 
         <Link
           href="/admin/finance"
-          className="flex items-center gap-1 text-[10px] text-muted transition-colors hover:text-foreground">
+          className="flex items-center gap-1 text-xs text-muted transition-colors hover:text-foreground">
           Finance
           <ArrowRight className="size-3" />
         </Link>
@@ -304,9 +304,9 @@ export function AdminFinanceOverview({ finance }: AdminFinanceOverviewProps) {
           <div className="flex h-[310px] min-h-0 flex-col rounded-2xl border border-border bg-surface-raised">
             <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <p className="text-[12px] font-semibold text-foreground">Who owes us</p>
+                <p className="text-sm font-semibold text-foreground">Who owes us</p>
 
-                <p className="mt-0.5 text-[9px] text-muted">Outstanding client balances</p>
+                <p className="mt-0.5 text-xs text-muted">Outstanding client balances</p>
               </div>
 
               <CircleDollarSign className="size-4 text-rose-500" />
@@ -324,15 +324,15 @@ export function AdminFinanceOverview({ finance }: AdminFinanceOverviewProps) {
           <div className="flex h-[310px] min-h-0 flex-col rounded-2xl border border-border bg-surface-raised">
             <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <p className="text-[12px] font-semibold text-foreground">Payments</p>
+                <p className="text-sm font-semibold text-foreground">Payments</p>
 
-                <p className="mt-0.5 text-[9px] text-muted">Recent payment activity</p>
+                <p className="mt-0.5 text-xs text-muted">Recent payment activity</p>
               </div>
 
               <CreditCard className="size-4 text-theme-accent" />
             </div>
 
-            <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-2 text-[8px]">
+            <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-2 text-xs">
               <span className="text-theme-accent">Success {visibleFinance.paymentSummary.successful}</span>
 
               <span className="text-amber-500">Pending {visibleFinance.paymentSummary.pending}</span>
@@ -354,15 +354,15 @@ export function AdminFinanceOverview({ finance }: AdminFinanceOverviewProps) {
           <div className="flex h-[310px] min-h-0 flex-col rounded-2xl border border-border bg-surface-raised">
             <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <p className="text-[12px] font-semibold text-foreground">Subscriptions</p>
+                <p className="text-sm font-semibold text-foreground">Subscriptions</p>
 
-                <p className="mt-0.5 text-[9px] text-muted">Recurring client commitments</p>
+                <p className="mt-0.5 text-xs text-muted">Recurring client commitments</p>
               </div>
 
               <RefreshCcw className="size-4 text-theme-accent" />
             </div>
 
-            <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-2 text-[8px]">
+            <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-2 text-xs">
               <span className="text-theme-accent">Active {visibleFinance.subscriptionSummary.active}</span>
 
               <span className="text-sky-500">Trial {visibleFinance.subscriptionSummary.trialing}</span>

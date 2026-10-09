@@ -49,7 +49,7 @@ function toSlug(value: string) {
 }
 
 const selectClassName =
-  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-[10px] text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
+  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
 
 export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
   const [state, formAction, pending] = useActionState(createAdminProject, initialState);
@@ -75,19 +75,19 @@ export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href="/admin/projects"
-              className="inline-flex items-center gap-2 text-[10px] font-medium text-muted transition-colors hover:text-foreground">
+              className="inline-flex items-center gap-2 text-xs font-medium text-muted transition-colors hover:text-foreground">
               <ArrowLeft className="size-3.5" />
               Back to projects
             </Link>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-[9px] font-medium text-muted">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-muted">
               <span className="size-1.5 rounded-full bg-theme-accent" />
               New project
             </div>
           </div>
 
           <section>
-            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-theme-accent">
+            <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">
               Project Management
             </p>
 
@@ -102,7 +102,7 @@ export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
           </section>
 
           {state.error ? (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-[10px] font-medium text-red-600 dark:text-red-400">
+            <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs font-medium text-red-600 dark:text-red-400">
               {state.error}
             </div>
           ) : null}
@@ -278,9 +278,9 @@ export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
             <aside className="space-y-4 xl:sticky xl:top-24">
               <section className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <header className="border-b border-border bg-surface-raised px-4 py-4">
-                  <p className="text-[11px] font-semibold text-foreground">Creation contract</p>
+                  <p className="text-xs font-semibold text-foreground">Creation contract</p>
 
-                  <p className="mt-1 text-[9px] leading-4 text-muted">
+                  <p className="mt-1 text-xs leading-4 text-muted">
                     This creates the canonical Project record only.
                   </p>
                 </header>
@@ -301,13 +301,13 @@ export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
               <button
                 type="submit"
                 disabled={pending}
-                className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+                className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                 <Save className="size-3.5" />
 
                 {pending ? 'Creating project...' : 'Create project'}
               </button>
 
-              <p className="px-2 text-center text-[9px] leading-4 text-muted">
+              <p className="px-2 text-center text-xs leading-4 text-muted">
                 The record becomes immediately available to connected read surfaces after creation.
               </p>
             </aside>
@@ -337,9 +337,9 @@ function ProjectFormSection({
         </div>
 
         <div>
-          <h2 className="text-[12px] font-semibold text-foreground">{title}</h2>
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
 
-          <p className="mt-0.5 text-[9px] text-muted">{description}</p>
+          <p className="mt-0.5 text-xs text-muted">{description}</p>
         </div>
       </header>
 
@@ -359,7 +359,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[9px] font-medium text-muted">
+      <span className="mb-2 block text-xs font-medium text-muted">
         {label}
 
         {required ? <span className="ml-1 text-theme-accent">*</span> : null}
@@ -373,9 +373,9 @@ function Field({
 function ContractRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[9px] font-medium text-muted">{label}</p>
+      <p className="text-xs font-medium text-muted">{label}</p>
 
-      <p className="mt-1 text-[10px] leading-4 text-foreground">{value}</p>
+      <p className="mt-1 text-xs leading-4 text-foreground">{value}</p>
     </div>
   );
 }

@@ -71,7 +71,7 @@ type EditorState =
   | null;
 
 const selectClassName =
-  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-[10px] text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
+  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
 
 function humanize(value: string) {
   return value
@@ -166,10 +166,10 @@ export function AdminProjectMilestoneManager({
             <div className="flex items-center gap-2">
               <CircleDot className="size-4 text-theme-accent" />
 
-              <h2 className="text-[12px] font-semibold text-foreground">Milestone management</h2>
+              <h2 className="text-sm font-semibold text-foreground">Milestone management</h2>
             </div>
 
-            <p className="mt-1 text-[9px] leading-4 text-muted">
+            <p className="mt-1 text-xs leading-4 text-muted">
               {completed} of {milestones.length} completed for {projectName}.
             </p>
           </div>
@@ -183,7 +183,7 @@ export function AdminProjectMilestoneManager({
                 mode: 'create'
               });
             }}
-            className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90">
+            className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90">
             <Plus className="size-3.5" />
             Add milestone
           </button>
@@ -191,7 +191,7 @@ export function AdminProjectMilestoneManager({
       </header>
 
       {error ? (
-        <div className="border-b border-red-500/20 bg-red-500/5 px-5 py-3 text-[10px] font-medium text-red-600 dark:text-red-400">
+        <div className="border-b border-red-500/20 bg-red-500/5 px-5 py-3 text-xs font-medium text-red-600 dark:text-red-400">
           {error}
         </div>
       ) : null}
@@ -241,7 +241,7 @@ export function AdminProjectMilestoneManager({
                 <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted">
+                      <span className="font-mono text-xs uppercase tracking-[0.1em] text-muted">
                         M{String(index + 1).padStart(2, '0')}
                       </span>
 
@@ -250,23 +250,23 @@ export function AdminProjectMilestoneManager({
                         className={['size-1.5 rounded-full', getStatusClass(milestone.status)].join(' ')}
                       />
 
-                      <span className="text-[9px] text-muted">{humanize(milestone.status)}</span>
+                      <span className="text-xs text-muted">{humanize(milestone.status)}</span>
 
-                      <span className="text-[9px] text-muted">·</span>
+                      <span className="text-xs text-muted">·</span>
 
-                      <span className="text-[9px] text-muted">{humanize(milestone.priority)}</span>
+                      <span className="text-xs text-muted">{humanize(milestone.priority)}</span>
 
-                      <span className="text-[9px] text-muted">·</span>
+                      <span className="text-xs text-muted">·</span>
 
-                      <span className="text-[9px] text-muted">{humanize(milestone.visibility)}</span>
+                      <span className="text-xs text-muted">{humanize(milestone.visibility)}</span>
                     </div>
 
-                    <h3 className="mt-2 text-[14px] font-semibold tracking-[-0.02em] text-foreground">
+                    <h3 className="mt-2 text-sm font-semibold tracking-[-0.02em] text-foreground">
                       {milestone.title}
                     </h3>
 
                     {milestone.description ? (
-                      <p className="mt-1.5 line-clamp-2 max-w-2xl text-[10px] leading-5 text-muted">
+                      <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted">
                         {milestone.description}
                       </p>
                     ) : null}
@@ -316,7 +316,7 @@ export function AdminProjectMilestoneManager({
                             onClick={() => {
                               handleDelete(milestone);
                             }}
-                            className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-red-600 px-3 text-[9px] font-semibold text-white disabled:opacity-50">
+                            className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-red-600 px-3 text-xs font-semibold text-white disabled:opacity-50">
                             Confirm delete
                           </button>
 
@@ -356,9 +356,9 @@ export function AdminProjectMilestoneManager({
         <div className="px-6 py-12 text-center">
           <CheckCircle2 className="mx-auto size-6 text-muted" />
 
-          <p className="mt-3 text-[12px] font-semibold text-foreground">No milestones yet</p>
+          <p className="mt-3 text-sm font-semibold text-foreground">No milestones yet</p>
 
-          <p className="mt-1 text-[10px] text-muted">Create the first delivery milestone for this project.</p>
+          <p className="mt-1 text-xs text-muted">Create the first delivery milestone for this project.</p>
         </div>
       )}
     </section>
@@ -418,11 +418,11 @@ function MilestoneForm({
     <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-surface">
       <header className="flex items-center justify-between gap-4 border-b border-border bg-surface-raised px-4 py-4 sm:px-5">
         <div>
-          <p className="text-[11px] font-semibold text-foreground">
+          <p className="text-xs font-semibold text-foreground">
             {milestone ? 'Edit milestone' : 'Create milestone'}
           </p>
 
-          <p className="mt-1 text-[9px] text-muted">
+          <p className="mt-1 text-xs text-muted">
             Delivery state and client visibility are controlled here.
           </p>
         </div>
@@ -571,14 +571,14 @@ function MilestoneForm({
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex h-9 cursor-pointer items-center justify-center rounded-xl border border-border bg-background px-4 text-[10px] font-semibold text-foreground transition-colors hover:bg-surface-muted">
+          className="inline-flex h-9 cursor-pointer items-center justify-center rounded-xl border border-border bg-background px-4 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
           Cancel
         </button>
 
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+          className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
           <Save className="size-3.5" />
 
           {pending ? 'Saving...' : milestone ? 'Save milestone' : 'Create milestone'}
@@ -599,7 +599,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[9px] font-medium text-muted">
+      <span className="mb-2 block text-xs font-medium text-muted">
         {label}
 
         {required ? <span className="ml-1 text-theme-accent">*</span> : null}
@@ -613,9 +613,9 @@ function Field({
 function MilestoneStat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-xs uppercase tracking-[0.08em] text-muted">{label}</p>
 
-      <p className="mt-1 text-[10px] font-semibold text-foreground">{value}</p>
+      <p className="mt-1 text-xs font-semibold text-foreground">{value}</p>
     </div>
   );
 }

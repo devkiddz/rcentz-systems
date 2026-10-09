@@ -16,12 +16,12 @@ type MobileNavigationItem = {
 
 const mobileNavigation = [
   {
-    label: 'Overview',
+    label: 'Home',
     href: '/admin',
     icon: LayoutDashboard
   },
   {
-    label: 'Requests',
+    label: 'Briefs',
     href: '/admin/requests',
     icon: BriefcaseBusiness
   },
@@ -71,7 +71,7 @@ export function AdminMobileNav() {
           items-center
           justify-between
           gap-1
-          rounded-[22px]
+          rounded-2xl
           border
           border-border
           bg-surface/95
@@ -116,7 +116,7 @@ export function AdminMobileNav() {
                 className={[
                   'max-w-full',
                   'truncate',
-                  'text-[9px]',
+                  'text-xs',
                   'leading-none',
 
                   active ? 'font-semibold' : 'font-medium'
@@ -150,7 +150,7 @@ export function AdminMobileNav() {
           ">
           <Menu aria-hidden="true" className="size-[17px]" />
 
-          <span className="text-[9px] font-medium leading-none">More</span>
+          <span className="text-xs font-medium leading-none">More</span>
         </button>
       </nav>
     </div>

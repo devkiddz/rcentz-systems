@@ -137,21 +137,21 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
             <Avatar className="size-10 shrink-0 ring-1 ring-border sm:size-11">
               {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
 
-              <AvatarFallback className="bg-surface-muted text-[11px] font-semibold text-foreground">
+              <AvatarFallback className="bg-surface-muted text-xs font-semibold text-foreground">
                 {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
 
             <div className="min-w-0">
-              <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-theme-accent sm:text-[9px]">
+              <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent sm:text-xs">
                 Operations Workspace
               </p>
 
-              <h1 className="mt-1 truncate text-[16px] font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
+              <p className="mt-1 truncate text-base font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
                 Welcome back, {firstName}
-              </h1>
+              </p>
 
-              <p className="mt-1 hidden truncate text-[10px] text-muted sm:block">
+              <p className="mt-1 hidden truncate text-xs text-muted sm:block">
                 Monitor and manage activity across Rcentz Systems.
               </p>
             </div>
@@ -179,9 +179,9 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
                 className="w-72 overflow-hidden rounded-2xl border border-border bg-surface p-1 text-foreground shadow-xl">
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="px-3 py-2.5">
-                    <p className="text-[10px] font-semibold text-foreground">Create new</p>
+                    <p className="text-xs font-semibold text-foreground">Create new</p>
 
-                    <p className="mt-0.5 text-[8px] font-normal text-muted">
+                    <p className="mt-0.5 text-xs font-normal text-muted">
                       Start a new Rcentz business record.
                     </p>
                   </DropdownMenuLabel>
@@ -205,9 +205,9 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
                         </div>
 
                         <div className="min-w-0">
-                          <p className="text-[10px] font-semibold text-foreground">{action.label}</p>
+                          <p className="text-xs font-semibold text-foreground">{action.label}</p>
 
-                          <p className="mt-0.5 text-[8px] leading-4 text-muted">{action.description}</p>
+                          <p className="mt-0.5 text-xs leading-4 text-muted">{action.description}</p>
                         </div>
                       </DropdownMenuItem>
                     );
@@ -221,7 +221,7 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
               disabled={isSigningOut}
               onClick={handleLogout}
               aria-label="Logout"
-              className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl px-2.5 text-[10px] font-medium text-muted transition-colors hover:bg-surface-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:px-3">
+              className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl px-2.5 text-xs font-medium text-muted transition-colors hover:bg-surface-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:px-3">
               {isSigningOut ? (
                 <LoaderCircle aria-hidden="true" className="size-3.5 animate-spin" />
               ) : (

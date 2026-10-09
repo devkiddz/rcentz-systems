@@ -49,7 +49,7 @@ export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOper
   ];
 
   return (
-    <section className="flex h-[420px] max-h-[420px] flex-col overflow-hidden rounded-[18px] border border-border bg-background">
+    <section className="flex h-[420px] max-h-[420px] flex-col overflow-hidden rounded-2xl border border-border bg-background">
       <div
         role="tablist"
         aria-label="Admin operations"
@@ -66,7 +66,7 @@ export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOper
               role="tab"
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex h-11 cursor-pointer items-center gap-2 rounded-t-xl px-3 text-[12px] font-medium transition-colors ${
+              className={`relative flex h-11 cursor-pointer items-center gap-2 rounded-t-xl px-3 text-sm font-medium transition-colors ${
                 isActive ? 'text-foreground' : 'text-muted hover:text-foreground'
               }`}>
               <Icon aria-hidden="true" className={`size-4 ${isActive ? 'text-theme-accent' : ''}`} />
@@ -74,7 +74,7 @@ export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOper
               <span>{tab.label}</span>
 
               <span
-                className={`flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[9px] font-semibold tabular-nums ${
+                className={`flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums ${
                   isActive ? 'bg-theme-accent-faint text-theme-accent' : 'bg-surface-muted text-muted'
                 }`}>
                 {tab.count}

@@ -81,6 +81,7 @@ export default async function AdminPage() {
 
   return (
     <AdminOverviewLayout>
+      <h1 className="text-2xl font-semibold tracking-tight">Operations overview</h1>
       <AdminOverviewMetrics metrics={metrics} />
 
       <section className="grid items-start gap-5 lg:grid-cols-2">

@@ -46,13 +46,13 @@ export function AdminOverviewHeader({ user }: AdminOverviewHeaderProps) {
         <Avatar className="size-9 shrink-0 ring-1 ring-border sm:size-10">
           {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
 
-          <AvatarFallback className="bg-surface-muted text-[11px] font-semibold sm:text-xs">
+          <AvatarFallback className="bg-surface-muted text-xs font-semibold sm:text-xs">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
 
         <div className="min-w-0">
-          <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-theme-accent sm:text-[9px]">
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent sm:text-xs">
             Operations Overview
           </p>
 
@@ -60,7 +60,7 @@ export function AdminOverviewHeader({ user }: AdminOverviewHeaderProps) {
             Welcome back, {firstName}
           </h1>
 
-          <p className="mt-1 hidden truncate text-[11px] text-muted sm:block">
+          <p className="mt-1 hidden truncate text-xs text-muted sm:block">
             Monitor activity across Rcentz Systems.
           </p>
         </div>
@@ -83,7 +83,7 @@ export function AdminOverviewHeader({ user }: AdminOverviewHeaderProps) {
         <Button
           nativeButton={false}
           render={<Link href="/admin/projects/new" />}
-          className="h-8 cursor-pointer rounded-xl px-2.5 text-[11px] font-medium shadow-sm transition-all duration-150 hover:-translate-y-px sm:text-xs">
+          className="h-8 cursor-pointer rounded-xl px-2.5 text-xs font-medium shadow-sm transition-all duration-150 hover:-translate-y-px sm:text-xs">
           <span className="flex size-5 items-center justify-center rounded-lg bg-black/10">
             <Plus aria-hidden="true" className="size-3.5" />
           </span>

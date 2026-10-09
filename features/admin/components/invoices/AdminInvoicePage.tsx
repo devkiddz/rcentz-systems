@@ -252,7 +252,7 @@ export function AdminInvoicePage({ invoice }: AdminInvoicePageProps) {
               Back to invoices
             </Link>
 
-            <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-theme-accent">
+            <p className="mt-5 font-mono text-xs uppercase tracking-[0.14em] text-theme-accent">
               Finance / Invoice
             </p>
 

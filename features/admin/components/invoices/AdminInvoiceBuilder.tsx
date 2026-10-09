@@ -166,12 +166,12 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href="/admin/invoices"
-              className="inline-flex items-center gap-2 text-[10px] font-medium text-muted transition-colors hover:text-foreground">
+              className="inline-flex items-center gap-2 text-xs font-medium text-muted transition-colors hover:text-foreground">
               <ArrowLeft className="size-3.5" />
               Back to invoices
             </Link>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-[9px] font-medium text-muted">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-muted">
               <span className="size-1.5 rounded-full bg-muted" />
               Draft invoice
             </div>
@@ -186,8 +186,8 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   </div>
 
                   <div>
-                    <h2 className="text-[12px] font-semibold text-foreground">Client</h2>
-                    <p className="mt-0.5 text-[9px] text-muted">
+                    <h2 className="text-sm font-semibold text-foreground">Client</h2>
+                    <p className="mt-0.5 text-xs text-muted">
                       Select the account this invoice belongs to.
                     </p>
                   </div>
@@ -195,7 +195,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
                 <div className="p-4 sm:p-5">
                   <label className="block">
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Client account</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Client account</span>
 
                     <select
                       name="clientId"
@@ -204,7 +204,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                         setClientId(event.target.value);
                       }}
                       required
-                      className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-[10px] text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20">
+                      className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20">
                       <option value="">Select client</option>
 
                       {clients.map(client => {
@@ -220,19 +220,19 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   {selectedClient ? (
                     <div className="mt-4 grid gap-3 rounded-xl border border-border bg-surface-muted p-4 sm:grid-cols-2">
                       <div>
-                        <p className="text-[8px] uppercase tracking-[0.12em] text-muted">Contact</p>
-                        <p className="mt-1 text-[10px] font-medium text-foreground">{selectedClient.name}</p>
-                        <p className="mt-0.5 text-[9px] text-muted">{selectedClient.email}</p>
+                        <p className="text-xs uppercase tracking-[0.12em] text-muted">Contact</p>
+                        <p className="mt-1 text-xs font-medium text-foreground">{selectedClient.name}</p>
+                        <p className="mt-0.5 text-xs text-muted">{selectedClient.email}</p>
                       </div>
 
                       <div>
-                        <p className="text-[8px] uppercase tracking-[0.12em] text-muted">Billing profile</p>
-                        <p className="mt-1 text-[10px] text-foreground">
+                        <p className="text-xs uppercase tracking-[0.12em] text-muted">Billing profile</p>
+                        <p className="mt-1 text-xs text-foreground">
                           {selectedClient.address ?? 'No billing address saved'}
                         </p>
 
                         {selectedClient.phone ? (
-                          <p className="mt-0.5 text-[9px] text-muted">{selectedClient.phone}</p>
+                          <p className="mt-0.5 text-xs text-muted">{selectedClient.phone}</p>
                         ) : null}
                       </div>
                     </div>
@@ -248,8 +248,8 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                     </div>
 
                     <div>
-                      <h2 className="text-[12px] font-semibold text-foreground">Invoice items</h2>
-                      <p className="mt-0.5 text-[9px] text-muted">
+                      <h2 className="text-sm font-semibold text-foreground">Invoice items</h2>
+                      <p className="mt-0.5 text-xs text-muted">
                         Define exactly what the client is being billed for.
                       </p>
                     </div>
@@ -258,7 +258,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   <button
                     type="button"
                     onClick={addLineItem}
-                    className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[9px] font-medium text-foreground transition-colors hover:bg-surface-muted">
+                    className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted">
                     <Plus className="size-3.5" />
                     Add item
                   </button>
@@ -275,7 +275,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                         key={item.id}
                         className="overflow-hidden rounded-xl border border-border bg-background">
                         <div className="flex items-center justify-between gap-3 border-b border-border bg-surface-raised px-4 py-3">
-                          <p className="text-[9px] font-semibold text-foreground">Line item {index + 1}</p>
+                          <p className="text-xs font-semibold text-foreground">Line item {index + 1}</p>
 
                           <button
                             type="button"
@@ -291,7 +291,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
                         <div className="grid gap-4 p-4 sm:grid-cols-2">
                           <label className="sm:col-span-2">
-                            <span className="mb-2 block text-[9px] font-medium text-muted">Item title</span>
+                            <span className="mb-2 block text-xs font-medium text-muted">Item title</span>
 
                             <Input
                               value={item.name}
@@ -304,7 +304,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                           </label>
 
                           <label className="sm:col-span-2">
-                            <span className="mb-2 block text-[9px] font-medium text-muted">Description</span>
+                            <span className="mb-2 block text-xs font-medium text-muted">Description</span>
 
                             <Textarea
                               value={item.description}
@@ -317,7 +317,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                           </label>
 
                           <label>
-                            <span className="mb-2 block text-[9px] font-medium text-muted">Quantity</span>
+                            <span className="mb-2 block text-xs font-medium text-muted">Quantity</span>
 
                             <Input
                               type="number"
@@ -332,7 +332,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                           </label>
 
                           <label>
-                            <span className="mb-2 block text-[9px] font-medium text-muted">Unit price</span>
+                            <span className="mb-2 block text-xs font-medium text-muted">Unit price</span>
 
                             <Input
                               type="number"
@@ -349,9 +349,9 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                         </div>
 
                         <footer className="flex items-center justify-between border-t border-border bg-surface-muted px-4 py-3">
-                          <span className="text-[9px] text-muted">Line total</span>
+                          <span className="text-xs text-muted">Line total</span>
 
-                          <span className="text-[10px] font-semibold text-foreground">
+                          <span className="text-xs font-semibold text-foreground">
                             {formatMoney(lineTotal, currency)}
                           </span>
                         </footer>
@@ -363,15 +363,15 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
               <section className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <header className="border-b border-border bg-surface-raised px-4 py-4 sm:px-5">
-                  <h2 className="text-[12px] font-semibold text-foreground">Invoice settings</h2>
-                  <p className="mt-0.5 text-[9px] text-muted">
+                  <h2 className="text-sm font-semibold text-foreground">Invoice settings</h2>
+                  <p className="mt-0.5 text-xs text-muted">
                     Set currency, adjustments, due date and internal billing notes.
                   </p>
                 </header>
 
                 <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5">
                   <label>
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Currency</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Currency</span>
 
                     <select
                       name="currency"
@@ -379,7 +379,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                       onChange={event => {
                         setCurrency(event.target.value);
                       }}
-                      className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-[10px] text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20">
+                      className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20">
                       <option value="NGN">NGN</option>
                       <option value="USD">USD</option>
                       <option value="GBP">GBP</option>
@@ -388,13 +388,13 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   </label>
 
                   <label>
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Due date</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Due date</span>
 
                     <Input type="date" name="dueDate" />
                   </label>
 
                   <label>
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Discount amount</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Discount amount</span>
 
                     <Input
                       type="number"
@@ -409,7 +409,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   </label>
 
                   <label>
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Tax amount</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Tax amount</span>
 
                     <Input
                       type="number"
@@ -424,7 +424,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                   </label>
 
                   <label className="sm:col-span-2">
-                    <span className="mb-2 block text-[9px] font-medium text-muted">Notes</span>
+                    <span className="mb-2 block text-xs font-medium text-muted">Notes</span>
 
                     <Textarea
                       name="notes"
@@ -438,41 +438,41 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
             <aside className="overflow-hidden rounded-2xl border border-border bg-surface xl:sticky xl:top-5">
               <header className="border-b border-border bg-surface-raised px-4 py-4">
-                <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-theme-accent">
+                <p className="font-mono text-xs uppercase tracking-[0.14em] text-theme-accent">
                   Draft Summary
                 </p>
 
-                <h2 className="mt-1 text-[13px] font-semibold text-foreground">Invoice total</h2>
+                <h2 className="mt-1 text-sm font-semibold text-foreground">Invoice total</h2>
               </header>
 
               <div className="space-y-3 p-4">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-[9px] text-muted">Subtotal</span>
+                  <span className="text-xs text-muted">Subtotal</span>
 
-                  <span className="text-[10px] font-medium text-foreground">
+                  <span className="text-xs font-medium text-foreground">
                     {formatMoney(subtotal, currency)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-[9px] text-muted">Discount</span>
+                  <span className="text-xs text-muted">Discount</span>
 
-                  <span className="text-[10px] font-medium text-foreground">
+                  <span className="text-xs font-medium text-foreground">
                     -{formatMoney(discountAmount, currency)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-[9px] text-muted">Tax</span>
+                  <span className="text-xs text-muted">Tax</span>
 
-                  <span className="text-[10px] font-medium text-foreground">
+                  <span className="text-xs font-medium text-foreground">
                     {formatMoney(taxAmount, currency)}
                   </span>
                 </div>
 
                 <div className="border-t border-border pt-3">
                   <div className="flex items-end justify-between gap-4">
-                    <span className="text-[9px] font-medium text-muted">Total</span>
+                    <span className="text-xs font-medium text-muted">Total</span>
 
                     <span className="text-lg font-semibold tracking-[-0.04em] text-foreground">
                       {formatMoney(total, currency)}
@@ -482,18 +482,18 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
                 {selectedClient ? (
                   <div className="rounded-xl border border-border bg-surface-muted p-3">
-                    <p className="text-[8px] uppercase tracking-[0.12em] text-muted">Bill to</p>
+                    <p className="text-xs uppercase tracking-[0.12em] text-muted">Bill to</p>
 
-                    <p className="mt-1 text-[10px] font-semibold text-foreground">
+                    <p className="mt-1 text-xs font-semibold text-foreground">
                       {selectedClient.companyName ?? selectedClient.name}
                     </p>
 
-                    <p className="mt-0.5 truncate text-[9px] text-muted">{selectedClient.email}</p>
+                    <p className="mt-0.5 truncate text-xs text-muted">{selectedClient.email}</p>
                   </div>
                 ) : null}
 
                 {state.error ? (
-                  <div className="rounded-xl border border-red-500/25 bg-background p-3 text-[9px] leading-4 text-red-600 dark:text-red-400">
+                  <div className="rounded-xl border border-red-500/25 bg-background p-3 text-xs leading-4 text-red-600 dark:text-red-400">
                     {state.error}
                   </div>
                 ) : null}
@@ -503,7 +503,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
                 <button
                   type="submit"
                   disabled={pending || clients.length === 0}
-                  className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+                  className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                   <Save className="size-3.5" />
 
                   {pending ? 'Saving draft...' : 'Save Draft'}
@@ -511,7 +511,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
 
                 <Link
                   href="/admin/invoices"
-                  className="inline-flex h-9 w-full items-center justify-center rounded-xl border border-border bg-background px-4 text-[10px] font-medium text-muted transition-colors hover:bg-surface-raised hover:text-foreground">
+                  className="inline-flex h-9 w-full items-center justify-center rounded-xl border border-border bg-background px-4 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-foreground">
                   Cancel
                 </Link>
               </footer>

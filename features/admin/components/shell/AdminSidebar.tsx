@@ -42,7 +42,8 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 
-import { RcentzLogo } from '@/ui-shell/brand/RcentzLogo';
+import { RcentzSymbol } from '@/ui-shell/brand/RcentzSymbol';
+import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
 
 type AdminNavigationAction = {
   key: string;
@@ -392,7 +393,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" className="border-r border-sidebar-border bg-sidebar">
-      <SidebarHeader className="border-b border-sidebar-border bg-sidebar">
+      <SidebarHeader className="h-16 justify-center border-b border-sidebar-border bg-sidebar">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -401,15 +402,13 @@ export function AdminSidebar() {
               render={<Link href="/admin" onClick={handleNavigate} />}
               className="transition-colors duration-150 hover:bg-sidebar-accent">
               <div className="flex size-8 shrink-0 items-center justify-center">
-                <RcentzLogo />
+                <RcentzSymbol className="size-7! text-sidebar-foreground" />
               </div>
 
               <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold tracking-[-0.02em] text-sidebar-foreground">
-                  Rcentz Systems
-                </span>
+                <RcentzBrandLogo className="h-auto! w-24! text-sidebar-foreground" />
 
-                <span className="truncate text-[10px] text-sidebar-foreground/55">Admin workspace</span>
+                <span className="truncate text-xs text-sidebar-foreground/55">Admin workspace</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -451,10 +450,10 @@ export function AdminSidebar() {
           <div className="flex items-center gap-2">
             <ShieldCheck aria-hidden="true" className="size-3.5 shrink-0 text-theme-accent" />
 
-            <p className="text-[10px] font-semibold text-sidebar-foreground">Protected administration</p>
+            <p className="text-xs font-semibold text-sidebar-foreground">Protected administration</p>
           </div>
 
-          <p className="mt-1.5 text-[9px] leading-4 text-sidebar-foreground/55">{t('protected')}</p>
+          <p className="mt-1.5 text-xs leading-4 text-sidebar-foreground/55">{t('protected')}</p>
         </div>
 
         <SidebarRail />

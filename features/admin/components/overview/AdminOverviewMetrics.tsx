@@ -19,7 +19,7 @@ export function AdminOverviewMetrics({ metrics }: AdminOverviewMetricsProps) {
   return (
     <section
       aria-label="Overview metrics"
-      className="overflow-hidden rounded-[18px] border border-border bg-border">
+      className="overflow-hidden rounded-2xl border border-border bg-border">
       <div className="flex snap-x snap-mandatory gap-px overflow-x-auto xl:grid xl:grid-cols-5 xl:overflow-visible">
         {metrics.map(metric => (
           <Link
@@ -36,7 +36,7 @@ export function AdminOverviewMetrics({ metrics }: AdminOverviewMetricsProps) {
 
             <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-foreground">{metric.value}</p>
 
-            <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-muted">
+            <p className="mt-1 line-clamp-2 text-xs leading-4 text-muted">
               {metric.note ?? 'No activity yet'}
             </p>
           </Link>

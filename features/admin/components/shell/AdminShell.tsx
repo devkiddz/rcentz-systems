@@ -27,10 +27,10 @@ type AdminShellProps = {
 
 export function AdminShell({ children, user, headerFeed }: AdminShellProps) {
   return (
-    <SidebarProvider className="bg-background">
+    <SidebarProvider className="bg-surface-subtle">
       <AdminSidebar />
 
-      <SidebarInset className="min-w-0 bg-background">
+      <SidebarInset className="min-w-0 bg-surface-subtle">
         <AdminHeader user={user} headerFeed={headerFeed} />
 
         <AdminWorkspaceHeader

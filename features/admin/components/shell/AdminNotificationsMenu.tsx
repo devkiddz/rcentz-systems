@@ -142,9 +142,9 @@ export function AdminNotificationsMenu({
           <DropdownMenuLabel className="px-4 py-3.5">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[13px] font-semibold text-foreground">Notifications</p>
+                <p className="text-sm font-semibold text-foreground">Notifications</p>
 
-                <p className="mt-0.5 text-[11px] font-normal text-muted">System and operational activity</p>
+                <p className="mt-0.5 text-xs font-normal text-muted">System and operational activity</p>
               </div>
 
               {unreadCount > 0 ? (
@@ -157,7 +157,7 @@ export function AdminNotificationsMenu({
 
                     handleMarkAllRead();
                   }}
-                  className="shrink-0 text-[11px] font-semibold text-theme-accent transition-opacity hover:opacity-75 disabled:opacity-40">
+                  className="shrink-0 text-xs font-semibold text-theme-accent transition-opacity hover:opacity-75 disabled:opacity-40">
                   Mark all read
                 </button>
               ) : null}
@@ -173,9 +173,9 @@ export function AdminNotificationsMenu({
               <Bell className="size-4 text-muted" />
             </div>
 
-            <p className="mt-3 text-[13px] font-semibold text-foreground">No notifications</p>
+            <p className="mt-3 text-sm font-semibold text-foreground">No notifications</p>
 
-            <p className="mt-1 text-[11px] leading-5 text-muted">
+            <p className="mt-1 text-xs leading-5 text-muted">
               New client and system activity will appear here.
             </p>
           </div>
@@ -204,7 +204,7 @@ export function AdminNotificationsMenu({
                     <div className="flex items-start justify-between gap-3">
                       <p
                         className={[
-                          'line-clamp-1 text-[13px]',
+                          'line-clamp-1 text-sm',
                           notification.unread
                             ? 'font-semibold text-foreground'
                             : 'font-medium text-foreground'
@@ -212,10 +212,10 @@ export function AdminNotificationsMenu({
                         {notification.title}
                       </p>
 
-                      <span className="shrink-0 text-[10px] text-muted">{notification.timeLabel}</span>
+                      <span className="shrink-0 text-xs text-muted">{notification.timeLabel}</span>
                     </div>
 
-                    <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-muted">
+                    <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
                       {notification.message}
                     </p>
                   </div>
@@ -239,7 +239,7 @@ export function AdminNotificationsMenu({
             router.push('/admin/notifications');
           }}
           className="cursor-pointer justify-between rounded-none px-4 py-3">
-          <span className="text-[12px] font-medium">View all notifications</span>
+          <span className="text-sm font-medium">View all notifications</span>
 
           <ArrowRight className="size-4" />
         </DropdownMenuItem>

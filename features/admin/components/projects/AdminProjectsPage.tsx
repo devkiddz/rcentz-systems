@@ -112,7 +112,7 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
     <main className="px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-[1200px] space-y-7">
         <section>
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-theme-accent">Operations</p>
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">Operations</p>
 
           <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -128,7 +128,7 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
 
             <Link
               href="/admin/projects/new"
-              className="inline-flex h-9 w-fit items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90">
+              className="inline-flex h-9 w-fit items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90">
               <Plus className="size-3.5" />
               Create project
             </Link>
@@ -181,13 +181,13 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
           />
         </section>
 
-        <section className="overflow-hidden rounded-[22px] border border-border bg-background">
+        <section className="overflow-hidden rounded-2xl border border-border bg-background">
           <header className="border-b border-border bg-surface-raised px-4 py-5 sm:px-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-sm font-semibold text-foreground">Project register</p>
 
-                <p className="mt-1 text-[10px] text-muted">
+                <p className="mt-1 text-xs text-muted">
                   Search, open, preview and manage project delivery.
                 </p>
               </div>
@@ -202,7 +202,7 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
                     setSearch(event.target.value);
                   }}
                   placeholder="Project, client or status..."
-                  className="h-9 w-full rounded-xl border border-border bg-background pl-9 pr-3 text-[10px] text-foreground outline-none placeholder:text-muted focus:border-foreground/30"
+                  className="h-9 w-full rounded-xl border border-border bg-background pl-9 pr-3 text-xs text-foreground outline-none placeholder:text-muted focus:border-foreground/30"
                 />
               </div>
             </div>
@@ -270,7 +270,7 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
 
                 <p className="mt-3 text-sm font-semibold text-foreground">No matching projects</p>
 
-                <p className="mt-1 text-[10px] text-muted">Try another search or filter.</p>
+                <p className="mt-1 text-xs text-muted">Try another search or filter.</p>
               </div>
             ) : null}
           </div>
@@ -289,11 +289,11 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
   const liveUrl = project.portfolio?.liveUrl ?? null;
 
   return (
-    <article className="group relative overflow-hidden rounded-[22px] border border-border bg-surface shadow-sm transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md">
+    <article className="group relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md">
       <Link
         href={`/admin/projects/${project.id}`}
         aria-label={`Open ${project.name} admin workspace`}
-        className="absolute inset-0 z-10 rounded-[22px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40"
+        className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40"
       />
 
       <div className="relative aspect-[16/6] overflow-hidden border-b border-border bg-surface-muted">
@@ -312,7 +312,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
                 <ImageIcon className="size-4 text-muted" />
               </div>
 
-              <p className="mt-2 text-[9px] text-muted">No project image</p>
+              <p className="mt-2 text-xs text-muted">No project image</p>
             </div>
           </div>
         )}
@@ -330,19 +330,19 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
             <div className="flex flex-wrap items-center gap-2">
               <StatusDot status={project.status} />
 
-              <span className="text-[9px] font-semibold uppercase tracking-[0.08em] text-muted">
+              <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">
                 {humanize(project.status)}
               </span>
             </div>
 
-            <h2 className="mt-2.5 truncate text-[16px] font-semibold tracking-[-0.025em] text-foreground">
+            <h2 className="mt-2.5 truncate text-base font-semibold tracking-[-0.025em] text-foreground">
               {project.name}
             </h2>
 
-            <p className="mt-1.5 truncate font-mono text-[9px] text-muted">{project.slug}</p>
+            <p className="mt-1.5 truncate font-mono text-xs text-muted">{project.slug}</p>
           </div>
 
-          <span className="shrink-0 rounded-full border border-border bg-background px-2.5 py-1 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">
+          <span className="shrink-0 rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium uppercase tracking-[0.08em] text-muted">
             {humanize(project.visibility)}
           </span>
         </div>
@@ -356,27 +356,27 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
             </div>
 
             <div className="min-w-0">
-              <p className="text-[9px] font-medium uppercase tracking-[0.08em] text-muted">Client</p>
+              <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">Client</p>
 
-              <p className="mt-1 truncate text-[11px] font-semibold text-foreground">{clientLabel}</p>
+              <p className="mt-1 truncate text-xs font-semibold text-foreground">{clientLabel}</p>
 
               {project.client ? (
-                <p className="mt-1 truncate text-[9px] text-muted">{project.client.email}</p>
+                <p className="mt-1 truncate text-xs text-muted">{project.client.email}</p>
               ) : (
-                <p className="mt-1 text-[9px] text-muted">Assignment pending</p>
+                <p className="mt-1 text-xs text-muted">Assignment pending</p>
               )}
             </div>
           </div>
 
           {project.description ? (
-            <p className="mt-5 line-clamp-3 text-[10px] leading-5 text-muted">{project.description}</p>
+            <p className="mt-5 line-clamp-3 text-xs leading-5 text-muted">{project.description}</p>
           ) : null}
 
           <div className="mt-6">
             <div className="flex items-center justify-between gap-4">
-              <span className="text-[9px] font-medium text-muted">Overall progress</span>
+              <span className="text-xs font-medium text-muted">Overall progress</span>
 
-              <span className="text-[12px] font-semibold tabular-nums text-foreground">
+              <span className="text-sm font-semibold tabular-nums text-foreground">
                 {project.progress}%
               </span>
             </div>
@@ -425,7 +425,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
               <Link
                 href={`/portfolio/${project.slug}`}
                 target="_blank"
-                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[9px] font-semibold text-foreground transition-colors hover:bg-surface-raised">
+                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-raised">
                 <Eye className="size-3.5" />
                 Preview
               </Link>
@@ -433,7 +433,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
               <button
                 type="button"
                 disabled
-                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[9px] font-semibold text-muted opacity-50">
+                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-muted opacity-50">
                 <Eye className="size-3.5" />
                 Preview
               </button>
@@ -444,7 +444,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
                 href={liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[9px] font-semibold text-foreground transition-colors hover:bg-surface-raised">
+                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-raised">
                 <ArrowUpRight className="size-3.5" />
                 Live view
               </a>
@@ -452,7 +452,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
               <button
                 type="button"
                 disabled
-                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[9px] font-semibold text-muted opacity-50">
+                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-muted opacity-50">
                 <ArrowUpRight className="size-3.5" />
                 Live view
               </button>
@@ -460,7 +460,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
 
             <Link
               href={`/admin/projects/${project.id}`}
-              className="ml-auto inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-foreground px-3 text-[9px] font-semibold text-background transition-opacity hover:opacity-90">
+              className="ml-auto inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-foreground px-3 text-xs font-semibold text-background transition-opacity hover:opacity-90">
               <FolderKanban className="size-3.5" />
               Open workspace
             </Link>
@@ -475,7 +475,7 @@ function CreateProjectPlaceholder() {
   return (
     <Link
       href="/admin/projects/new"
-      className="group flex min-h-[470px] items-center justify-center rounded-[22px] border border-dashed border-border bg-background/40 p-8 text-center transition-colors hover:border-theme-accent/30 hover:bg-theme-accent/[0.025]">
+      className="group flex min-h-[470px] items-center justify-center rounded-2xl border border-dashed border-border bg-background/40 p-8 text-center transition-colors hover:border-theme-accent/30 hover:bg-theme-accent/[0.025]">
       <div>
         <div className="mx-auto flex size-12 items-center justify-center rounded-2xl border border-border bg-surface">
           <Plus className="size-5 text-theme-accent" />
@@ -483,7 +483,7 @@ function CreateProjectPlaceholder() {
 
         <h2 className="mt-5 text-sm font-semibold text-foreground">Create new project</h2>
 
-        <p className="mx-auto mt-2 max-w-[260px] text-[10px] leading-5 text-muted">
+        <p className="mx-auto mt-2 max-w-[260px] text-xs leading-5 text-muted">
           Establish a new project workspace and connect its client, delivery and management records.
         </p>
       </div>
@@ -537,9 +537,9 @@ function SummaryCard({
         <span className="text-xl font-semibold tracking-[-0.04em] text-foreground">{value}</span>
       </div>
 
-      <p className="mt-4 text-[10px] font-semibold text-foreground">{label}</p>
+      <p className="mt-4 text-xs font-semibold text-foreground">{label}</p>
 
-      <p className="mt-1 text-[9px] leading-4 text-muted">{note}</p>
+      <p className="mt-1 text-xs leading-4 text-muted">{note}</p>
     </button>
   );
 }
@@ -561,8 +561,8 @@ function FilterButton({
       onClick={onClick}
       className={
         active
-          ? 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-foreground bg-foreground px-3 text-[9px] font-medium text-background'
-          : 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-background px-3 text-[9px] font-medium text-muted transition-colors hover:text-foreground'
+          ? 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-foreground bg-foreground px-3 text-xs font-medium text-background'
+          : 'inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-background px-3 text-xs font-medium text-muted transition-colors hover:text-foreground'
       }>
       {label}
 
@@ -574,16 +574,16 @@ function FilterButton({
 function ProjectMetric({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg border border-border bg-background px-3 py-2.5">
-      <p className="truncate text-[8px] uppercase tracking-[0.06em] text-muted">{label}</p>
+      <p className="truncate text-xs uppercase tracking-[0.06em] text-muted">{label}</p>
 
-      <p className="mt-1 text-[12px] font-semibold tabular-nums text-foreground">{value}</p>
+      <p className="mt-1 text-sm font-semibold tabular-nums text-foreground">{value}</p>
     </div>
   );
 }
 
 function MetaItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center gap-1.5 text-[9px]">
+    <div className="flex items-center gap-1.5 text-xs">
       <span className="text-muted">{label}</span>
 
       <span className="font-medium text-foreground">{value}</span>

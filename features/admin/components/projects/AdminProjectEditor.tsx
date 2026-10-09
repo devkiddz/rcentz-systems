@@ -65,7 +65,7 @@ const initialState: UpdateAdminProjectState = {
 };
 
 const selectClassName =
-  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-[10px] text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
+  'flex h-9 w-full rounded-lg border border-input bg-background px-3 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 focus:ring-2 focus:ring-theme-accent/20';
 
 export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps) {
   const [state, formAction, pending] = useActionState(updateAdminProject, initialState);
@@ -79,19 +79,19 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href={`/admin/projects/${project.id}`}
-              className="inline-flex items-center gap-2 text-[10px] font-medium text-muted transition-colors hover:text-foreground">
+              className="inline-flex items-center gap-2 text-xs font-medium text-muted transition-colors hover:text-foreground">
               <ArrowLeft className="size-3.5" />
               Back to project
             </Link>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-[9px] font-medium text-muted">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-muted">
               <span className="size-1.5 rounded-full bg-theme-accent" />
               Editing project
             </div>
           </div>
 
           <section>
-            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-theme-accent">
+            <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">
               Project Management
             </p>
 
@@ -105,7 +105,7 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
           </section>
 
           {state.error ? (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-[10px] font-medium text-red-600 dark:text-red-400">
+            <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs font-medium text-red-600 dark:text-red-400">
               {state.error}
             </div>
           ) : null}
@@ -259,9 +259,9 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
             <aside className="space-y-4 xl:sticky xl:top-24">
               <section className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <header className="border-b border-border bg-surface-raised px-4 py-4">
-                  <p className="text-[11px] font-semibold text-foreground">Update contract</p>
+                  <p className="text-xs font-semibold text-foreground">Update contract</p>
 
-                  <p className="mt-1 text-[9px] leading-4 text-muted">
+                  <p className="mt-1 text-xs leading-4 text-muted">
                     Saving updates the same canonical Project record read by the client workspace.
                   </p>
                 </header>
@@ -282,7 +282,7 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
               <button
                 type="submit"
                 disabled={pending}
-                className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-[10px] font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+                className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                 <Save className="size-3.5" />
 
                 {pending ? 'Saving changes...' : 'Save project'}
@@ -290,7 +290,7 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
 
               <Link
                 href={`/admin/projects/${project.id}`}
-                className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-border bg-background px-4 text-[10px] font-semibold text-foreground transition-colors hover:bg-surface-muted">
+                className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-border bg-background px-4 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
                 Cancel
               </Link>
             </aside>
@@ -320,9 +320,9 @@ function ProjectFormSection({
         </div>
 
         <div>
-          <h2 className="text-[12px] font-semibold text-foreground">{title}</h2>
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
 
-          <p className="mt-0.5 text-[9px] text-muted">{description}</p>
+          <p className="mt-0.5 text-xs text-muted">{description}</p>
         </div>
       </header>
 
@@ -342,7 +342,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[9px] font-medium text-muted">
+      <span className="mb-2 block text-xs font-medium text-muted">
         {label}
 
         {required ? <span className="ml-1 text-theme-accent">*</span> : null}
@@ -356,9 +356,9 @@ function Field({
 function ContractRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[9px] font-medium text-muted">{label}</p>
+      <p className="text-xs font-medium text-muted">{label}</p>
 
-      <p className="mt-1 text-[10px] leading-4 text-foreground">{value}</p>
+      <p className="mt-1 text-xs leading-4 text-foreground">{value}</p>
     </div>
   );
 }

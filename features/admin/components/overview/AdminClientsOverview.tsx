@@ -68,7 +68,7 @@ function ClientRow({ client, isPreview }: { client: OverviewClient; isPreview: b
         <Avatar className="size-11 shrink-0">
           {avatarImage ? <AvatarImage src={avatarImage} alt={displayName} /> : null}
 
-          <AvatarFallback className="bg-surface-muted text-[10px] font-semibold">
+          <AvatarFallback className="bg-surface-muted text-xs font-semibold">
             {getInitials(displayName)}
           </AvatarFallback>
         </Avatar>
@@ -76,18 +76,18 @@ function ClientRow({ client, isPreview }: { client: OverviewClient; isPreview: b
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-semibold text-foreground">{displayName}</p>
+              <p className="truncate text-sm font-semibold text-foreground">{displayName}</p>
 
-              <p className="mt-1 truncate text-[10px] text-muted">{client.email}</p>
+              <p className="mt-1 truncate text-xs text-muted">{client.email}</p>
             </div>
 
             {client.activeProjectCount > 0 ? (
               <span
-                className={`shrink-0 text-[12px] font-semibold ${getProgressTextClassName(projectProgress)}`}>
+                className={`shrink-0 text-sm font-semibold ${getProgressTextClassName(projectProgress)}`}>
                 {projectProgress}%
               </span>
             ) : (
-              <span className="shrink-0 text-[10px] text-muted">No active project</span>
+              <span className="shrink-0 text-xs text-muted">No active project</span>
             )}
           </div>
 
@@ -102,7 +102,7 @@ function ClientRow({ client, isPreview }: { client: OverviewClient; isPreview: b
             </div>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] text-muted">
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted">
             <span className="flex items-center gap-1.5">
               <BriefcaseBusiness className="size-3" />
               {client.activeProjectCount} active projects
@@ -154,26 +154,26 @@ export function AdminClientsOverview({ clients }: AdminClientsOverviewProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-foreground">Client accounts</p>
+              <p className="text-sm font-semibold text-foreground">Client accounts</p>
 
               {isPreview ? (
-                <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">
+                <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-muted">
                   Preview
                 </span>
               ) : null}
             </div>
 
-            <p className="mt-1 text-[11px] text-muted">Clients, projects and open requests.</p>
+            <p className="mt-1 text-xs text-muted">Clients, projects and open requests.</p>
           </div>
 
           <Link
             href="/admin/clients"
-            className="text-[11px] font-medium text-muted transition-colors hover:text-foreground">
+            className="text-xs font-medium text-muted transition-colors hover:text-foreground">
             View all
           </Link>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-4 text-[10px] text-muted">
+        <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted">
           <span>
             <strong className="font-semibold text-foreground">{visibleClients.length}</strong> clients
           </span>
