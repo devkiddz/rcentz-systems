@@ -3,9 +3,17 @@
 # MASTER BLUEPRINT
 
 **Living Architecture & Product Document**
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Active / Living Document
-**Last Updated:** 2026-08-31
+**Last Updated:** 2026-10-09
+
+## Current Systems application note — 9 October 2026
+
+This blueprint preserves the broader Rcentz product vision. The current extracted Systems implementation and handoff are documented in [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md); inherited roadmap descriptions below should not be read as current verification.
+
+Systems provides the public digital-service portal and authenticated client/admin delivery workspace. Project previews can use privately managed Cloudinary screenshots with cropping, replacement and deletion. Project data, ownership and agreed commercial records remain distinct from marketing mockups and requested budgets.
+
+The next planned extension is a private admin opportunity finder, initially Jobs & Contracts for Dennis and later Business Prospects. It should explain matches and gaps, preserve original source evidence and require human review before applications or outreach. See [admin-opportunity-finder-scope.md](admin-opportunity-finder-scope.md). The finder is not yet implemented.
 
 ---
 

@@ -3,9 +3,20 @@
 # SYSTEM ARCHITECTURE
 
 **Document:** System Architecture & Engineering Conventions  
-**Version:** 1.2  
+**Version:** 1.3
 **Status:** Active / Living Document  
-**Last Updated:** 2026-09-01
+**Last Updated:** 2026-10-09
+
+## Current Systems boundaries — 9 October 2026
+
+Use [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for current implementation and verification. Older authentication-gap and progression notes below are inherited historical checkpoints, not the present release status.
+
+The extracted Systems application serves public, account, customer dashboard and guarded admin routes. It uses server-side session/role/ownership checks before protected operations. Prisma records hold business state; requested budgets do not become agreed prices automatically. Public canvas tokens also size collapsed workspaces.
+
+Project image uploads use the existing authenticated Cloudinary account. Browser cropping produces a bounded JPEG; the server still validates bytes and size. Staff-only replacement preserves record/order and changes the private delivery URL version. Deletion and replacement use project-scoped advisory locks and audits. Image delivery remains behind authenticated ownership checks. Provider cleanup is scoped to known project-owned IDs; failure after a committed change is recorded for follow-up. No migration is needed for this image release.
+
+Read [project-image-editing.md](project-image-editing.md) for limits and verification. The job finder remains a planned private admin feature, governed by [admin-opportunity-finder-scope.md](admin-opportunity-finder-scope.md).
+
 
 ---
 
@@ -1183,27 +1194,9 @@ A working demo is not automatically a production-ready feature.
 
 # 45. Current Engineering Focus
 
-As of 2026-08-31, the validated server/database authentication foundation is established.
+The next feature is the private automatic job finder. Implement the Jobs & Contracts lane first, after the current image-management release is installed and its real browser/provider checks pass. Preserve owner-specific permissions, supported-source contracts, honest match explanations and review before outreach.
 
-The immediate engineering focus is client-side authentication integration, beginning with the smallest meaningful file/module and progressing through:
-
-```text
-Session State
-   ↓
-Auth Shell
-   ↓
-Register / Login
-   ↓
-Logout
-   ↓
-Auth-Aware Navigation
-   ↓
-Protected Surfaces
-   ↓
-Role-Aware Authorization
-```
-
-The design-system/UI-canvas, shared UI foundation and other product engines remain subsequent work unless a dependency requires a small portion earlier.
+See [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for current release evidence and [admin-opportunity-finder-scope.md](admin-opportunity-finder-scope.md) for agreed scope. Do not treat source implementation or build success as proof of a live provider integration.
 
 ---
 

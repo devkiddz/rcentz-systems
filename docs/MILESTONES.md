@@ -4,10 +4,21 @@ Development Milestones
 
 Project: Rcentz System
 Document: Development Milestones
-Version: 1.6
+Version: 1.7
 Status: Active / Living Document
-Last Updated: 2026-09-11
-Latest Verified Git Checkpoint: b818905b3fba99ba84c14594ea509b26263a03ce
+Last Updated: 2026-10-09
+Latest Packaged Feature Checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5
+Deployment verification: pending installation/push of this release.
+
+Current Systems Snapshot — 9 October 2026
+
+See [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for the current extracted Systems application, implementation evidence, verification limits and next feature. Public/customer/admin workspaces, authenticated onboarding, communication/tracker routes and private project image management now exist. Latest addition: crop/replace/delete images and a larger blinking progress endpoint. No schema migration required.
+
+The next planned feature is the private admin automatic job finder, starting with Jobs & Contracts. It has not been implemented.
+
+Historical Record Notice
+
+The roadmap and detailed management-system entries below retain earlier whole-Rcentz checkpoints. Their old pending statuses and immediate-focus statements are historical, not a fresh audit of the extracted Systems application. Use SYSTEMS-STATUS.md for the current handoff; no blanket production closure is implied.
 
 Purpose
 
@@ -1620,7 +1631,7 @@ The codebase answers:
 
 What has actually been implemented?
 
-Current Handoff
+Historical Handoff — 11 September 2026
 
 M01 PROJECT FOUNDATION
 ✅ CLOSED
@@ -1709,3 +1720,11 @@ Final project translation synchronization:
 Deferred until functional project completion where required.
 
 END OF DOCUMENT
+
+Current Handoff — 9 October 2026
+
+Latest packaged feature checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5.
+
+Current feature verification and deployment limits: SYSTEMS-STATUS.md.
+
+Next: private automatic job finder; source/profile permissions and supported-source selection first. Existing image crop/provider runtime checks remain part of release verification.
