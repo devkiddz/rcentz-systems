@@ -1,4 +1,5 @@
 'use client';
+import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useState, useTransition } from 'react';
 
@@ -271,14 +272,7 @@ export function AdminProjectMilestoneManager({
                       </p>
                     ) : null}
 
-                    <div className="mt-4 h-1.5 max-w-lg overflow-hidden rounded-full bg-surface-muted">
-                      <div
-                        className="h-full rounded-full bg-theme-accent transition-[width]"
-                        style={{
-                          width: `${Math.min(100, Math.max(0, milestone.progress))}%`
-                        }}
-                      />
-                    </div>
+                    <DeliveryProgress value={milestone.progress} label="Milestone progress" />
                   </div>
 
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

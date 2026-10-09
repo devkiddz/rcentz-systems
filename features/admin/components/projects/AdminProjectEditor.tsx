@@ -213,7 +213,7 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
                     </select>
                   </Field>
 
-                  <Field label="Progress" required>
+                  <Field label="Overall progress (%)" required>
                     <Input
                       name="progress"
                       type="number"
@@ -221,9 +221,12 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
                       max={100}
                       step={1}
                       defaultValue={project.progress}
+                      aria-describedby="overall-progress-help"
                       required
                     />
                   </Field>
+
+                  <p id="overall-progress-help" className="text-xs leading-5 text-muted">Set the project total manually from 0 to 100. Milestone changes do not automatically update this value.</p>
 
                   <Field label="Budget">
                     <Input name="budget" type="number" min={0} step="0.01" defaultValue={project.budget} />

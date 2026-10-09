@@ -1,4 +1,5 @@
 'use client';
+import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useMemo, useState } from 'react';
 
@@ -300,6 +301,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
         {project.screenshot ? (
           <Image
             src={project.screenshot.url}
+            unoptimized={project.screenshot.url.startsWith('/api/projects/')}
             alt={project.screenshot.alt ?? `${project.name} project`}
             fill
             sizes="(max-width: 1279px) 100vw, 50vw"
@@ -381,14 +383,7 @@ function ProjectCard({ project }: { project: AdminProjectListItem }) {
               </span>
             </div>
 
-            <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-muted">
-              <div
-                className="h-full rounded-full bg-theme-accent transition-[width]"
-                style={{
-                  width: `${Math.min(100, Math.max(0, project.progress))}%`
-                }}
-              />
-            </div>
+            <DeliveryProgress value={project.progress} label="Project progress" />
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-3">

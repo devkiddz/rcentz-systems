@@ -45,6 +45,8 @@ export const getAdminProject =
           createdAt: true,
           updatedAt: true,
 
+          media: { where: { mimeType: { startsWith: 'image/' } }, orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }], select: { id: true, url: true, alt: true } },
+
           serviceRequest: { select: { id: true, status: true } },
 
           client: {

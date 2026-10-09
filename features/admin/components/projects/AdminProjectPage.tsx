@@ -1,3 +1,5 @@
+import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
+import { AdminProjectImages } from './AdminProjectImages';
 import type { ReactNode } from 'react';
 
 import Link from 'next/link';
@@ -276,14 +278,11 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   <span className="text-xs font-medium text-muted">{humanize(project.status)}</span>
                 </div>
 
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-muted">
-                  <div
-                    className="h-full rounded-full bg-theme-accent transition-[width]"
-                    style={{
-                      width: `${clampProgress(project.progress)}%`
-                    }}
-                  />
-                </div>
+                <DeliveryProgress value={project.progress} />
+                <Link href={`/admin/projects/${project.id}/edit`} className="mt-2 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-theme-accent hover:underline">
+                  Update overall progress <Pencil aria-hidden="true" className="size-3.5" />
+                </Link>
+                <p className="text-xs leading-5 text-muted">Set by the team; milestone progress is tracked separately.</p>
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -331,6 +330,8 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
             </div>
           </div>
         </section>
+
+        <AdminProjectImages projectId={project.id} images={project.media} configured={Boolean(process.env.BLOB_READ_WRITE_TOKEN)} />
 
         <AdminProjectMilestoneManager
           projectId={project.id}
@@ -569,13 +570,13 @@ function OverviewMetric({
   note: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+    <div className="min-w-0 rounded-2xl border border-border bg-surface p-5 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div className="flex size-8 items-center justify-center rounded-lg border border-border bg-background">
           <Icon className="size-3.5 text-theme-accent" />
         </div>
 
-        <span className="text-xl font-semibold tracking-[-0.04em] text-foreground">{value}</span>
+        <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">{value}</span>
       </div>
 
       <p className="mt-4 text-xs font-semibold text-foreground">{label}</p>
@@ -597,7 +598,7 @@ function ManagementCard({
   note: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4">
+    <div className="min-w-0 rounded-2xl border border-border bg-surface p-5">
       <div className="flex items-start gap-3">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
           <Icon className="size-4 text-theme-accent" />
@@ -609,7 +610,7 @@ function ManagementCard({
           <p className="mt-1 text-xs leading-4 text-muted">{note}</p>
         </div>
 
-        <span className="ml-auto text-lg font-semibold tabular-nums text-foreground">{value}</span>
+        <span className="ml-auto shrink-0 text-2xl font-semibold tabular-nums text-foreground">{value}</span>
       </div>
     </div>
   );
@@ -617,14 +618,14 @@ function ManagementCard({
 
 function ProjectMeta({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background p-3">
+    <div className="min-w-0 rounded-xl border border-border bg-surface-subtle p-4">
       <div className="flex items-center gap-2">
         <Icon className="size-3.5 text-muted" />
 
         <span className="text-xs text-muted">{label}</span>
       </div>
 
-      <p className="mt-2 text-xs font-semibold text-foreground">{value}</p>
+      <p className="mt-2 break-words text-sm font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -663,7 +664,7 @@ function InfoRow({
   href?: string | null;
 }) {
   return (
-    <div className="grid min-w-0 grid-cols-[minmax(0,8rem)_minmax(0,1fr)] items-center gap-4 py-3.5">
+    <div className="grid min-w-0 gap-1 py-4 sm:grid-cols-[minmax(0,8rem)_minmax(0,1fr)] sm:items-center sm:gap-4">
       <div className="flex min-w-0 items-center gap-2">
         <Icon className="size-3.5 shrink-0 text-muted" />
 
@@ -681,7 +682,7 @@ function InfoRow({
           <ArrowUpRight className="size-3 shrink-0" />
         </a>
       ) : (
-        <p className="truncate text-right text-xs font-semibold text-foreground">{value}</p>
+        <p className="break-words text-sm font-medium text-foreground sm:text-right">{value}</p>
       )}
     </div>
   );
