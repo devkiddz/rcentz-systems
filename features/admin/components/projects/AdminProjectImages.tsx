@@ -33,7 +33,7 @@ export function AdminProjectImages({ projectId, images, configured }: { projectI
       </label>
       <button type="submit" disabled={busy || !configured} className="min-h-10 shrink-0 rounded-lg bg-foreground px-4 text-xs font-semibold text-background disabled:opacity-50">{busy ? 'Uploading…' : 'Add project image'}</button>
     </form>
-    {!configured && <p className="mt-3 text-xs text-muted">Connect private Blob storage with BLOB_READ_WRITE_TOKEN to enable uploads.</p>}
+    {!configured && <p className="mt-3 text-xs text-muted">Connect the existing Cloudinary account to enable project uploads.</p>}
     <p role="status" className="mt-3 text-xs">{message}</p>
   </section>;
 }

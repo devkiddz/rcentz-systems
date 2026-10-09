@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { put, del } from '@vercel/blob';
+import { projectImagesConfigured, uploadProjectImage, removeProjectImage } from '@/features/admin/server/media/project-images';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/features/auth/server/get-current-user';
 import { detectBriefFile, MAX_FILE_SIZE } from '@/features/onboarding/server/brief-files';
@@ -10,7 +10,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   if (!user || user.status !== 'ACTIVE' || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) return Response.json({ error: 'Administrator access required.' }, { status: 403 });
   const { projectId } = await params;
   if (!await prisma.project.findUnique({ where: { id: projectId }, select: { id: true } })) return Response.json({ error: 'Project not found.' }, { status: 404 });
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return Response.json({ error: 'Private file storage is not configured.' }, { status: 503 });
+  if (!projectImagesConfigured()) return Response.json({ error: 'Cloudinary image storage is not configured.' }, { status: 503 });
   const contentType = request.headers.get('content-type') || '';
   if (!contentType.startsWith('multipart/form-data;')) return Response.json({ error: 'Choose a screenshot.' }, { status: 415 });
   let pathname: string | undefined;
@@ -32,16 +32,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     await prisma.$transaction(async tx => {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${'project-images:' + projectId}))`;
       if (await tx.mediaAsset.count({ where: { projectId, mimeType: { startsWith: 'image/' } } }) >= 12) throw new Error('LIMIT');
-      const blob = await put(`project-images/${projectId}/${randomUUID()}.${format.extension}`, Buffer.from(bytes), { access: 'private', contentType: format.type, addRandomSuffix: false });
-      pathname = blob.pathname;
+      const uploaded = await uploadProjectImage(bytes, `rcentz/projects/${projectId}/${randomUUID()}`);
+      pathname = uploaded.public_id;
       const last = await tx.mediaAsset.findFirst({ where: { projectId }, orderBy: { sortOrder: 'desc' }, select: { sortOrder: true } });
-      const media = await tx.mediaAsset.create({ data: { projectId, publicId: pathname, url: '', mimeType: format.type, size: file.size, fileName: file.name.replace(/[\r\n\x00-\x1f]/g, '').slice(0, 160), alt: 'Project screenshot', sortOrder: (last?.sortOrder ?? -1) + 1 } });
+      const media = await tx.mediaAsset.create({ data: { projectId, publicId: 'cloudinary:' + pathname, url: '', mimeType: format.type, size: file.size, width: uploaded.width, height: uploaded.height, fileName: file.name.replace(/[\r\n\x00-\x1f]/g, '').slice(0, 160), alt: 'Project screenshot', sortOrder: (last?.sortOrder ?? -1) + 1 } });
       await tx.mediaAsset.update({ where: { id: media.id }, data: { url: `/api/projects/${projectId}/images/${media.id}` } });
       await tx.auditLog.create({ data: { userId: user.id, action: 'PROJECT_IMAGE_UPLOADED', entityType: 'Project', entityId: projectId, metadata: { mediaId: media.id } } });
-    }, { timeout: 20000 });
+    }, { timeout: 30000 });
     return Response.json({ saved: true }, { status: 201 });
   } catch (error) {
-    if (pathname) await del(pathname).catch(() => {});
+    if (pathname) await removeProjectImage(pathname).catch(() => {});
     return Response.json({ error: error instanceof Error && error.message === 'LIMIT' ? 'This project already has 12 screenshots.' : 'Upload failed. Try again.' }, { status: error instanceof Error && error.message === 'LIMIT' ? 409 : 503 });
   }
 }

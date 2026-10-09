@@ -26,6 +26,7 @@
     "@vercel/blob": "^2.8.1",
     "better-auth": "1.7.2",
     "class-variance-authority": "0.7.1",
+    "cloudinary": "^2.11.0",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",
     "cn": "^0.2.5",

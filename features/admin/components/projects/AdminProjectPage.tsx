@@ -1,3 +1,4 @@
+import { projectImagesConfigured } from '@/features/admin/server/media/project-images';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 import { AdminProjectImages } from './AdminProjectImages';
 import type { ReactNode } from 'react';
@@ -331,7 +332,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           </div>
         </section>
 
-        <AdminProjectImages projectId={project.id} images={project.media} configured={Boolean(process.env.BLOB_READ_WRITE_TOKEN)} />
+        <AdminProjectImages projectId={project.id} images={project.media} configured={projectImagesConfigured()} />
 
         <AdminProjectMilestoneManager
           projectId={project.id}
