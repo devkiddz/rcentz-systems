@@ -23,12 +23,13 @@ type AdminShellProps = {
   };
 
   headerFeed: AdminHeaderFeed;
+  showOpportunities?: boolean;
 };
 
-export function AdminShell({ children, user, headerFeed }: AdminShellProps) {
+export function AdminShell({ children, user, headerFeed, showOpportunities }: AdminShellProps) {
   return (
     <SidebarProvider className="bg-surface-subtle">
-      <AdminSidebar />
+      <AdminSidebar showOpportunities={showOpportunities} />
 
       <SidebarInset className="min-w-0 bg-surface-subtle">
         <AdminHeader user={user} headerFeed={headerFeed} />

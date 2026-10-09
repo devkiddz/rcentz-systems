@@ -380,7 +380,7 @@ function AdminNavigationGroup({ label, items, pathname, onNavigate }: AdminNavig
   );
 }
 
-export function AdminSidebar() {
+export function AdminSidebar({ showOpportunities = false }: { showOpportunities?: boolean }) {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
   const t = useTranslations('AdminNavigation');
@@ -418,7 +418,7 @@ export function AdminSidebar() {
       <SidebarContent className="bg-sidebar">
         <AdminNavigationGroup
           label="Workspace"
-          items={workspaceNavigation}
+          items={showOpportunities ? [...workspaceNavigation, { key: 'opportunities', label: 'Opportunities', href: '/admin/opportunities', icon: BriefcaseBusiness }] : workspaceNavigation}
           pathname={pathname}
           onNavigate={handleNavigate}
         />

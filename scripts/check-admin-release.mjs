@@ -39,7 +39,7 @@ function load(file, stubs) {
  savedProject=null;brief.status='DRAFT';await assert.rejects(actions.createPlanningProject(form),/not available/);assert.equal(created,1);
  console.log('PASS: actions authorize before writes; review idempotent; duplicate conversions reuse one private planning project; drafts rejected; requested budget not agreed.');
  const files=[];function walk(dir){for(const d of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,d.name);if(d.isDirectory())walk(f);else if(d.name==='page.tsx')files.push(f);}}walk('app/admin');
- for(const file of files)assert.match(fs.readFileSync(file,'utf8'),/await requireAdmin\(/,file+' lacks its own guard');
+ for(const file of files)assert.match(fs.readFileSync(file,'utf8'),/await require(?:Admin|FinderOwner)\(/,file+' lacks its own guard');
  console.log('PASS: every admin page guards its own data access.');
  let query;
  const fileRoute=load('app/api/project-briefs/[requestId]/files/[fileId]/route.ts',{

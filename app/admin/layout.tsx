@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { isFinderOwner } from '@/server/opportunities/access';
 
 import { AdminShell } from '@/features/admin/components/shell/AdminShell';
 
@@ -20,6 +21,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <AdminShell
+      showOpportunities={isFinderOwner(user.id)}
       user={{
         name: user.name,
         email: user.email,
