@@ -14,6 +14,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const contentType = request.headers.get('content-type') || '';
   if (!contentType.startsWith('multipart/form-data;')) return Response.json({ error: 'Choose a screenshot.' }, { status: 415 });
   let pathname: string | undefined;
+
   try {
     const reader = request.body?.getReader();
     if (!reader) return Response.json({ error: 'Choose a screenshot.' }, { status: 400 });
@@ -26,21 +27,34 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     }
     const form = await new Response(Buffer.concat(chunks), { headers: { 'content-type': contentType } }).formData();
     const file = form.get('file');
+    const replaceId = form.get('replaceId');
+    if (replaceId !== null && (typeof replaceId !== 'string' || !replaceId)) return Response.json({ error: 'Invalid image.' }, { status: 400 });
     if (!(file instanceof File) || !file.size || file.size > MAX_FILE_SIZE) return Response.json({ error: 'Use a screenshot up to 2 MB.' }, { status: 400 });
     const bytes = new Uint8Array(await file.arrayBuffer()); const format = detectBriefFile(bytes);
     if (!format?.type.startsWith('image/')) return Response.json({ error: 'Use PNG, JPEG or WebP.' }, { status: 415 });
-    await prisma.$transaction(async tx => {
+    const previousId = await prisma.$transaction(async tx => {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${'project-images:' + projectId}))`;
-      if (await tx.mediaAsset.count({ where: { projectId, mimeType: { startsWith: 'image/' } } }) >= 12) throw new Error('LIMIT');
+      const existing = replaceId ? await tx.mediaAsset.findFirst({ where: { id: replaceId, projectId, mimeType: { startsWith: 'image/' } } }) : null;
+      if (replaceId && !existing) throw new Error('NOT_FOUND');
+
+      if (!existing && await tx.mediaAsset.count({ where: { projectId, mimeType: { startsWith: 'image/' } } }) >= 12) throw new Error('LIMIT');
       const uploaded = await uploadProjectImage(bytes, `rcentz/projects/${projectId}/${randomUUID()}`);
       pathname = uploaded.public_id;
       const last = await tx.mediaAsset.findFirst({ where: { projectId }, orderBy: { sortOrder: 'desc' }, select: { sortOrder: true } });
-      const media = await tx.mediaAsset.create({ data: { projectId, publicId: 'cloudinary:' + pathname, url: '', mimeType: format.type, size: file.size, width: uploaded.width, height: uploaded.height, fileName: file.name.replace(/[\r\n\x00-\x1f]/g, '').slice(0, 160), alt: 'Project screenshot', sortOrder: (last?.sortOrder ?? -1) + 1 } });
-      await tx.mediaAsset.update({ where: { id: media.id }, data: { url: `/api/projects/${projectId}/images/${media.id}` } });
-      await tx.auditLog.create({ data: { userId: user.id, action: 'PROJECT_IMAGE_UPLOADED', entityType: 'Project', entityId: projectId, metadata: { mediaId: media.id } } });
+      const data = { projectId, publicId: 'cloudinary:' + pathname, url: '', mimeType: format.type, size: file.size, width: uploaded.width, height: uploaded.height, fileName: file.name.replace(/[\r\n\x00-\x1f]/g, '').slice(0, 160), alt: 'Project screenshot', sortOrder: existing?.sortOrder ?? (last?.sortOrder ?? -1) + 1 };
+      const media = existing ? await tx.mediaAsset.update({ where: { id: existing.id }, data }) : await tx.mediaAsset.create({ data });
+      await tx.mediaAsset.update({ where: { id: media.id }, data: { url: `/api/projects/${projectId}/images/${media.id}?v=${randomUUID()}` } });
+      await tx.auditLog.create({ data: { userId: user.id, action: existing ? 'PROJECT_IMAGE_REPLACED' : 'PROJECT_IMAGE_UPLOADED', entityType: 'Project', entityId: projectId, metadata: { mediaId: media.id } } });
+      return existing?.publicId ?? null;
     }, { timeout: 30000 });
-    return Response.json({ saved: true }, { status: 201 });
+    if (previousId?.startsWith(`cloudinary:rcentz/projects/${projectId}/`)) {
+      await removeProjectImage(previousId.slice('cloudinary:'.length)).catch(async () => {
+        await prisma.auditLog.create({ data: { userId: user.id, action: 'PROJECT_IMAGE_CLEANUP_PENDING', entityType: 'Project', entityId: projectId, metadata: { publicId: previousId } } }).catch(() => {});
+      });
+    }
+    return Response.json({ saved: true }, { status: replaceId ? 200 : 201 });
   } catch (error) {
+    if (error instanceof Error && error.message === 'NOT_FOUND') return Response.json({ error: 'Image not found.' }, { status: 404 });
     if (pathname) await removeProjectImage(pathname).catch(() => {});
     return Response.json({ error: error instanceof Error && error.message === 'LIMIT' ? 'This project already has 12 screenshots.' : 'Upload failed. Try again.' }, { status: error instanceof Error && error.message === 'LIMIT' ? 409 : 503 });
   }

@@ -5,7 +5,7 @@ export function DeliveryProgress({ value, label = 'Project progress' }: { value:
   return (
     <div className={styles.track} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
       <div className={styles.fill} style={{ width: `${progress}%` }} />
-      <span aria-hidden="true" className={styles.marker} data-active={progress > 0 && progress < 100} style={{ left: `clamp(6px, ${progress}%, calc(100% - 6px))` }}>
+      <span aria-hidden="true" className={styles.marker} style={{ left: `clamp(10px, ${progress}%, calc(100% - 10px))` }}>
         <span className={styles.pulse} />
       </span>
     </div>
