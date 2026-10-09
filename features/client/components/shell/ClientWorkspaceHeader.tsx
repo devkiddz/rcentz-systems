@@ -126,7 +126,7 @@ export function ClientWorkspaceHeader({ user }: Props) {
 
   return (
     <div className="border-b border-border bg-background">
-      <div className="mx-auto w-full max-w-[1200px] px-4 py-5 sm:px-6 lg:px-8">
+      <div className="rcentz-dashboard-frame mx-auto w-full max-w-[1200px] px-4 py-5 sm:px-6 lg:px-8">
         <section className="flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             <Avatar className="size-10 shrink-0 ring-1 ring-border sm:size-11">

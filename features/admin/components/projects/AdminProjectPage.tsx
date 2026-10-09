@@ -141,8 +141,8 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
   const canPreview = project.visibility === 'PUBLIC' && Boolean(project.portfolio?.publishedAt);
 
   return (
-    <main className="px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[1200px] space-y-6">
+    <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
+      <div className="rcentz-dashboard-inner mx-auto w-full max-w-[1200px] space-y-6">
         <section>
           <Link
             href="/admin/projects"

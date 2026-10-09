@@ -9,6 +9,7 @@ export function DashboardCanvas({ children, className = '' }: DashboardCanvasPro
   return (
     <div
       className={[
+        'rcentz-dashboard-frame',
         'mx-auto',
         'w-full',
         'max-w-[1200px]',

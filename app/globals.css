@@ -1141,3 +1141,17 @@ a {
   --primary: #b69aff;
   --primary-foreground: #171717;
 }
+
+/* A collapsed workspace shares the public content width and gutters. */
+@media (min-width: 768px) {
+  [data-slot="sidebar-wrapper"][data-sidebar-state="collapsed"] .rcentz-dashboard-frame {
+    width: min(calc(100% - (var(--content-gutter) * 2)), var(--content-max));
+    max-width: none;
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+
+  [data-slot="sidebar-wrapper"][data-sidebar-state="collapsed"] .rcentz-dashboard-inner {
+    max-width: none;
+  }
+}

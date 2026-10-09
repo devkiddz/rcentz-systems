@@ -70,8 +70,8 @@ export function AdminProjectBuilder({ clients }: AdminProjectBuilderProps) {
 
   return (
     <form action={formAction}>
-      <main className="px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-[1200px] space-y-5">
+      <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
+        <div className="rcentz-dashboard-inner mx-auto w-full max-w-[1200px] space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href="/admin/projects"

@@ -110,8 +110,8 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
   }, [data.projects, filter, search]);
 
   return (
-    <main className="px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[1200px] space-y-7">
+    <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
+      <div className="rcentz-dashboard-inner mx-auto w-full max-w-[1200px] space-y-7">
         <section>
           <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">Operations</p>
 

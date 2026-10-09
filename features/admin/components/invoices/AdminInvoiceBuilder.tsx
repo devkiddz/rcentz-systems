@@ -161,7 +161,7 @@ export function AdminInvoiceBuilder({ clients }: AdminInvoiceBuilderProps) {
         )}
       />
 
-      <div className="mx-auto w-full max-w-[var(--section-max)] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="rcentz-dashboard-frame mx-auto w-full max-w-[var(--section-max)] px-4 py-6 sm:px-6 lg:px-8">
         <div className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
