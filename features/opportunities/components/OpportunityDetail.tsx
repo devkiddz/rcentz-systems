@@ -7,6 +7,7 @@ import { statuses } from "../lib/matching";
 import type { FinderData } from "../types";
 import { SubmitButton } from "./SubmitButton";
 import { selectClass, label } from "./OpportunityCard";
+const recommendationLabels = {PURSUE: "Pursue after verification", STRETCH: "Stretch — disclose the gaps", SKIP: "Skip for now", CLARIFY: "Clarify before pursuing", QUARANTINE: "Quarantine — review recruitment risk"};
 const when = (s: string) =>
   new Date(s).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos" });
 export function OpportunityDetail({
@@ -45,7 +46,7 @@ export function OpportunityDetail({
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3 text-sm">
-              <strong>{a.verdict}</strong>
+              <strong>{a.careerReview ? recommendationLabels[a.careerReview.recommendation] : a.verdict}</strong>
               <span className="shrink-0 font-mono text-xs">
                 {job.score}/100
               </span>
@@ -54,11 +55,11 @@ export function OpportunityDetail({
               className="h-1.5 w-full accent-primary"
               value={job.score}
               max={100}
-              aria-label="Evidence-based fit score"
+              aria-label="Discovery overlap score"
             />
             <p className="text-xs text-muted-foreground">
-              Fit score measures recorded evidence; it is not a hiring
-              probability.
+              Discovery score measures listing/profile overlap; it is not a hiring
+              probability. The career recommendation below checks contribution evidence separately.
             </p>
           </div>
           {a.concerns.length > 0 && (
@@ -91,6 +92,31 @@ export function OpportunityDetail({
             Career fit & blunt unknowns
           </summary>
           <div className="mt-6 space-y-6">
+            {a.careerReview ? <div className="space-y-6">
+              <div className="space-y-3">
+                <p className="font-medium">{recommendationLabels[a.careerReview.recommendation]}</p>
+                <p className="leading-relaxed">{a.careerReview.reason}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">Assessed {when(a.careerReview.assessedAt)} against your current saved profile. This recommendation does not change your decision or send an application.</p>
+              </div>
+              <div className="space-y-5 border-t border-border pt-6">
+                <h2 className="text-sm font-medium">Requirements & your evidence</h2>
+                {a.careerReview.requirements.length ? a.careerReview.requirements.map((requirement, index) => <div key={`${requirement.kind}-${requirement.name}-${index}`} className="space-y-3 border-b border-border pb-5 last:border-b-0 last:pb-0">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 className="font-medium">{requirement.name}</h3>
+                    <span className="text-xs text-muted-foreground">{label(requirement.priority)} · {({SUPPORTED:"Contribution recorded", CLAIMED:"Claim needs example", GAP:"Missing evidence", UNKNOWN:"Unconfirmed"})[requirement.evidence]}</span>
+                  </div>
+                  <blockquote className="border-l border-border pl-4 text-xs leading-relaxed text-muted-foreground">“{requirement.quote}”</blockquote>
+                  <p className="leading-relaxed">{requirement.finding}</p>
+                  {requirement.projects.length ? <p className="text-xs text-muted-foreground">Recorded references: {requirement.projects.join(", ")}</p> : null}
+                </div>) : <p className="text-muted-foreground">No recognized requirements extracted. Read the original specification; a sparse result is not proof of fit.</p>}
+              </div>
+              <div className="space-y-3 border-t border-border pt-6">
+                <h2 className="text-sm font-medium">Before you commit</h2>
+                <ul className="list-disc space-y-2 pl-4">{a.careerReview.nextSteps.map(step => <li key={step}>{step}</li>)}</ul>
+                <p className="text-xs leading-relaxed text-muted-foreground">{a.careerReview.coverage}</p>
+              </div>
+            </div> : <p className="text-xs text-muted-foreground">Detailed contribution review is not available from this API release. The older assessment remains below.</p>}
+            <p className="border-t border-border pt-6 text-xs leading-relaxed text-muted-foreground">Discovery context below was recorded at the last collection. The contribution review above uses your current saved profile.</p>
             {a.dimensions?.map((d) => (
               <div key={d.name}>
                 <p className="text-xs font-medium text-muted-foreground">
@@ -240,7 +266,7 @@ export function OpportunityDetail({
         <Card className="gap-4 rounded-2xl border border-border bg-surface p-6 ring-0 sm:p-7">
           <h2 className="text-sm font-medium">What this score means</h2>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Fit reflects recorded evidence, not hiring probability. Public
+            The discovery score and current-profile career recommendation serve different purposes. Neither is a hiring probability. Public
             emails and risk checks do not establish employer legitimacy.
           </p>
         </Card>

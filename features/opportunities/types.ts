@@ -1,3 +1,4 @@
+import { isCareerReview } from "./lib/career-review";
 import { isProjectEvidence, type ProjectEvidence } from "./lib/project-evidence";
 import type { Assessment } from "./lib/matching";
 export type Research = {
@@ -200,6 +201,7 @@ export function validateFinderData(v: unknown): FinderData {
       !strings(a.questions) ||
       typeof a.eligibility !== "string" ||
       typeof a.verdict !== "string" ||
+      (a.careerReview !== undefined && !isCareerReview(a.careerReview)) ||
       (a.evidence !== undefined && !strings(a.evidence)) ||
       (a.unknowns !== undefined && !strings(a.unknowns)) ||
       (a.dimensions !== undefined &&

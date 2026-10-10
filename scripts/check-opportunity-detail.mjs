@@ -52,7 +52,7 @@ assert.equal(
   }),
   "",
 );
-const types = load("features/opportunities/types.ts", {"./lib/project-evidence": load("features/opportunities/lib/project-evidence.ts")});
+const types = load("features/opportunities/types.ts", {"./lib/career-review": load("features/opportunities/lib/career-review.ts"), "./lib/project-evidence": load("features/opportunities/lib/project-evidence.ts")});
 assert.equal(types.validateOpportunityDetail({ job: null }), null);
 assert.throws(() => types.validateOpportunityDetail({ job: {} }));
 let authorized = false,
