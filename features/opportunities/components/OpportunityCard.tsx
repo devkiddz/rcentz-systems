@@ -1,3 +1,4 @@
+import { sourceContext } from "../lib/source-context";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -20,11 +21,12 @@ export function OpportunityCard({
   returnQuery?: string;
 }) {
   const a = job.assessment;
+  const context = sourceContext(job), lead = context !== "VACANCY_TEXT";
   const concern = job.quarantined
     ? job.research?.flags[0]?.reason ||
       a.concerns[0] ||
       "Recruitment risk needs review."
-    : a.concerns[0] ||
+    : lead ? (context === "RESULTS_PAGE" ? "Results may mix different employers. Open an individual vacancy first." : "Confirm the full vacancy before assessing fit.") : a.concerns[0] ||
       (a.unknowns || a.questions)[0] ||
       "Confirm workload, eligibility and employer before applying.";
   const href = opportunityHref(job) + returnQuery;
@@ -33,7 +35,7 @@ export function OpportunityCard({
       <Link
         href={href}
         prefetch={false}
-        aria-label={`Open ${job.title} at ${job.company}`}
+        aria-label={`Open ${job.title} at ${lead ? "Employer unconfirmed" : job.company}`}
         className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40"
       />
       <header className="px-6 pb-0 pt-6 sm:px-7 sm:pt-7">
@@ -58,7 +60,7 @@ export function OpportunityCard({
             <p className="mt-2 break-words text-sm text-muted">{job.company}</p>
           </div>
           <span className="shrink-0 pt-0.5 text-xs capitalize text-muted">
-            {label(job.kind)}
+            {lead ? "Discovery lead" : label(job.kind)}
           </span>
         </div>
       </header>
@@ -107,22 +109,22 @@ export function OpportunityCard({
         <div className="mt-6 border-t border-border pt-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-xs text-muted">Career fit · evidence score</p>
+              <p className="text-xs text-muted">{lead ? "Source to verify" : "Discovery overlap"}</p>
               <p className="mt-1 text-xs font-normal leading-5 text-foreground">
-                {a.verdict}
+                {lead ? (context === "RESULTS_PAGE" ? "Find an individual vacancy" : "Full vacancy unconfirmed") : a.verdict}
               </p>
             </div>
-            <p className="shrink-0 text-lg font-medium tabular-nums tracking-tight text-foreground">
+            {!lead ? <p className="shrink-0 text-lg font-medium tabular-nums tracking-tight text-foreground">
               {job.score}
               <span className="ml-1 text-xs font-normal text-muted">/100</span>
-            </p>
+            </p> : null}
           </div>
-          <progress
+          {!lead ? <progress
             value={job.score}
             max={100}
             aria-label="Evidence-based career fit score"
             className="mt-3 block h-1 w-full overflow-hidden rounded-full bg-surface-muted accent-theme-accent [&::-webkit-progress-bar]:bg-surface-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-theme-accent [&::-moz-progress-bar]:bg-theme-accent"
-          />
+          /> : null}
         </div>
         <div className="mt-6 border-l border-border pl-3">
           <p
