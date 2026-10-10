@@ -1,3 +1,4 @@
+import { finderButtonVariants } from "./FinderButton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -179,7 +180,7 @@ export function OpportunityDetail({
         </details>
         <div className="space-y-3 px-1">
           <a
-            className="text-sm font-medium text-primary underline"
+            className={finderButtonVariants({variant:"outline"})}
             href={job.url}
             target="_blank"
             rel="noopener noreferrer"

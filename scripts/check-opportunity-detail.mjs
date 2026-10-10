@@ -70,7 +70,7 @@ const page = load("app/admin/opportunities/[slug]/page.tsx", {
     },
   },
   "lucide-react": { ArrowLeft: () => null },
-  "@/components/ui/button": { Button: () => null },
+  "@/features/opportunities/components/FinderButton": { FinderButton: () => null },
   "@/server/opportunities/access": {
     requireFinderOwner: async () => {
       if (!authorized) throw Error("DENIED");

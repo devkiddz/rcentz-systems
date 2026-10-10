@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FinderButton as Button } from "@/features/opportunities/components/FinderButton";
 import { requireFinderOwner } from "@/server/opportunities/access";
 import { opportunityRequest } from "@/server/opportunities/client";
 import { validateOpportunityDetail } from "@/features/opportunities/types";

@@ -15,7 +15,7 @@ import {
 import { FinderCharts } from "@/features/opportunities/components/FinderCharts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { FinderButton as Button, finderButtonVariants as buttonVariants } from "./FinderButton";
 const notices: Record<string, string> = {
   success:
     "Collection completed. Check source health for partial failures and review the evidence below.",

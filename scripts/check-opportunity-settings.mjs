@@ -16,7 +16,8 @@ function load(file, stubs) {
 let allowed = false, fetches = 0;
 const page = load("app/admin/opportunities/settings/page.tsx", {
   "@/server/opportunities/access": {requireFinderOwner: async () => {if (!allowed) throw Error("Denied");}},
-  "@/server/opportunities/client": {opportunityRequest: async payload => {fetches++; assert.equal(payload.operation,"list"); assert.equal(payload.contractVersion,3); assert.equal(payload.page,1); return {}; }},
+  "@/server/opportunities/client": {opportunityRequest: async payload => {fetches++; if(payload.operation === "list") {assert.equal(payload.contractVersion,3); assert.equal(payload.page,1);} else assert.equal(payload.operation,"retention"); return {}; }},
+  "@/features/opportunities/lib/retention": {validateRetention: value => value},
   "@/features/opportunities/types": {validateFinderData: value => value},
   "@/features/opportunities/components/FinderSettings": {FinderSettings: () => null},
 });
@@ -24,7 +25,7 @@ await assert.rejects(page.default({searchParams:Promise.resolve({})}), /Denied/)
 assert.equal(fetches,0);
 allowed=true;
 await page.default({searchParams:Promise.resolve({saved:"1"})});
-assert.equal(fetches,1);
+assert.equal(fetches,2);
 let payload, redirects=[], invalidated=[];
 const actions=load("features/opportunities/server/actions.ts", {
   "next/cache": {revalidatePath: path => invalidated.push(path)},

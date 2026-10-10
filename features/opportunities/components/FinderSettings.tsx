@@ -1,3 +1,5 @@
+import type { RetentionData } from "../lib/retention";
+import { RetentionPanel } from "./RetentionPanel";
 import Link from "next/link";
 import type { FinderData } from "../types";
 import { defaultSkills } from "../lib/matching";
@@ -6,9 +8,9 @@ import { ProjectEvidenceEditor } from "./ProjectEvidenceEditor";
 import { SubmitButton } from "./SubmitButton";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { buttonVariants } from "@/components/ui/button";
+import { finderButtonVariants as buttonVariants } from "./FinderButton";
 
-export function FinderSettings({ data, saved }: { data: FinderData; saved: boolean }) {
+export function FinderSettings({ data, saved, retention }: { data: FinderData; saved: boolean; retention: RetentionData|null }) {
   const { profile, analytics } = data;
   return <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
     <div className="rcentz-dashboard-inner mx-auto w-full max-w-[1200px] space-y-6">
@@ -125,15 +127,16 @@ export function FinderSettings({ data, saved }: { data: FinderData; saved: boole
           <SubmitButton>Save profile</SubmitButton>
         </div>
       </form>
+      <RetentionPanel data={retention} />
       <div className="grid items-start gap-6 lg:grid-cols-2">
         <Card className="gap-4 p-5 sm:p-6"><h2 className="font-semibold">Schedule & delivery</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">Daily at 07:00 UTC / 08:00 Lagos while collection is enabled. Manual checks share the existing 20-hour cooldown.</p>
           <p className="text-sm leading-relaxed text-muted-foreground">Results appear in your private opportunity workspace. Email and push delivery are not configured.</p>
         </Card>
-        <Card className="gap-4 p-5 sm:p-6"><h2 className="font-semibold">Source coverage & storage</h2>
+        <Card className="gap-4 p-5 sm:p-6"><h2 className="font-semibold">Source coverage & collection</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">{analytics ? (analytics.searchConfigured ? "Broad web search is configured." : "Broad web search is awaiting configuration.") : "Source configuration status is unavailable."} Source health and collection failures remain in your review workspace.</p>
           <p className="text-sm leading-relaxed text-muted-foreground">Standard collection limits: up to 25 new saves per run, including two stretch roles, with 500 untouched records. Six opportunities appear per review page.</p>
-          <p className="text-xs leading-5 text-muted-foreground">Retention is managed in the API deployment. This page does not expose its enablement state or run cleanup. Storage preview and controls are the next phase.</p>
+
         </Card>
       </div>
     </div>

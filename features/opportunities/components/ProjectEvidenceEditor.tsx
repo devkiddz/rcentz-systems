@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { FinderButton as Button } from "./FinderButton";
 import type { ProjectEvidence } from "../lib/project-evidence";
 
 type ReferenceCard = { id: number; project: ProjectEvidence; expanded: boolean };

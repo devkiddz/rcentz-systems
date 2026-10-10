@@ -1,11 +1,13 @@
 "use client";
 import { useFormStatus } from "react-dom";
-import { Button } from "@/components/ui/button";
+import { FinderButton } from "./FinderButton";
+import { LoaderCircle } from "lucide-react";
 export function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
+    <FinderButton type="submit" disabled={pending} aria-busy={pending}>
+      {pending ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" /> : null}
       {pending ? "Working…" : children}
-    </Button>
+    </FinderButton>
   );
 }
