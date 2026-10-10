@@ -6,7 +6,7 @@ Updated: 10 October 2026 (Africa/Lagos). Scope: the extracted `rcentz-systems` a
 
 Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
 
-Repository snapshots reviewed: Systems `1e69408b5c80e2910fd10a1f9ec3654b6bfaf6a1`; API `589efe23b7e63244f3ce34e56155eb78ed1f75c7`. Opportunity routes and supporting code exist in both repositories. Earlier release notes describe buyer-request research and contacts. Their live behavior must be checked under OA-01. OA-00 is installed and its content reviewed, with final cleanup, push and closure pending. Printing and redundant UI are user-reported issues awaiting inspection.
+Repository snapshots reviewed: Systems `1e69408b5c80e2910fd10a1f9ec3654b6bfaf6a1`; API `589efe23b7e63244f3ce34e56155eb78ed1f75c7`. Opportunity routes and supporting code exist in both repositories. Earlier release notes describe buyer-request research and contacts. Their live behavior must be checked under OA-01. OA-00 is complete. Verified pushed evidence: Systems `ad744d976ea475acdfba40b38a51378d44d60722`; API `377c1bc4cd297b43c3f071516dda3cc275468b9b`. All seven saved documents matched the reviewed package; the shared document matches across both repositories. Printing and redundant UI are user-reported issues awaiting inspection.
 
 ## Historical image checkpoint
 
@@ -43,7 +43,7 @@ After installing and deploying: crop/save an image, replace it and inspect the c
 
 ## Next work: opportunity acquisition upgrade
 
-Install and inspect the direction update, then review and stabilize the existing finder. Build one focused company capability through API and Systems, use it for commercial discovery, manage pursuit, and link won commercial work to existing delivery management. Preserve personal employment and owner privacy. Human review and an explicit instruction are required before sending applications or outreach. Correct relevant interface and print issues alongside the work. Do not mark any upgrade milestone complete from documentation alone.
+Documentation alignment is complete. Next, review and stabilize the existing finder under OA-01. Build one focused company capability through API and Systems, use it for commercial discovery, manage pursuit, and link won commercial work to existing delivery management. Preserve personal employment and owner privacy. Human review and an explicit instruction are required before sending applications or outreach. Correct relevant interface and print issues alongside the work. Do not mark any upgrade milestone complete from documentation alone.
 
 Agreed scope: [admin opportunity finder](admin-opportunity-finder-scope.md).
 

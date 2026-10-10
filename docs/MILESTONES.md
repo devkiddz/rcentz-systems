@@ -16,7 +16,7 @@ See [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for the current extracted Systems app
 
 Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
 
-Active upgrade: OA-00 documentation alignment, installed and reviewed; final cleanup, push and verification pending. OA-01 review and stabilization follows. OA-02 capability management; OA-03 commercial discovery; OA-04 pursuit; OA-05 delivery handover; OA-06 interface/printing alongside affected work; OA-07 launch verification. Teams, authorities and workspace management follows the usable acquisition release. All implementation milestones remain pending until their checks pass.
+Active upgrade: OA-00 documentation alignment completed on 10 October 2026. Verified Systems checkpoint: ad744d976ea475acdfba40b38a51378d44d60722; API checkpoint: 377c1bc4cd297b43c3f071516dda3cc275468b9b. Exact pushed documents matched the reviewed package; shared direction matches across both repositories. OA-01 review and stabilization follows. OA-02 capability management; OA-03 commercial discovery; OA-04 pursuit; OA-05 delivery handover; OA-06 interface/printing alongside affected work; OA-07 launch verification. Teams, authorities and workspace management follows the usable acquisition release. All implementation milestones remain pending until their checks pass.
 
 Working sequence: engineer prepares; Dennis installs; we inspect; commit and push; test the exact pushed/deployed version; record evidence and mark complete. Relevant local checks run before push too. This update needs no database change.
 
@@ -1731,4 +1731,4 @@ Latest packaged feature checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5.
 
 Current feature verification and deployment limits: SYSTEMS-STATUS.md.
 
-Next: complete cleanup, push and verify OA-00, then review the existing finder under OA-01. Use OPPORTUNITY-DIRECTION.md for the current milestone plan. Existing image crop/provider checks remain outstanding where not independently verified.
+Next: OA-01, review and stabilize the existing finder. Use OPPORTUNITY-DIRECTION.md for the current milestone plan. Existing image crop/provider checks remain outstanding where not independently verified.
