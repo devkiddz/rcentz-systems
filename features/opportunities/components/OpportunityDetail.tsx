@@ -1,3 +1,4 @@
+import { CopyEmail } from "./CopyEmail";
 import { sourceContext } from "../lib/source-context";
 import { finderButtonVariants } from "./FinderButton";
 import { Card } from "@/components/ui/card";
@@ -15,23 +16,23 @@ const clean = (s: string) => s.replace(/\.{2,}/g, ".").trim();
 const sectionClass = "rounded-2xl border border-border bg-surface p-6 text-sm sm:p-7";
 export function OpportunityDetail({job}: {job: FinderData["jobs"][number]}) {
   const a = job.assessment, research = job.research, review = a.careerReview;
-  const context = sourceContext(job), lead = context !== "VACANCY_TEXT";
+  const context = sourceContext(job), lead = context !== "VACANCY_TEXT", buyer = job.kind !== "EMPLOYMENT";
   const requirements = lead ? [] : review?.requirements || [];
   const supported = requirements.filter(r => r.evidence === "SUPPORTED");
   const needsExample = requirements.filter(r => r.evidence === "CLAIMED");
   const missing = requirements.filter(r => r.evidence === "GAP" && r.priority === "REQUIRED");
   const summaries = [{title:"Contribution evidence",rows:supported},{title:"Examples to prepare",rows:needsExample},{title:"Required evidence gaps",rows:missing}].filter(group=>group.rows.length);
   const verdict = job.quarantined ? recommendations.QUARANTINE : lead ? recommendations.CLARIFY : review ? recommendations[review.recommendation] : a.verdict;
-  const reason = job.quarantined ? "Review recruitment risk before pursuing this source." : context === "RESULTS_PAGE" ?
+  const reason = job.quarantined ? "Review risk evidence before pursuing or contacting this source." : buyer ? (review?.reason || "Confirm the company’s request for work, issuer and scope before proposing services.") : context === "RESULTS_PAGE" ?
     "This is a jobs-results page, not one vacancy. Its snippets may mix employers, salaries and requirements. Identify an individual vacancy before assessing your fit." :
     context === "DISCOVERY_SNIPPET" ? "The full vacancy and employer are unconfirmed. This discovery snippet is not enough to assess your career fit." :
     review?.reason || "A detailed contribution assessment is not yet available. Review the source and the recorded discovery context.";
-  const nextSteps = lead ? [context === "RESULTS_PAGE" ? "Open the source and choose one employer’s individual vacancy." : "Open the individual vacancy and confirm the employer and full requirements.", "Confirm location eligibility, compensation and workload before applying."] : review?.nextSteps.slice(0, 4) || a.questions.slice(0, 3);
+  const nextSteps = buyer ? (review?.nextSteps.slice(0,4) || ["Confirm the buyer’s original brief, budget, deadline and payment terms."]) : lead ? [context === "RESULTS_PAGE" ? "Open the source and choose one employer’s individual vacancy." : "Open the individual vacancy and confirm the employer and full requirements.", "Confirm location eligibility, compensation and workload before applying."] : review?.nextSteps.slice(0, 4) || a.questions.slice(0, 3);
   return <div className="grid items-start gap-8 xl:grid-cols-3">
     <div className="min-w-0 space-y-8 xl:col-span-2">
       <Card className="flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 ring-0 sm:p-7">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="capitalize">{context === "RESULTS_PAGE" ? "Jobs results page" : lead ? "Discovery lead" : label(job.kind)}</Badge>
+          <Badge variant="outline" className="capitalize">{context === "RESULTS_PAGE" ? "Jobs results page" : buyer ? (job.kind === "PROSPECT" ? "Need unconfirmed" : "Buyer request") : lead ? "Discovery lead" : label(job.kind)}</Badge>
           {job.quarantined ? <Badge variant="destructive">Risk to review</Badge> : null}
           <span className="ml-auto text-xs capitalize text-muted-foreground">{label(job.source)}</span>
         </div>
@@ -61,7 +62,7 @@ export function OpportunityDetail({job}: {job: FinderData["jobs"][number]}) {
           <h3 className="text-sm font-medium">Your next step</h3>
           <ul className="list-disc space-y-2 pl-4 text-sm leading-relaxed">{nextSteps.map(step => <li key={step}>{step}</li>)}</ul>
         </div>
-        <p className="text-xs leading-relaxed text-muted-foreground">{lead ? "No vacancy-specific fit score or requirements are inferred from this source." : "Uses your current saved profile and owner-recorded contributions; not an independent audit."} Your saved decision is unchanged.</p>
+        <p className="text-xs text-muted-foreground">{a.priorityLabel || "Priority not refreshed yet"}</p><p className="text-xs leading-relaxed text-muted-foreground">{buyer ? "Buyer demand is assessed separately from employee career fit." : lead ? "No vacancy-specific fit score or requirements are inferred from this source." : "Uses your current saved profile and owner-recorded contributions; not an independent audit."} Your saved decision is unchanged.</p>
       </Card>
       {!lead && requirements.length ? <details className={sectionClass}>
         <summary className="cursor-pointer font-medium">Requirement evidence ({requirements.length})</summary>
@@ -77,7 +78,7 @@ export function OpportunityDetail({job}: {job: FinderData["jobs"][number]}) {
         <div className="mt-6 space-y-5">
           <p className="text-xs leading-relaxed text-muted-foreground">Public contacts and source text do not verify recruiter authority. Nothing is sent automatically.</p>
           {research?.flags.map((f,i) => <div key={i} className="space-y-2"><p className="font-medium">{f.reason}</p><p className="text-xs text-muted-foreground">{f.evidence}</p></div>)}
-          {research?.contacts.length ? research.contacts.map(c => <div key={c.email+c.sourceUrl} className="space-y-1"><p className="break-all font-mono text-xs">{c.email}</p><a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Published source · {when(c.observedAt)} ↗</a></div>) : <p className="text-muted-foreground">No public recruitment contact found in the pages checked.</p>}
+          {research?.contacts.length ? research.contacts.map(c => <div key={c.email+c.sourceUrl} className="space-y-1"><p className="break-all font-mono text-xs">{c.email}</p><CopyEmail email={c.email}/><a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Published source · {when(c.observedAt)} ↗</a></div>) : <p className="text-muted-foreground">No public recruitment or business contact found in the pages checked.</p>}
           {research?.pages.map((page,i) => <p key={page.url+i} className="text-xs leading-relaxed"><a href={page.url} target="_blank" rel="noopener noreferrer" className="break-all text-primary underline">{new URL(page.url).hostname} ↗</a> · {page.status}</p>)}
           <p className="text-xs text-muted-foreground">Opening, deadline and work authorization still need confirmation.</p>
         </div>

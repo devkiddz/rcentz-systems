@@ -11,6 +11,8 @@ export type Listing = {
   publishedAt: Date;
 };
 export type Assessment = {
+  priority?: number;
+  priorityLabel?: string;
   careerReview?: CareerReview;
   matched: string[];
   concerns: string[];

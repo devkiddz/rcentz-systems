@@ -25,7 +25,7 @@ export default async function Page({
   const status = (statuses as readonly string[]).includes(query.status || "")
     ? query.status
     : undefined;
-  const kind = ["EMPLOYMENT", "CONTRACT", "PROJECT"].includes(query.kind || "")
+  const kind = ["EMPLOYMENT", "CONTRACT", "PROJECT", "PROSPECT"].includes(query.kind || "")
     ? query.kind
     : undefined;
   const queue = query.queue === "quarantine" ? "quarantine" : "review";

@@ -16,7 +16,7 @@ export function opportunityHref(
 export function queueQuery(query: Record<string, string | undefined>) {
   const params = new URLSearchParams();
   if (query.queue === "quarantine") params.set("queue", "quarantine");
-  if (["EMPLOYMENT", "CONTRACT", "PROJECT"].includes(query.kind || ""))
+  if (["EMPLOYMENT", "CONTRACT", "PROJECT", "PROSPECT"].includes(query.kind || ""))
     params.set("kind", query.kind!);
   if (
     [

@@ -2,6 +2,8 @@ import { isCareerReview } from "./lib/career-review";
 import { isProjectEvidence, type ProjectEvidence } from "./lib/project-evidence";
 import type { Assessment } from "./lib/matching";
 export type Research = {
+  vacancy?: {url:string;fullText:true;publisher:"COMPANY_PAGE"|"ATS_PAGE"|"PUBLIC_PAGE";eligibility:"EXPLICIT"|"UNKNOWN";open:"NOT_EXPIRED"|"UNKNOWN"|"EXPIRED"};
+  demand?: {confirmed:boolean;url:string};
   risk: "HIGH" | "REVIEW" | "UNKNOWN";
   flags: { reason: string; evidence: string }[];
   contacts: {
@@ -201,6 +203,8 @@ export function validateFinderData(v: unknown): FinderData {
       !strings(a.questions) ||
       typeof a.eligibility !== "string" ||
       typeof a.verdict !== "string" ||
+      (a.priority !== undefined && (!Number.isInteger(a.priority) || Number(a.priority)<0 || Number(a.priority)>4)) ||
+      (a.priorityLabel !== undefined && (typeof a.priorityLabel !== "string" || a.priorityLabel.length>200)) ||
       (a.careerReview !== undefined && !isCareerReview(a.careerReview)) ||
       (a.evidence !== undefined && !strings(a.evidence)) ||
       (a.unknowns !== undefined && !strings(a.unknowns)) ||
@@ -219,6 +223,8 @@ export function validateFinderData(v: unknown): FinderData {
     if (r !== null) {
       if (
         !object(r) ||
+        (r.vacancy !== undefined && (!object(r.vacancy) || !url(r.vacancy.url) || r.vacancy.url !== j.url || r.vacancy.fullText !== true || !["COMPANY_PAGE","ATS_PAGE","PUBLIC_PAGE"].includes(String(r.vacancy.publisher)) || !["EXPLICIT","UNKNOWN"].includes(String(r.vacancy.eligibility)) || !["NOT_EXPIRED","UNKNOWN","EXPIRED"].includes(String(r.vacancy.open)))) ||
+        (r.demand !== undefined && (!object(r.demand) || !url(r.demand.url) || r.demand.url !== j.url || typeof r.demand.confirmed !== "boolean")) ||
         !["HIGH", "REVIEW", "UNKNOWN"].includes(String(r.risk)) ||
         typeof r.coverage !== "string" ||
         typeof r.publishedKnown !== "boolean" ||

@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FinderData } from "@/features/opportunities/types";
 import { statuses } from "@/features/opportunities/lib/matching";
 import {
-  collectNow,
+  collectNow, refreshPriorities,
 } from "@/features/opportunities/server/actions";
 import { SubmitButton } from "@/features/opportunities/components/SubmitButton";
 import {
@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FinderButton as Button, finderButtonVariants as buttonVariants } from "./FinderButton";
 const notices: Record<string, string> = {
+  refreshed: "Priorities refreshed against your current profile and saved source evidence. Decisions and notes are unchanged.",
   success:
     "Collection completed. Check source health for partial failures and review the evidence below.",
   failed: "Discovery failed. Saved opportunities and decisions are preserved.",
@@ -34,7 +35,7 @@ export function FinderWorkspace({
   const filter = (statuses as readonly string[]).includes(query.status || "")
     ? query.status
     : undefined;
-  const kind = ["EMPLOYMENT", "CONTRACT", "PROJECT"].includes(query.kind || "")
+  const kind = ["EMPLOYMENT", "CONTRACT", "PROJECT", "PROSPECT"].includes(query.kind || "")
     ? query.kind
     : undefined;
   const queue = query.queue === "quarantine" ? "quarantine" : "review";
@@ -63,6 +64,8 @@ export function FinderWorkspace({
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+          <Link href="/admin/opportunities/contacts" className={buttonVariants({variant: "outline"})}>Contacts</Link>
+          <form action={refreshPriorities}><SubmitButton>Refresh priorities</SubmitButton></form>
           <Link href="/admin/opportunities/settings" className={buttonVariants({variant: "outline"})}>Configure hunt</Link>
           <Badge variant={profile?.enabled ? "secondary" : "outline"}>
             {profile?.enabled
@@ -301,7 +304,7 @@ export function FinderWorkspace({
                 className={selectClass}
               >
                 <option value="">All types</option>
-                {["EMPLOYMENT", "CONTRACT", "PROJECT"].map((s) => (
+                {["EMPLOYMENT", "CONTRACT", "PROJECT", "PROSPECT"].map((s) => (
                   <option key={s} value={s}>
                     {label(s)}
                   </option>

@@ -46,3 +46,9 @@ export async function updateOpportunity(form: FormData) {
   });
   revalidatePath("/admin/opportunities", "layout");
 }
+
+export async function refreshPriorities() {
+  await opportunityRequest({operation: "refresh"});
+  revalidatePath("/admin/opportunities", "layout");
+  redirect("/admin/opportunities?run=refreshed");
+}
