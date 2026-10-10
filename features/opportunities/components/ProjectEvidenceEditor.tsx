@@ -25,7 +25,6 @@ export function ProjectEvidenceEditor({ entries }: { entries: ProjectEvidence[] 
   return (
     <section className="space-y-5 sm:col-span-2">
       <div className="space-y-2">
-        <h3 className="text-sm font-medium">Project references</h3>
         <p className="mt-2 text-xs leading-5 text-muted">
           The work behind your profile. Expand a reference to edit; swipe to browse on mobile.
           Changes are saved with Save profile.
