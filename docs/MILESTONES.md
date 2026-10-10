@@ -4,17 +4,21 @@ Development Milestones
 
 Project: Rcentz System
 Document: Development Milestones
-Version: 1.7
+Version: 1.8
 Status: Active / Living Document
-Last Updated: 2026-10-09
+Last Updated: 2026-10-10
 Latest Packaged Feature Checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5
 Deployment verification: pending installation/push of this release.
 
-Current Systems Snapshot — 9 October 2026
+Current Systems Snapshot — 10 October 2026
 
 See [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for the current extracted Systems application, implementation evidence, verification limits and next feature. Public/customer/admin workspaces, authenticated onboarding, communication/tracker routes and private project image management now exist. Latest addition: crop/replace/delete images and a larger blinking progress endpoint. No schema migration required.
 
-The next planned feature is the private admin automatic job finder, starting with Jobs & Contracts. It has not been implemented.
+Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
+
+Active upgrade: OA-00 documentation alignment, installed and reviewed; final cleanup, push and verification pending. OA-01 review and stabilization follows. OA-02 capability management; OA-03 commercial discovery; OA-04 pursuit; OA-05 delivery handover; OA-06 interface/printing alongside affected work; OA-07 launch verification. Teams, authorities and workspace management follows the usable acquisition release. All implementation milestones remain pending until their checks pass.
+
+Working sequence: engineer prepares; Dennis installs; we inspect; commit and push; test the exact pushed/deployed version; record evidence and mark complete. Relevant local checks run before push too. This update needs no database change.
 
 Historical Record Notice
 
@@ -1721,10 +1725,10 @@ Deferred until functional project completion where required.
 
 END OF DOCUMENT
 
-Current Handoff — 9 October 2026
+Historical Handoff — 9 October 2026 (updated direction above takes precedence)
 
 Latest packaged feature checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5.
 
 Current feature verification and deployment limits: SYSTEMS-STATUS.md.
 
-Next: private automatic job finder; source/profile permissions and supported-source selection first. Existing image crop/provider runtime checks remain part of release verification.
+Next: complete cleanup, push and verify OA-00, then review the existing finder under OA-01. Use OPPORTUNITY-DIRECTION.md for the current milestone plan. Existing image crop/provider checks remain outstanding where not independently verified.

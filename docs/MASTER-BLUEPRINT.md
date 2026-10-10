@@ -3,17 +3,19 @@
 # MASTER BLUEPRINT
 
 **Living Architecture & Product Document**
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Active / Living Document
-**Last Updated:** 2026-10-09
+**Last Updated:** 2026-10-10
 
-## Current Systems application note — 9 October 2026
+## Current Systems application note — 10 October 2026
 
 This blueprint preserves the broader Rcentz product vision. The current extracted Systems implementation and handoff are documented in [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md); inherited roadmap descriptions below should not be read as current verification.
 
 Systems provides the public digital-service portal and authenticated client/admin delivery workspace. Project previews can use privately managed Cloudinary screenshots with cropping, replacement and deletion. Project data, ownership and agreed commercial records remain distinct from marketing mockups and requested budgets.
 
-The next planned extension is a private admin opportunity finder, initially Jobs & Contracts for Dennis and later Business Prospects. It should explain matches and gaps, preserve original source evidence and require human review before applications or outreach. See [admin-opportunity-finder-scope.md](admin-opportunity-finder-scope.md). The finder is not yet implemented.
+Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
+
+Systems is a personal productivity and professional project workspace expanding into controlled teams and organization management, tailored to Rcentz operations. Rcentz API owns shared business rules and persistence; Systems provides the interface with its own account security. Public services remain focused and evidence-based. Internal capability knowledge can be broader without adding a duplicate Services page. Successful commercial work connects to existing delivery management; employment remains personal.
 
 ---
 

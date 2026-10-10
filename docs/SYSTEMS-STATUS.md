@@ -1,8 +1,14 @@
 # Rcentz Systems — current project status
 
-Updated: 9 October 2026 (Africa/Lagos). Scope: the extracted `rcentz-systems` application. This snapshot supersedes the inherited August/September immediate-focus and handoff notes in the master documents; it does not declare every management system formally closed.
+Updated: 10 October 2026 (Africa/Lagos). Scope: the extracted `rcentz-systems` application. This snapshot supersedes the inherited August/September immediate-focus and handoff notes in the master documents; it does not declare every management system formally closed.
 
-## Current checkpoint
+## Current direction and evidence
+
+Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
+
+Repository snapshots reviewed: Systems `1e69408b5c80e2910fd10a1f9ec3654b6bfaf6a1`; API `589efe23b7e63244f3ce34e56155eb78ed1f75c7`. Opportunity routes and supporting code exist in both repositories. Earlier release notes describe buyer-request research and contacts. Their live behavior must be checked under OA-01. OA-00 is installed and its content reviewed, with final cleanup, push and closure pending. Printing and redundant UI are user-reported issues awaiting inspection.
+
+## Historical image checkpoint
 
 Feature checkpoint: `1af826d60491ee607c63983f4dc39fe48b31fcb5` — cropped project image management and clearer progress signals. This is the packaged source checkpoint, not a claim that this exact commit is already deployed. The installer checks/builds and pushes; production deployment and provider configuration remain separate.
 
@@ -35,9 +41,9 @@ For the latest feature release, ESLint, TypeScript, production build, admin guar
 
 After installing and deploying: crop/save an image, replace it and inspect the customer preview, delete it and check the next preview, then check the completed progress ring with and without reduced motion. A successful push alone does not verify Vercel deployment or runtime credentials.
 
-## Next feature: private automatic job finder
+## Next work: opportunity acquisition upgrade
 
-The finder is planned, not implemented. Start with the Jobs & Contracts lane for Dennis, using verified sources, deduplication, open-status checks, honest skills/eligibility matching and a saved opportunity pipeline. Business Prospects is a later lane. Personal employment searches must remain private even from other admins by default. Draft applications and outreach require human review before sending.
+Install and inspect the direction update, then review and stabilize the existing finder. Build one focused company capability through API and Systems, use it for commercial discovery, manage pursuit, and link won commercial work to existing delivery management. Preserve personal employment and owner privacy. Human review and an explicit instruction are required before sending applications or outreach. Correct relevant interface and print issues alongside the work. Do not mark any upgrade milestone complete from documentation alone.
 
 Agreed scope: [admin opportunity finder](admin-opportunity-finder-scope.md).
 
