@@ -1,12 +1,11 @@
 import type { RetentionData } from "../lib/retention";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FinderButton } from "./FinderButton";
 const when=(s:string)=>new Date(s).toLocaleString("en-GB",{timeZone:"Africa/Lagos"});
 export function RetentionPanel({data}:{data:RetentionData|null}) {
-  return <Card id="storage" className="gap-5 p-5 sm:p-6">
+  return <div className="space-y-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
-      <div className="space-y-2"><h2 className="font-semibold">Storage & retention</h2><p className="text-sm text-muted-foreground">Inspect what qualifies for cleanup before enabling retention.</p></div>
+      <div className="space-y-2"><h3 className="font-semibold">Retention status</h3><p className="text-sm text-muted-foreground">Cleanup removes old opportunities you have never acted on. Previewing only shows what would qualify; it deletes nothing.</p></div>
       <Badge variant="outline">{data ? (data.retentionEnabled ? "Retention enabled" : "Retention off") : "Status unavailable"}</Badge>
     </div>
     {data ? <>
@@ -27,5 +26,5 @@ export function RetentionPanel({data}:{data:RetentionData|null}) {
       <p className="max-w-2xl text-xs leading-5 text-muted-foreground">Enablement is controlled in the private API deployment. This page cannot enable deletion or perform manual cleanup.</p>
       <form method="get" action="/admin/opportunities/settings#storage"><input type="hidden" name="preview" value="1" /><FinderButton type="submit" variant="outline">{data?.preview ? "Refresh preview" : "Preview cleanup"}</FinderButton></form>
     </div>
-  </Card>;
+  </div>;
 }
