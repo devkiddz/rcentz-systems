@@ -418,10 +418,19 @@ export function AdminSidebar({ showOpportunities = false }: { showOpportunities?
       <SidebarContent className="bg-sidebar">
         <AdminNavigationGroup
           label="Workspace"
-          items={showOpportunities ? [...workspaceNavigation, { key: 'opportunities', label: 'Opportunities', href: '/admin/opportunities', icon: BriefcaseBusiness }] : workspaceNavigation}
+          items={showOpportunities ? [...workspaceNavigation, { key: 'opportunities', label: 'Opportunities', href: '/admin/opportunities', icon: BriefcaseBusiness, actions: [{ key: 'opportunity-clients', label: 'Client Acquisition', href: '/admin/opportunities/clients', icon: BriefcaseBusiness }, { key: 'opportunity-career', label: 'Career & Freelance', href: '/admin/opportunities/career', icon: BriefcaseBusiness }] }] : workspaceNavigation}
           pathname={pathname}
           onNavigate={handleNavigate}
         />
+
+        {showOpportunities ? (
+          <AdminNavigationGroup
+            label="Capabilities"
+            items={[{ key: 'commercial-capabilities', label: 'Commercial Capabilities', href: '/admin/commercial-capabilities', icon: ShieldCheck }]}
+            pathname={pathname}
+            onNavigate={handleNavigate}
+          />
+        ) : null}
 
         <AdminNavigationGroup
           label="Communication"
