@@ -10,18 +10,20 @@ import { useSidebar } from '@/components/ui/sidebar';
 
 type MobileNavigationItem = {
   label: string;
+  accessibleLabel?: string;
   href: string;
   icon: typeof LayoutDashboard;
 };
 
 const mobileNavigation = [
   {
-    label: 'Home',
+    label: 'Overview',
     href: '/admin',
     icon: LayoutDashboard
   },
   {
-    label: 'Briefs',
+    label: 'Requests',
+    accessibleLabel: 'Service Requests',
     href: '/admin/requests',
     icon: BriefcaseBusiness
   },
@@ -89,6 +91,7 @@ export function AdminMobileNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? 'page' : undefined}
+              aria-label={'accessibleLabel' in item ? item.accessibleLabel : item.label}
               className={[
                 'flex',
                 'min-w-0',

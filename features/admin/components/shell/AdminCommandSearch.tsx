@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BriefcaseBusiness, FolderKanban, LayoutDashboard, Search, Settings, UsersRound } from 'lucide-react';
+import { Bell, BriefcaseBusiness, FileText, FolderKanban, LayoutDashboard, ListTodo, MessageSquareText, Search, Settings, UsersRound, WalletCards } from 'lucide-react';
 
 import {
   Command,
@@ -39,6 +39,11 @@ const adminSearchDestinations = [
     href: '/admin/clients',
     icon: UsersRound
   },
+  { label: 'Tasks', description: 'Manage workspace tasks', href: '/admin/tasks', icon: ListTodo },
+  { label: 'Messages', description: 'Workspace conversations', href: '/admin/messages', icon: MessageSquareText },
+  { label: 'Notifications', description: 'Workspace activity and alerts', href: '/admin/notifications', icon: Bell },
+  { label: 'Finance', description: 'Financial overview', href: '/admin/finance', icon: WalletCards },
+  { label: 'Invoices', description: 'Manage client invoices', href: '/admin/invoices', icon: FileText },
   {
     label: 'Settings',
     description: 'Admin and system settings',

@@ -115,12 +115,12 @@ const projectNavigation = [
     icon: ReceiptText
   },
   {
-    label: 'Project brief',
+    label: 'Project Briefs',
     href: '/dashboard/onboarding',
     icon: ClipboardList,
       },
   {
-    label: 'Requests',
+    label: 'Service Requests',
     href: '/dashboard/requests',
     icon: ClipboardList
   }
@@ -186,7 +186,7 @@ const dashboardHeaderRoutes: Array<{
   {
     path: '/dashboard/requests',
     identity: {
-      title: 'Requests',
+      title: 'Service Requests',
       description: 'Actions and service requests'
     }
   },
@@ -309,7 +309,7 @@ function ClientSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="bg-sidebar">
-        <ClientNavigationGroup label="Project" items={projectNavigation} pathname={pathname} />
+        <ClientNavigationGroup label="Services & Projects" items={projectNavigation} pathname={pathname} />
 
         <ClientNavigationGroup label="Workspace" items={workspaceNavigation} pathname={pathname} />
       </SidebarContent>

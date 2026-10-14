@@ -81,7 +81,7 @@ const workspaceNavigation = [
     actions: [
       {
         key: 'view-projects',
-        label: 'View Projects',
+        label: 'All Projects',
         href: '/admin/projects',
         icon: Eye
       },
@@ -101,7 +101,7 @@ const workspaceNavigation = [
     actions: [
       {
         key: 'view-tasks',
-        label: 'View Tasks',
+        label: 'All Tasks',
         href: '/admin/tasks',
         icon: Eye
       },
@@ -124,7 +124,7 @@ const communicationNavigation = [
     actions: [
       {
         key: 'view-messages',
-        label: 'View Messages',
+        label: 'All Messages',
         href: '/admin/messages',
         icon: Eye
       },
@@ -147,13 +147,13 @@ const financeNavigation = [
   },
   {
     key: 'invoice',
-    label: 'Invoice',
+    label: 'Invoices',
     href: '/admin/invoices',
     icon: FileText,
     actions: [
       {
         key: 'view-invoice',
-        label: 'View Invoice',
+        label: 'All Invoices',
         href: '/admin/invoices',
         icon: Eye
       },
@@ -418,15 +418,28 @@ export function AdminSidebar({ showOpportunities = false }: { showOpportunities?
       <SidebarContent className="bg-sidebar">
         <AdminNavigationGroup
           label="Workspace"
-          items={showOpportunities ? [...workspaceNavigation, { key: 'opportunities', label: 'Opportunities', href: '/admin/opportunities', icon: BriefcaseBusiness, actions: [{ key: 'opportunity-clients', label: 'Client Acquisition', href: '/admin/opportunities/clients', icon: BriefcaseBusiness }, { key: 'opportunity-career', label: 'Career & Freelance', href: '/admin/opportunities/career', icon: BriefcaseBusiness }] }] : workspaceNavigation}
+          items={workspaceNavigation}
           pathname={pathname}
           onNavigate={handleNavigate}
         />
 
         {showOpportunities ? (
           <AdminNavigationGroup
-            label="Capabilities"
-            items={[{ key: 'commercial-capabilities', label: 'Commercial Capabilities', href: '/admin/commercial-capabilities', icon: ShieldCheck }]}
+            label="Business Development"
+            items={[
+              {
+                key: 'opportunities',
+                label: 'Opportunities',
+                href: '/admin/opportunities',
+                icon: BriefcaseBusiness,
+                actions: [
+                  { key: 'opportunity-overview', label: 'Overview', href: '/admin/opportunities', icon: LayoutDashboard },
+                  { key: 'opportunity-clients', label: 'Client Acquisition', href: '/admin/opportunities/clients', icon: BriefcaseBusiness },
+                  { key: 'opportunity-career', label: 'Career & Freelance', href: '/admin/opportunities/career', icon: BriefcaseBusiness }
+                ]
+              },
+              { key: 'commercial-capabilities', label: 'Commercial Capabilities', href: '/admin/commercial-capabilities', icon: ShieldCheck }
+            ]}
             pathname={pathname}
             onNavigate={handleNavigate}
           />
