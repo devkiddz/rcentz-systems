@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import ts from 'typescript';
@@ -39,8 +39,25 @@ function load(file, stubs) {
  savedProject=null;brief.status='DRAFT';await assert.rejects(actions.createPlanningProject(form),/not available/);assert.equal(created,1);
  console.log('PASS: actions authorize before writes; review idempotent; duplicate conversions reuse one private planning project; drafts rejected; requested budget not agreed.');
  const files=[];function walk(dir){for(const d of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,d.name);if(d.isDirectory())walk(f);else if(d.name==='page.tsx')files.push(f);}}walk('app/admin');
- for(const file of files)assert.match(fs.readFileSync(file,'utf8'),/await require(?:Admin|FinderOwner)\(/,file+' lacks its own guard');
- console.log('PASS: every admin page guards its own data access.');
+ const guardPattern=/await require(?:Admin|FinderOwner|OpportunityAdministrator)\(/;
+ for(const file of files){
+  const code=fs.readFileSync(file,'utf8');
+  if(guardPattern.test(code))continue;
+  // These new pages defer to the private Opportunities layout and perform no data IO.
+  assert.ok(file.startsWith(path.join('app','admin','opportunities')+path.sep),file+' lacks an explicit guard');
+  assert.ok(!/opportunityRequest|prisma\.|fetch\(/.test(code),file+' must guard its own data access');
+  assert.match(fs.readFileSync('app/admin/opportunities/layout.tsx','utf8'),guardPattern);
+ }
+ let finderPermitted=true, finderRole='SUPER_ADMIN';
+ const workspaceGuard=load('server/opportunities/workspace-access.ts',{
+  '@/server/opportunities/access':{requireFinderOwner:async()=>{if(!finderPermitted)throw Error('OWNER_DENIED');return{id:'owner',role:finderRole};}},
+  'next/navigation':{notFound:()=>{throw Error('NOT_FOUND');}}
+ });
+ assert.equal((await workspaceGuard.requireOpportunityAdministrator()).role,'SUPER_ADMIN');
+ finderRole='ADMIN';await assert.rejects(workspaceGuard.requireOpportunityAdministrator(),/NOT_FOUND/);
+ finderRole='SUPER_ADMIN';finderPermitted=false;await assert.rejects(workspaceGuard.requireOpportunityAdministrator(),/OWNER_DENIED/);
+
+ console.log('PASS: admin data access guards include the current commercial helper; placeholder pages inherit the verified private layout without performing data IO.');
  let query;
  const fileRoute=load('app/api/project-briefs/[requestId]/files/[fileId]/route.ts',{
  '@vercel/blob':{get:async()=>null},'@/lib/prisma':{prisma:{serviceRequest:{findFirst:async q=>{query=q;return null;}}}},

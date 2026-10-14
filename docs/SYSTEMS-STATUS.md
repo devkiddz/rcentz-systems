@@ -1,12 +1,18 @@
 # Rcentz Systems — current project status
 
-Updated: 10 October 2026 (Africa/Lagos). Scope: the extracted `rcentz-systems` application. This snapshot supersedes the inherited August/September immediate-focus and handoff notes in the master documents; it does not declare every management system formally closed.
+Updated: 14 October 2026 (Africa/Lagos). Scope: the extracted `rcentz-systems` application. This snapshot supersedes the inherited August/September immediate-focus and handoff notes in the master documents; it does not declare every management system formally closed.
 
-## Current direction and evidence
+## Current source audit — 14 October 2026
 
-Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
+Reviewed API checkpoint `0aa80a3` and Systems checkpoint `c65b3ca`. Read [CURRENT-WIRING-AUDIT-20261014.md](CURRENT-WIRING-AUDIT-20261014.md) for the current connections, verification limits and completion order. Older snapshot and milestone statements are historical evidence, not a declaration of current closure.
 
-Repository snapshots reviewed: Systems `1e69408b5c80e2910fd10a1f9ec3654b6bfaf6a1`; API `589efe23b7e63244f3ce34e56155eb78ed1f75c7`. Opportunity routes and supporting code exist in both repositories. Earlier release notes describe buyer-request research and contacts. Their live behavior must be checked under OA-01. OA-00 is complete. Verified pushed evidence: Systems `ad744d976ea475acdfba40b38a51378d44d60722`; API `377c1bc4cd297b43c3f071516dda3cc275468b9b`. All seven saved documents matched the reviewed package; the shared document matches across both repositories. Printing and redundant UI are user-reported issues awaiting inspection.
+The existing customer delivery workflow has implemented routes and server operations. The latest commercial release adds profile/capability management, a problem/solution catalogue, source management, manual intake and a read-only UK procurement preview. Saved commercial prospect review, pursuit, evidence approval, broader commercial discovery and won-work handover are not fully connected. Career pages are placeholders while the personal hunt remains under legacy routes. The existing scheduled route collects personal opportunities only; commercial automation is explicitly disabled.
+
+Both current source builds passed local verification. Prepared repairs restore the API operation-scope check, the Systems admin-page guard check and the legacy settings check after new commercial imports/helper names were introduced. These checks do not change production permissions. Their installation/push and authenticated live acceptance remain separate.
+
+OA-00 documentation alignment is complete. OA-01's previously reported manual/live checks remain evidence; automatic scheduled execution was not independently observed in this audit. OA-02 through OA-05 contain partially implemented or missing connections; do not mark them complete from route presence. UI/print and full release acceptance remain OA-06/OA-07 work. Team/workspace management remains a separate future release.
+
+Public service and opportunity operations use the shared API. Existing request/project/invoice/conversation operations still include direct Systems database access, so the agreed full API ownership boundary is not yet complete. Preserve current data and move this work in reviewed slices.
 
 ## Historical image checkpoint
 
@@ -57,3 +63,7 @@ Agreed scope: [admin opportunity finder](admin-opportunity-finder-scope.md).
 - [Brief editing and uploads](brief-editing-and-uploads.txt): saved brief/reference workflow.
 
 Keep source verification, user-reported runtime tests, packaged releases and verified deployments distinct in future updates.
+
+## Prepared commercial acquisition release — 14 October 2026
+
+The acquisition release now replaces the UK-only discovery screen with worldwide and Nigeria public web collection, connects the daily commercial schedule, and exposes saved leads with source evidence, matching reasons, progress, notes and review history. Local controlled tests and both production builds passed. Installation and exact deployed/live acceptance remain pending. Follow [COMMERCIAL-ACQUISITION-RELEASE-20261014.md](COMMERCIAL-ACQUISITION-RELEASE-20261014.md). This prepared release supersedes the earlier acquisition gaps only after installation; delivery handover, evidence readiness, Career migration and teams remain open. No database change is required.

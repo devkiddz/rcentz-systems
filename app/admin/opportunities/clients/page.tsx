@@ -1,119 +1,16 @@
 import Link from 'next/link';
-
 import { opportunityRequest } from '@/server/opportunities/client';
-
 import { requireOpportunityAdministrator } from '@/server/opportunities/workspace-access';
-
-
-
-export const dynamic = 'force-dynamic';
-
-export const metadata = { title: 'Client Acquisition · Rcentz', robots: { index: false, follow: false } };
-
-
-
-type ClientOverview = { total: number; settings: { discoveryEnabled: boolean } | null };
-
-type Capability = { id: string; name: string; status: string; solutions?: unknown[] };
-
-type CompanyOverview = {
-
-  profile: { name: string; operatingCountry: string; deliveryMode: string; availabilityNote: string } | null;
-
-  capabilities: Capability[];
-
-  services: { id: string; name: string }[];
-
-};
-
-
-
-export default async function ClientAcquisitionPage() {
-
-  await requireOpportunityAdministrator();
-
-  const data = await opportunityRequest<CompanyOverview>({ operation: 'company:list' });
-
-  const acquisition = await opportunityRequest<ClientOverview>({ operation: 'client:list', page: 1 });
-
-  const ready = data.capabilities.filter((capability) => capability.status === 'READY').length;
-
-  const solutions = data.capabilities.reduce((sum, capability) => sum + (capability.solutions?.length ?? 0), 0);
-
-  return (
-
-    <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
-
-      <div className="rcentz-dashboard-inner mx-auto w-full max-w-6xl space-y-6">
-
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-
-          <div className="space-y-2">
-
-            <h1 className="text-2xl font-semibold">Client Acquisition</h1>
-
-            <p className="text-sm text-muted-foreground">Commercial prospecting for software projects, client contracts, retainers and partnerships.</p>
-
-          </div>
-
-          <Link href="/admin/opportunities/clients/discovery" className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm hover:bg-muted">Discovery review</Link>
-          <Link href="/admin/opportunities/clients/intake" className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm hover:bg-muted">Opportunity intake</Link>
-          <Link href="/admin/opportunities/clients/sources" className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm hover:bg-muted">Discovery sources</Link>
-
-          <Link href="/admin/opportunities/clients/settings" className="inline-flex w-fit rounded-md border border-border px-4 py-2 text-sm hover:bg-muted">Acquisition configuration</Link>
-
-        </header>
-
-        <section aria-label="Commercial readiness" className="grid gap-3 sm:grid-cols-3">
-
-          {[{label:'Client prospects',value:acquisition.total},{label:'Ready capabilities',value:ready},{label:'Solution blueprints',value:solutions}].map((stat) => (
-
-            <div key={stat.label} className="rounded-xl border border-border bg-card p-5">
-
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-
-              <p className="mt-2 text-3xl font-semibold tabular-nums">{stat.value}</p>
-
-            </div>
-
-          ))}
-
-        </section>
-
-        <section className="space-y-3 rounded-xl border border-border bg-card p-5">
-
-          <h2 className="font-semibold">Commercial discovery status</h2>
-
-          <p className="text-sm text-muted-foreground">Client Acquisition records are read from its own API and company profile. Commercial collection remains disabled until the dedicated collector is reviewed.</p>
-
-          <p className="text-sm text-muted-foreground">{data.profile ? `Operating profile: ${data.profile.name} · ${data.profile.operatingCountry} · ${data.profile.deliveryMode}` : 'Set up the company operating profile before activating commercial matching.'}</p>
-
-          <Link href="/admin/commercial-capabilities" className="inline-flex rounded-md border border-border px-4 py-2 text-sm hover:bg-muted">Manage commercial capabilities</Link>
-
-        </section>
-
-        <section className="space-y-2 rounded-xl border border-border bg-card p-5">
-
-          <h2 className="font-semibold">Acquisition settings</h2>
-
-          <p className="text-sm text-muted-foreground">{acquisition.settings ? 'Saved acquisition preferences are available.' : 'No acquisition preferences saved yet.'} Collection: {acquisition.settings?.discoveryEnabled ? 'Enabled' : 'Disabled'}.</p>
-
-          <Link href="/admin/opportunities/clients/settings" className="text-sm underline underline-offset-4">View configuration</Link>
-
-        </section>
-
-        <section className="space-y-2 rounded-xl border border-border bg-card p-5">
-
-          <h2 className="font-semibold">Service knowledge base</h2>
-
-          <p className="text-sm text-muted-foreground">{data.services.length} existing service records available for capability relationships. This is not a lead count.</p>
-
-        </section>
-
-      </div>
-
-    </main>
-
-  );
-
+import { validateCommercialOverview,clientStates,clientStateLabels } from '@/features/opportunities/commercial-types';
+import { CommercialCollect } from '@/features/opportunities/components/CommercialCollect';
+export const dynamic='force-dynamic';
+export const maxDuration=300;
+export const metadata={title:'Client Acquisition · Rcentz',robots:{index:false,follow:false}};
+export default async function ClientAcquisitionPage({searchParams}:{searchParams:Promise<{page?:string;state?:string}>}){
+ await requireOpportunityAdministrator();const query=await searchParams;
+ const state=(clientStates as readonly string[]).includes(query.state||'')?query.state:undefined;
+ const page=/^[1-9]\d{0,5}$/.test(query.page||'')?Number(query.page):1;
+ const data=validateCommercialOverview(await opportunityRequest({operation:'client:list',page,...(state?{state}:{})}));
+ const href=(p:number)=>'/admin/opportunities/clients?page='+p+(state?'&state='+state:'');
+ return <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8"><div className="rcentz-dashboard-inner mx-auto w-full max-w-6xl space-y-6"><header className="space-y-3"><h1 className="text-2xl font-semibold">Client Acquisition</h1><p className="max-w-3xl text-sm text-muted-foreground">Find and review potential customers in Nigeria and worldwide: websites, landing pages, online stores and business applications. Public requests and research leads remain distinct.</p><nav className="flex flex-wrap gap-3" aria-label="Acquisition tools">{[['Discovery and source health','discovery'],['Preferences','settings'],['Manual intake','intake'],['Source registry','sources']].map(([label,path])=><Link key={path} href={'/admin/opportunities/clients/'+path} className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">{label}</Link>)}<Link href="/admin/commercial-capabilities" className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">Capabilities</Link></nav></header><section className="space-y-3 rounded-xl border border-border bg-card p-5"><h2 className="font-semibold">Active discovery</h2><p className="text-sm text-muted-foreground">{data.discovery.schedule}. Scheduled search: {data.settings?.discoveryEnabled?'Enabled':'Disabled'}. Manual and scheduled runs share a {data.discovery.cooldownHours}-hour wait and save at most {data.discovery.maxNewPerRun} new leads per run.</p><CommercialCollect configured={data.discovery.searchConfigured}/></section><form method="get" className="flex flex-wrap items-end gap-3"><label className="space-y-2 text-sm"><span className="block">Progress filter</span><select name="state" defaultValue={state??''} className="rounded-md border border-input bg-background px-3 py-2"><option value="">All stages</option>{clientStates.map(s=><option key={s} value={s}>{clientStateLabels[s]}</option>)}</select></label><button className="rounded-md border border-border px-3 py-2 text-sm">Apply filter</button><p className="py-2 text-sm text-muted-foreground">{data.total} saved leads</p></form><section aria-label="Saved commercial leads" className="grid gap-4 sm:grid-cols-2">{data.prospects.map(p=><article key={p.id} className="space-y-3 rounded-xl border border-border bg-card p-5"><p className="text-xs text-muted-foreground">{p.qualification.kind==='REQUEST_SIGNAL'?'Possible buyer request':p.qualification.kind==='RESEARCH_LEAD'?'Research lead · buying intent unconfirmed':'Saved notice · qualification pending'} · {clientStateLabels[p.state]}</p><h2 className="font-semibold"><Link href={'/admin/opportunities/clients/'+p.id} className="hover:underline">{typeof p.qualification.title==='string'?p.qualification.title:p.businessName}</Link></h2><p className="text-sm text-muted-foreground">Source: {p.businessName} · Country: {p.country??'Unconfirmed'} · Budget: {p.budgetSignal??'Unconfirmed'}</p><p className="line-clamp-3 whitespace-pre-wrap text-sm">{p.summary}</p><p className="text-xs text-muted-foreground">{p.fitScore===null?'Fit not yet assessed':'Subject relevance: '+p.fitScore+'/100 · not a win probability'}</p><Link href={'/admin/opportunities/clients/'+p.id} className="inline-flex rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">Review lead</Link></article>)}</section>{data.prospects.length===0?<p className="rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">No saved leads in this view. Collect opportunities or add a reviewed public notice.</p>:null}<nav aria-label="Lead pages" className="flex items-center gap-4">{data.page>1?<Link href={href(data.page-1)} className="text-sm underline">Previous</Link>:null}<span className="text-sm text-muted-foreground">Page {data.page} of {Math.max(1,Math.ceil(data.total/30))}</span>{data.page*30<data.total?<Link href={href(data.page+1)} className="text-sm underline">Next</Link>:null}</nav><p className="text-xs text-muted-foreground">No automatic outreach. Unknown buying intent and eligibility require review. Won leads do not automatically create clients or projects.</p></div></main>;
 }

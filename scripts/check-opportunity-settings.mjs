@@ -5,16 +5,17 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 function load(file, stubs) {
   const source = ts.transpileModule(fs.readFileSync(file, "utf8"), {compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX}}).outputText;
-  const module = {exports: {}};
+  const evaluated = {exports: {}};
   new Function("require", "module", "exports", source)(name => {
     if (name === "react/jsx-runtime") return require(name);
     if (!(name in stubs)) throw Error("Unmocked " + name);
     return stubs[name];
-  }, module, module.exports);
-  return module.exports;
+  }, evaluated, evaluated.exports);
+  return evaluated.exports;
 }
 let allowed = false, fetches = 0;
-const page = load("app/admin/opportunities/settings/page.tsx", {
+const page = load("app/admin/opportunities/legacy/settings/page.tsx", {
+  "next/link": {default: () => null},
   "@/server/opportunities/access": {requireFinderOwner: async () => {if (!allowed) throw Error("Denied");}},
   "@/server/opportunities/client": {opportunityRequest: async payload => {fetches++; if(payload.operation === "list") {assert.equal(payload.contractVersion,3); assert.equal(payload.page,1);} else assert.equal(payload.operation,"retention"); return {}; }},
   "@/features/opportunities/lib/retention": {validateRetention: value => value},
@@ -43,4 +44,12 @@ await actions.saveProfile(form);assert.equal(redirects.length,0);
 for(const path of ["features/opportunities/components/FinderWorkspace.tsx","features/opportunities/components/FinderSettings.tsx"]){
  const text=fs.readFileSync(path,"utf8");assert.doesNotMatch(text, /Â·|â€”|â€“/);
 }
-console.log("PASS: settings owner guard before fetching, bounded contract, preserved career context/project entries, fixed return target and clean UTF-8 labels.");
+console.log("PASS: legacy settings owner guard before fetching, bounded contract, preserved career context/project entries, fixed return target and clean UTF-8 labels.");
+
+let compatibilityTarget;
+const compatibility = load("app/admin/opportunities/settings/page.tsx", {
+  "next/navigation": {redirect: target => { compatibilityTarget=target; }},
+});
+compatibility.default();
+assert.equal(compatibilityTarget,"/admin/opportunities/career/settings");
+console.log("PASS: compatibility settings redirects to Career; this does not establish that the placeholder career settings page is complete.");

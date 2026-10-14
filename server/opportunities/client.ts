@@ -1,6 +1,9 @@
 import "server-only";
 import { createHmac, randomUUID } from "node:crypto";
 import { requireFinderOwner } from "./access";
+export class OpportunityApiError extends Error {
+  constructor(public status:number) { super('Opportunity API unavailable or access not configured.'); }
+}
 const path = "/api/v1/internal/systems/opportunities";
 export async function opportunityRequest<T>(
   payload: Record<string, unknown>,
@@ -46,7 +49,7 @@ export async function opportunityRequest<T>(
     cache: "no-store",
     redirect: "error",
     signal: AbortSignal.timeout(
-      payload.operation === "collect" ? 295000 : 20000,
+      ["collect", "client:collect"].includes(String(payload.operation)) ? 295000 : 20000,
     ),
     headers: {
       "Content-Type": "application/json",
@@ -67,6 +70,6 @@ export async function opportunityRequest<T>(
     value.success !== true ||
     !("data" in value)
   )
-    throw new Error("Opportunity API unavailable or access not configured.");
+    throw new OpportunityApiError(response.status);
   return value.data as T;
 }

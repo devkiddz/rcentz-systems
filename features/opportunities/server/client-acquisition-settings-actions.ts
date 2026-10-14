@@ -29,7 +29,7 @@ export async function saveClientAcquisitionSettings(form: FormData) {
     includeUnpriced,
     requireBudget,
     minimumScore: Number(score),
-    discoveryEnabled: false,
+    discoveryEnabled: form.get('discoveryEnabled') === 'on',
   });
   revalidatePath(route);
   revalidatePath('/admin/opportunities/clients');

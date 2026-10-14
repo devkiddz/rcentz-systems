@@ -35,7 +35,7 @@ export default async function ClientAcquisitionSettings({ searchParams }: { sear
           <h1 className="text-2xl font-semibold">Acquisition Configuration</h1>
           <p className="text-sm text-muted-foreground">Commercial discovery preferences, independent of Career & Freelance.</p>
         </header>
-        {query.saved === '1' ? <p role="status" className="rounded-md border border-border bg-card p-3 text-sm">Acquisition settings saved. Automated collection remains disabled.</p> : null}
+        {query.saved === '1' ? <p role="status" className="rounded-md border border-border bg-card p-3 text-sm">Acquisition preferences and daily discovery setting saved.</p> : null}
         <section className="space-y-3 rounded-xl border border-border bg-card p-5">
           <h2 className="font-semibold">Rcentz operating profile</h2>
           {data.profile ? <dl className="grid gap-3 text-sm sm:grid-cols-2">
@@ -70,7 +70,7 @@ export default async function ClientAcquisitionSettings({ searchParams }: { sear
             <label className="flex items-start gap-3 text-sm"><input type="checkbox" name="includeUnpriced" defaultChecked={settings?.includeUnpriced ?? true} className="mt-1" /> <span>Include leads with no published budget</span></label>
             <label className="flex items-start gap-3 text-sm"><input type="checkbox" name="requireBudget" defaultChecked={settings?.requireBudget ?? false} className="mt-1" /> <span>Require a published budget (cannot be combined with including unpriced leads)</span></label>
           </div>
-          <div className="rounded-md border border-border p-3 text-sm text-muted-foreground">Automated Client Acquisition collection is locked off in this phase. Saving preferences will not create prospects or start any hunt.</div>
+          <label className="flex items-start gap-3 rounded-md border border-border p-3 text-sm"><input type="checkbox" name="discoveryEnabled" defaultChecked={settings?.discoveryEnabled ?? false} className="mt-1"/><span>Enable daily commercial discovery at 07:00 UTC / 08:00 Lagos. This saves leads for review; it does not send messages. Manual and scheduled hunts share a 20-hour waiting period.</span></label>
           <button type="submit" className="inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">Save acquisition preferences</button>
         </form>
         <p className="text-sm text-muted-foreground">{acquisition.total} client prospects are stored independently from Career & Freelance. No prospect changes are made here.</p>

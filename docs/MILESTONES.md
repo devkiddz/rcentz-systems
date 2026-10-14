@@ -6,19 +6,21 @@ Project: Rcentz System
 Document: Development Milestones
 Version: 1.8
 Status: Active / Living Document
-Last Updated: 2026-10-10
+Last Updated: 2026-10-14
 Latest Packaged Feature Checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5
 Deployment verification: pending installation/push of this release.
 
-Current Systems Snapshot — 10 October 2026
+Current Systems Snapshot — 14 October 2026
 
-See [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for the current extracted Systems application, implementation evidence, verification limits and next feature. Public/customer/admin workspaces, authenticated onboarding, communication/tracker routes and private project image management now exist. Latest addition: crop/replace/delete images and a larger blinking progress endpoint. No schema migration required.
+Reviewed Systems source `c65b3ca`; API source `0aa80a3`. Use [CURRENT-WIRING-AUDIT-20261014.md](CURRENT-WIRING-AUDIT-20261014.md) and [SYSTEMS-STATUS.md](SYSTEMS-STATUS.md) for current source wiring and limits.
 
-Opportunities now has an existing implementation to review and extend. Its primary direction is Rcentz customer and contract acquisition, with personal employment preserved separately. [OPPORTUNITY-DIRECTION.md](OPPORTUNITY-DIRECTION.md) governs the current scope, milestone order and completion checks. Source presence does not establish live verification.
+OA-00 is complete. Existing customer delivery has implemented request, project, billing, communication and image paths; earlier user-reported checks are separate from this source audit. OA-01 retains previously reported checks with automatic execution not independently observed here. Company capability editing and commercial problem/solution knowledge exist, but evidence approval/readiness is not enabled (OA-02 remains partial). A prepared release connects worldwide/Nigeria public web discovery and commercial scheduling (OA-03), plus saved lead list/detail/review, assessment/draft notes, stages and history (OA-04). Installation and real acceptance remain required. Won-work-to-delivery handover is absent from the inspected commercial flow (OA-05). Career pages are placeholders while existing personal functionality remains in legacy routes. UI/print and exact-deployment acceptance remain OA-06/OA-07.
 
-Active upgrade: OA-00 documentation alignment completed on 10 October 2026. Verified Systems checkpoint: ad744d976ea475acdfba40b38a51378d44d60722; API checkpoint: 377c1bc4cd297b43c3f071516dda3cc275468b9b. Exact pushed documents matched the reviewed package; shared direction matches across both repositories. OA-01 review and stabilization is in progress: source and local checks completed for the first refresh correction. Installation, push and real workspace checks remain pending; see [OPPORTUNITY-REVIEW.md](OPPORTUNITY-REVIEW.md). OA-02 capability management; OA-03 commercial discovery; OA-04 pursuit; OA-05 delivery handover; OA-06 interface/printing alongside affected work; OA-07 launch verification. Teams, authorities and workspace management follows the usable acquisition release. All implementation milestones remain pending until their checks pass.
+Immediate order: restore current release checks; connect saved commercial prospect review; broaden supported public discovery; finish capability evidence/readiness; reconnect the personal career workspace; implement controlled pursuit and repeatable handover; verify collection scheduling and the full deployed flow. Teams/authorities/meetings and the remaining shared API migration are separate work, not same-day closure.
 
-Working sequence: engineer prepares; Dennis installs; we inspect; commit and push; test the exact pushed/deployed version; record evidence and mark complete. Relevant local checks run before push too. This update needs no database change.
+Both current builds passed locally. Three stale verification scripts were repaired in the prepared audit package; this does not change runtime permissions or declare live behaviour passed. No migration, database write, message or deployment was performed during this audit.
+
+Working sequence: engineer prepares; Dennis installs; we inspect; commit/push; confirm deployment; test exact deployed behaviour; record evidence and mark only verified work complete. Earlier capability installer Rcentz-Company-Capabilities-20261014-R1 is superseded by the latest commercial source and must not be used against these checkpoints.
 
 Historical Record Notice
 
@@ -1732,3 +1734,7 @@ Latest packaged feature checkpoint: 1af826d60491ee607c63983f4dc39fe48b31fcb5.
 Current feature verification and deployment limits: SYSTEMS-STATUS.md.
 
 Next: OA-01, review and stabilize the existing finder. Use OPPORTUNITY-DIRECTION.md for the current milestone plan. Existing image crop/provider checks remain outstanding where not independently verified.
+
+Commercial acquisition — 14 October 2026
+
+Implementation and controlled checks passed; both production builds passed. Installation, Git push/deployment and real acceptance remain pending. Follow COMMERCIAL-ACQUISITION-RELEASE-20261014.md. Scope is active commercial discovery and saved lead pursuit; OA-05 handover and remaining roadmap work are not declared complete. No database change required.

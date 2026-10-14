@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import ts from 'typescript';
+function load(file,stubs={}){const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const evaluated={exports:{}};new Function('require','module','exports',output)(name=>{if(!(name in stubs))throw Error('Unmocked '+name);return stubs[name];},evaluated,evaluated.exports);return evaluated.exports;}
+const types=load('features/opportunities/commercial-types.ts');
+const prospect={id:'lead_1',businessName:'buyer.example',summary:'Need a website',source:'PUBLIC_WEB',state:'NEW',notes:'',country:null,budgetSignal:null,evidenceLinks:['https://buyer.example/request'],fitScore:45,updatedAt:new Date().toISOString(),qualification:{kind:'REQUEST_SIGNAL'},matches:[]};
+const overview={total:1,page:1,pageSize:30,prospects:[prospect],settings:{discoveryEnabled:false},discovery:{searchConfigured:true,runs:[],schedule:'Daily',cooldownHours:20,maxNewPerRun:25}};
+assert.equal(types.validateCommercialOverview(overview).prospects.length,1);
+for(const patch of [{total:0},{page:2},{prospects:Array(31).fill(prospect)},{discovery:{...overview.discovery,cooldownHours:0}}])assert.throws(()=>types.validateCommercialOverview({...overview,...patch}));
+for(const patch of [{evidenceLinks:['javascript:alert(1)']},{evidenceLinks:['https://127.0.0.1']},{state:'FAKE'},{fitScore:150},{matches:Array(21).fill({})},{updatedAt:'not-a-date'}])assert.throws(()=>types.validateProspect({...prospect,...patch}));
+assert.throws(()=>types.validateLeadDetail({prospect,history:Array(51).fill({})}));
+let allowed=false,calls=[],invalidations=[];
+const guard={requireOpportunityAdministrator:async()=>{if(!allowed)throw Error('DENIED');}};
+const actions=load('features/opportunities/server/client-lead-actions.ts',{'next/cache':{revalidatePath:p=>invalidations.push(p)},'@/server/opportunities/workspace-access':guard,'@/features/opportunities/commercial-types':types,'@/server/opportunities/client':{opportunityRequest:async p=>{calls.push(p);return p.operation==='client:collect'?{status:'success',added:1,message:'One new lead saved'}:{id:p.id,status:'saved'};}}});
+await assert.rejects(actions.collectCommercialLeads({status:'idle',message:''}),/DENIED/);assert.equal(calls.length,0);allowed=true;
+assert.equal((await actions.collectCommercialLeads({status:'idle',message:''})).status,'success');assert.equal(calls[0].operation,'client:collect');
+const form=new FormData();for(const [k,v] of Object.entries({id:prospect.id,state:'QUALIFIED',notes:'Reviewed but not confirmed.',updatedAt:prospect.updatedAt}))form.set(k,v);
+assert.equal((await actions.saveCommercialReview({status:'idle',message:''},form)).status,'error');assert.equal(calls.length,1);
+for(const key of ['source','intent','eligibility','capacity'])form.set(key,'on');
+assert.equal((await actions.saveCommercialReview({status:'idle',message:''},form)).status,'success');assert.equal(calls[1].operation,'client:decision');assert.equal(calls[1].confirmedChecks.length,4);assert.equal(calls[1].ownerId,undefined);assert.ok(invalidations.includes('/admin/opportunities/clients/'+prospect.id));
+allowed=false;await assert.rejects(actions.saveCommercialReview({status:'idle',message:''},form),/DENIED/);assert.equal(calls.length,2);
+console.log('PASS: bounded commercial response validation, safe evidence links, pagination/history limits, action guard before transport, qualification checks and correct collection/review dispatch. No live API or data changes.');
