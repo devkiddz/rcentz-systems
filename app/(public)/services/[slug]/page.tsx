@@ -1,3 +1,4 @@
+import { serviceMetadata, serviceJsonLd } from '@/features/services/lib/service-seo';
 import type { Metadata } from 'next';
 
 import { notFound } from 'next/navigation';
@@ -30,17 +31,10 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   const service = await getServiceBySlug(slug, currency, locale);
 
   if (!service) {
-    return {
-      title: 'Service not found | Rcentz Systems'
-    };
+    notFound();
   }
 
-  return {
-    title: `${service.name} | Rcentz Systems`,
-
-    description:
-      service.shortDescription ?? service.description ?? `Explore ${service.name} from Rcentz Systems.`
-  };
+  return serviceMetadata(service);
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {
@@ -54,5 +48,5 @@ export default async function ServicePage({ params }: ServicePageProps) {
     notFound();
   }
 
-  return <ServiceDetail service={service} />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:serviceJsonLd(service)}}/><ServiceDetail service={service} /></>;
 }

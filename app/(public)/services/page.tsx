@@ -1,5 +1,13 @@
-import { redirect } from 'next/navigation';
-
-export default function ServicesPage() {
-  redirect('/');
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+import { getServices } from '@/features/services/server/get-services';
+import { validateCatalogue, catalogueJsonLd, catalogueUrl } from '@/features/services/lib/catalogue';
+import { ServiceCatalogueHero } from '@/features/services/components/catalogue/ServiceCatalogueHero';
+import { ServiceCatalogueBrowser } from '@/features/services/components/catalogue/ServiceCatalogueBrowser';
+export const revalidate=300;
+export const metadata:Metadata={title:'Software services & solutions',description:'Explore Rcentz Systems services for business websites, online stores, customer portals and connected workflows. Find the right starting point for your project.',alternates:{canonical:catalogueUrl},openGraph:{title:'Software built around your business | Rcentz Systems',description:'Explore websites, commerce and business systems designed for the way you work.',url:catalogueUrl,type:'website',siteName:'Rcentz Systems'},twitter:{card:'summary',title:'Rcentz Systems service catalogue',description:'Websites, commerce and business systems built around your business.'}};
+export default async function ServicesPage(){
+ const services=validateCatalogue(await getServices());
+ return <div><script type="application/ld+json" dangerouslySetInnerHTML={{__html:catalogueJsonLd(services)}}/><ServiceCatalogueHero/><ServiceCatalogueBrowser services={services}/><section className="rcentz-section pb-14 sm:pb-20"><div className="flex flex-col items-start justify-between gap-6 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-center sm:p-8"><div><h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Not sure where to start?</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">Tell us what your business needs. We’ll work through the scope, requirements and right approach together.</p></div><Link href="/start-project" className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Discuss your project <ArrowUpRight aria-hidden="true" className="size-4"/></Link></div><div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground"><Link href="/how-we-work" className="inline-flex min-h-11 items-center hover:text-foreground hover:underline">How we work →</Link><Link href="https://dennis.rcentz.cc" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center hover:text-foreground hover:underline">Explore Dennis’s portfolio ↗</Link><Link href="/pricing" className="inline-flex min-h-11 items-center hover:text-foreground hover:underline">Scope & pricing →</Link></div></section></div>;
 }

@@ -1,4 +1,5 @@
 export const rcentzNavigationItems = [
+  { label: 'Services', href: '/services' },
   {
     label: 'Products',
     children: [

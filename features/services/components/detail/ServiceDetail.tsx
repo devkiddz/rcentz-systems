@@ -24,7 +24,7 @@ export async function ServiceDetail({ service }: ServiceDetailProps) {
   });
 
   return (
-    <main className="relative">
+    <div className="relative">
       <ServiceDetailHero service={service} />
 
       <ServiceOverviewSection service={service} />
@@ -95,6 +95,6 @@ export async function ServiceDetail({ service }: ServiceDetailProps) {
           ========================================= */}
 
       {suggestedServices.length > 0 ? <SuggestedServicesTray services={suggestedServices} /> : null}
-    </main>
+    </div>
   );
 }

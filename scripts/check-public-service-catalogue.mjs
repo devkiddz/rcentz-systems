@@ -1,0 +1,28 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import ts from 'typescript';
+function load(file,stubs={}){const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText;const m={exports:{}};new Function('require','module','exports',output)(name=>{if(!(name in stubs))throw Error('Unmocked '+name);return stubs[name];},m,m.exports);return m.exports;}
+const catalogue=load('features/services/lib/catalogue.ts');
+const website={id:'web',name:'Business Website Development',slug:'business-website-development',type:'WEBSITE',shortDescription:'Responsive business websites and enquiries.',featured:false,category:{name:'Web Development',slug:'web-development'}};
+const store={...website,id:'store',name:'E-commerce Store Development',slug:'ecommerce-store-development',type:'ECOMMERCE',shortDescription:'Manage products and online orders.',category:{name:'E-commerce',slug:'ecommerce'}};
+const input=[store,website];assert.deepEqual(catalogue.validateCatalogue(input).map(s=>s.id),['web','store']);assert.deepEqual(input.map(s=>s.id),['store','web']);
+for(const value of [[{...website,slug:'../admin'}],[{...website,type:'UNKNOWN'}],[{...website,category:{name:'bad',slug:'bad/route'}}],[website,website],Array(251).fill(website)])assert.throws(()=>catalogue.validateCatalogue(value));
+assert.deepEqual(catalogue.validateCatalogue([]),[]);
+assert.equal(catalogue.filterCatalogue(input,' WEBSITE business ','all')[0].id,'web');assert.equal(catalogue.filterCatalogue(input,'orders','ecommerce')[0].id,'store');assert.equal(catalogue.filterCatalogue(input,'orders','web-development').length,0);assert.equal(catalogue.filterCatalogue(input,'not present','all').length,0);
+const markup=catalogue.catalogueJsonLd([{...website,name:'</script><script>alert(1)</script>'}]);assert.ok(!markup.includes('</script>'));assert.equal(JSON.parse(markup).mainEntity.itemListElement[0].url,catalogue.catalogueUrl+'/'+website.slug);
+assert.equal(catalogue.serviceProjectHref(website.slug),'/start-project?service=business-website-development');
+const seo=load('features/services/lib/service-seo.ts',{'./catalogue':catalogue});
+const detail={...website,description:'Website service',seo:null};
+assert.equal(seo.serviceMetadata(detail).alternates.canonical,catalogue.catalogueUrl+'/'+website.slug);
+assert.equal(seo.serviceMetadata({...detail,seo:{robots:'none',canonicalUrl:'javascript:alert(1)',ogImage:'http://unsafe.example/a.png'}}).robots.index,false);
+assert.equal(seo.serviceMetadata({...detail,seo:{robots:'index,follow',canonicalUrl:'https://rcentz.cc/services/business',title:'Official service'}}).alternates.canonical,'https://rcentz.cc/services/business');
+assert.equal(JSON.parse(seo.serviceJsonLd(detail))['@graph'][0]['@type'],'Service');assert.ok(!seo.serviceJsonLd(detail).includes('aggregateRating'));
+const sitemap=load('app/sitemap.ts',{'@/features/services/server/get-services':{getServices:async()=>input},'@/features/services/lib/catalogue':catalogue});
+const entries=await sitemap.default();assert.ok(entries.some(e=>e.url.endsWith('/services/'+website.slug)));assert.ok(entries.every(e=>!/(admin|dashboard|start-project)/.test(new URL(e.url).pathname)));
+const jsx={'react/jsx-runtime':{jsx:(type,props)=>({type,props}),jsxs:(type,props)=>({type,props})}};
+let authorized=false,reads=0,next;
+const page=load('app/(account)/start-project/page.tsx',{...jsx,'@/features/auth/server/require-auth':{requireAuth:async path=>{next=path;if(!authorized)throw Error('SIGN_IN');return {name:'Dennis'};}},'@/features/onboarding/server/brief-data':{uploadsConfigured:()=>false},'@/features/onboarding/components/ProjectBriefWizard':{ProjectBriefWizard:'Wizard'},'@/features/services/server/get-service-by-slug':{getServiceBySlug:async slug=>{reads++;return slug===website.slug?detail:null;}},'@/features/services/server/get-visitor-currency':{getVisitorCurrency:async()=>'NGN'},'@/i18n/config':{defaultLocale:'en'},'@/features/onboarding/lib/project-brief':{emptyBrief:{build:'',title:'',notes:''}}});
+await assert.rejects(page.default({searchParams:Promise.resolve({service:website.slug})}),/SIGN_IN/);assert.equal(reads,0);assert.equal(next,'/start-project?service='+website.slug);
+authorized=true;const selected=await page.default({searchParams:Promise.resolve({service:website.slug})});assert.equal(selected.props.initialBrief.title,website.name);assert.ok(selected.props.initialBrief.notes.includes(website.slug));assert.equal(selected.props.initialBrief.build,'');
+reads=0;const invalid=await page.default({searchParams:Promise.resolve({service:'https://attacker.example'})});assert.equal(reads,0);assert.equal(invalid.props.initialBrief,undefined);
+console.log('PASS: published service validation, stable ordering, category/search intersection, empty states, script-safe structured data, canonical/robots metadata, public-only sitemap and authenticated enquiry context. No network or database writes.');

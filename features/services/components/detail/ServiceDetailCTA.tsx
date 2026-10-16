@@ -1,3 +1,4 @@
+import { serviceProjectHref } from '../../lib/catalogue';
 import Link from 'next/link';
 
 import { ArrowRight, MessagesSquare, Sparkles, WandSparkles } from 'lucide-react';
@@ -13,7 +14,7 @@ type ServiceDetailCTAProps = {
 export async function ServiceDetailCTA({ service }: ServiceDetailCTAProps) {
   const t = await getTranslations('ServiceDetailCTA');
 
-  const requestHref = `/contact?service=${encodeURIComponent(service.slug)}`;
+  const requestHref = serviceProjectHref(service.slug);
 
   return (
     <section className="relative overflow-hidden rounded-[34px] border border-border bg-background px-6 py-10 sm:px-9 sm:py-12 lg:px-12 lg:py-14">

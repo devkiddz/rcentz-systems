@@ -1738,3 +1738,7 @@ Next: OA-01, review and stabilize the existing finder. Use OPPORTUNITY-DIRECTION
 Commercial acquisition — 14 October 2026
 
 Implementation and controlled checks passed; both production builds passed. Installation, Git push/deployment and real acceptance remain pending. Follow COMMERCIAL-ACQUISITION-RELEASE-20261014.md. Scope is active commercial discovery and saved lead pursuit; OA-05 handover and remaining roadmap work are not declared complete. No database change required.
+
+Public service catalogue — 16 October 2026
+
+Prepared: published API offers exposed through a premium responsive catalogue, service search/categories, illustrative previews, functional enquiry entry and crawlable public metadata/index/sitemap. Local build, controlled regressions and production-browser checks passed. Catalogue installation/deployment and authenticated live acceptance remain pending. Existing acquisition-depth/review revisions d3e2cbc/ae8a5fd have successful Vercel checks; OA-07 requires separate runtime evidence. Follow PUBLIC-SERVICE-CATALOGUE-20261016.md.

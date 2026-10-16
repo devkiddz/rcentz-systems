@@ -1,3 +1,4 @@
+import { serviceProjectHref } from '../../lib/catalogue';
 import Link from 'next/link';
 
 import { ArrowLeft, ArrowRight, BadgeCheck, MessageSquareText } from 'lucide-react';
@@ -16,7 +17,7 @@ type ServiceDetailHeroProps = {
 export async function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
   const t = await getTranslations('ServiceDetailHero');
 
-  const requestHref = `/contact?service=${encodeURIComponent(service.slug)}`;
+  const requestHref = serviceProjectHref(service.slug);
 
   return (
     <section className="relative isolate overflow-hidden px-3 pb-14 pt-2 sm:px-4 sm:pb-18 sm:pt-3 lg:px-8 lg:pb-20 lg:pt-4">

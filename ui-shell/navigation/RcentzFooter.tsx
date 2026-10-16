@@ -8,6 +8,7 @@ const groups = [
   {
     title: 'Build with us',
     links: [
+      ['Service catalogue', '/services'],
       ['Solutions', '/solutions'],
       ['Our tools', '/tools'],
       ['How we work', '/how-we-work'],

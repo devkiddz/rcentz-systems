@@ -1,0 +1,9 @@
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+import type { ServiceSummary } from '../../server/get-services';
+import { cataloguePresentation } from '../../lib/catalogue';
+import { ServicePreview } from './ServicePreview';
+export function ServiceCatalogueCard({service}:{service:ServiceSummary}){
+ const {kind,tags}=cataloguePresentation(service);
+ return <article className="group flex min-w-0 flex-col rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/30 sm:p-5"><div className="block overflow-hidden rounded-xl border border-border bg-surface-subtle p-2"><ServicePreview kind={kind} className="transition-transform duration-300 motion-safe:group-hover:scale-[1.015]"/></div><p className="mt-2 text-right text-[10px] text-muted-foreground">Illustrative interface</p><div className="flex flex-1 flex-col pt-3"><p className="text-xs text-muted-foreground">{service.category?.name??'Custom solutions'}</p><h3 className="mt-2 break-words text-xl font-semibold leading-snug tracking-tight"><Link href={'/services/'+service.slug} className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{service.name}</Link></h3>{service.shortDescription?<p className="mt-3 text-sm leading-6 text-muted-foreground">{service.shortDescription}</p>:null}<ul aria-label="Typical project themes" className="mt-4 flex flex-wrap gap-1.5">{tags.map(tag=><li key={tag} className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground">{tag}</li>)}</ul><Link href={'/services/'+service.slug} aria-label={'Explore '+service.name} className="mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-4 text-sm font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Explore service <ArrowUpRight aria-hidden="true" className="size-4"/></Link></div></article>;
+}

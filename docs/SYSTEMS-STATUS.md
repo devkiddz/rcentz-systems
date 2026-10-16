@@ -67,3 +67,9 @@ Keep source verification, user-reported runtime tests, packaged releases and ver
 ## Prepared commercial acquisition release — 14 October 2026
 
 The acquisition release now replaces the UK-only discovery screen with worldwide and Nigeria public web collection, connects the daily commercial schedule, and exposes saved leads with source evidence, matching reasons, progress, notes and review history. Local controlled tests and both production builds passed. Installation and exact deployed/live acceptance remain pending. Follow [COMMERCIAL-ACQUISITION-RELEASE-20261014.md](COMMERCIAL-ACQUISITION-RELEASE-20261014.md). This prepared release supersedes the earlier acquisition gaps only after installation; delivery handover, evidence readiness, Career migration and teams remain open. No database change is required.
+
+## Current update — 16 October 2026
+
+This dated update supersedes older prepared-release push/deployment statements above. The acquisition-depth API revision `d3e2cbcf9f35e62cd09de696776712d25e3120ce` and review-workspace Systems revision `ae8a5fd3b2d1be8332c971e6cc0fc06ea367c913` were pushed by Dennis; both returned successful Vercel GitHub checks. Fresh deep-hunt and deployed review acceptance are still distinct from those checks.
+
+The public service catalogue is now prepared on top of Systems `ae8a5fd`: API-backed offers, responsive catalogue, search/categories, service enquiry return context and public search-discovery metadata. Controlled checks, production build and browser verification passed locally. Installation, push/deployment and logged-in production acceptance of this catalogue are pending. See [PUBLIC-SERVICE-CATALOGUE-20261016.md](PUBLIC-SERVICE-CATALOGUE-20261016.md). This does not complete Career migration, commercial handover or Teams/Authorities.
