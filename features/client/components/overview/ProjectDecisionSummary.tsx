@@ -46,7 +46,7 @@ function Card({
         <h3 className="text-sm font-semibold">
           {title}
           {badge ? (
-            <span className="ml-2 rounded-full bg-muted px-2 py-1 text-xs font-normal text-muted-foreground">
+            <span className="ml-2 rounded-full border border-theme-accent/20 bg-theme-accent-faint px-2 py-1 text-xs font-medium text-theme-accent">
               {badge}
             </span>
           ) : null}
@@ -55,7 +55,7 @@ function Card({
           <Link
             href={href}
             aria-label={"Open " + title.toLowerCase()}
-            className="inline-flex size-10 items-center justify-center rounded-lg hover:bg-muted"
+            className="inline-flex size-10 items-center justify-center rounded-lg hover:bg-surface-muted"
           >
             <ArrowUpRight aria-hidden="true" className="size-4" />
           </Link>
@@ -119,7 +119,7 @@ export function ProjectDecisionSummary({
                     "flex items-start gap-3 rounded-lg border p-3 " +
                     (done
                       ? "border-theme-accent/20 bg-theme-accent-faint"
-                      : "border-border bg-muted/20")
+                      : "border-border bg-surface-muted")
                   }
                 >
                   {done ? (
@@ -240,7 +240,7 @@ export function ProjectDecisionSummary({
               reviews.map((r) => (
                 <p
                   key={r.id}
-                  className="rounded-lg bg-muted/30 p-3 text-xs leading-6"
+                  className="rounded-lg bg-surface-muted p-3 text-xs leading-6"
                 >
                   {r.done ? "Completed · " : "Open · "}
                   {r.title}

@@ -58,7 +58,7 @@ export function ClientProjectsProgress({
               className="min-w-0 rounded-xl border border-border bg-background p-4 transition-colors hover:border-foreground/30"
             >
               <div className="flex items-start gap-3">
-                <Avatar className="size-11 shrink-0 rounded-xl border border-border bg-muted">
+                <Avatar className="size-11 shrink-0 rounded-xl border border-border bg-surface-muted">
                   <AvatarImage
                     src={logo || undefined}
                     alt={project.name + " logo"}
@@ -89,7 +89,7 @@ export function ClientProjectsProgress({
                 />
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-xs">
+                <span className="rounded-full border border-border bg-surface-muted px-2.5 py-1 text-xs">
                   {label(project.status)}
                 </span>
                 <span className="text-xs font-semibold">
@@ -102,7 +102,7 @@ export function ClientProjectsProgress({
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={progress}
-                className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"
+                className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-muted"
               >
                 <div
                   className="h-full rounded-full bg-theme-accent"
@@ -171,7 +171,7 @@ export function ClientProjectsProgress({
         </p>
         <Link
           href="/start-project"
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border px-3 text-xs font-semibold hover:bg-muted"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border px-3 text-xs font-semibold hover:bg-surface-muted"
         >
           <Plus aria-hidden="true" className="size-4" />
           Start a project

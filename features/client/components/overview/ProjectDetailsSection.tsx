@@ -195,7 +195,7 @@ export function ProjectDetailsSection({
               />
               <Link
                 href={"/dashboard/projects/" + project.id + "/brief"}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-3 text-xs font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-theme-accent/30 bg-theme-accent-faint px-3 text-xs font-semibold text-theme-accent hover:bg-theme-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {hasProjectBrief(project) ? (
                   <FileText aria-hidden="true" className="size-4" />
@@ -256,7 +256,7 @@ export function ProjectDetailsSection({
                   project.conversations[0].id
                 : "/dashboard/messages"
             }
-            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-muted"
+            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-surface-muted"
           >
             Project conversations →
           </Link>

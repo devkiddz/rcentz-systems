@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { usePathname } from 'next/navigation';
-import { ChevronDown, GripVertical, Headphones, LifeBuoy, X } from 'lucide-react';
+import { ChevronDown, GripVertical, Headset, MessageCircleQuestion, X } from 'lucide-react';
 import { ProjectSupportBubble } from '@/features/client/components/projects/ProjectSupportBubble';
 import type { ActivityFeed } from '../types/activity-feed';
 import { CustomerMobileNavigation } from './CustomerMobileNavigation';
@@ -12,8 +12,8 @@ type Sheet = 'support' | 'chat';
 type Mode = 'expanded' | 'collapsed' | 'hidden';
 type Position = { x: number; y: number };
 const tools = [
-  { key: 'support', label: 'Support', icon: LifeBuoy },
-  { key: 'chat', label: 'Live chat', icon: Headphones },
+  { key: 'support', label: 'Support', icon: MessageCircleQuestion },
+  { key: 'chat', label: 'Live chat', icon: Headset },
 ] as const;
 const buttonClass = 'relative flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-muted-foreground hover:bg-surface-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const controlClass = 'flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
@@ -119,6 +119,13 @@ export function CustomerActivityDock() {
     drag.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, start: position, last: position };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
+  function moveWithKeyboard(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key];
+    if (!delta) return;
+    event.preventDefault();
+    const next = bounded({ x: position.x + delta[0], y: position.y + delta[1] }, dockRef.current);
+    setPosition(next); save(mode, next);
+  }
   function moveDrag(event: ReactPointerEvent<HTMLButtonElement>) {
     const active = drag.current;
     if (!active || active.pointerId !== event.pointerId) return;
@@ -144,7 +151,7 @@ export function CustomerActivityDock() {
   const projectParts = pathname.split('/');
   const projectId = projectParts[1] === 'dashboard' && projectParts[2] === 'projects' && projectParts[3] ? projectParts[3] : undefined;
   const dockStyle = { '--dock-x': position.x + 'px', '--dock-y': position.y + 'px' } as CSSProperties;
-  const dockWidth = mode === 'collapsed' ? 56 : mode === 'hidden' ? 48 : 180;
+  const dockWidth = mode === 'expanded' ? 180 : 72;
   const sheetTop = Math.max(80, Math.min(window.innerHeight - 180, position.y));
   const leftSpace = position.x;
   const rightSpace = window.innerWidth - position.x - dockWidth;
@@ -155,24 +162,25 @@ export function CustomerActivityDock() {
   return (
     <>
       <CustomerMobileNavigation counts={feed.counts} mode={navMode} onModeChange={changeNavMode} />
-      <aside ref={dockRef} aria-label="Customer support panel" style={dockStyle} className={[styles.dock, mode === 'collapsed' ? styles.collapsed : '', mode === 'hidden' ? styles.hiddenDock : ''].join(' ')}>
-        {mode === 'hidden' ? (
-          <button type="button" aria-label="Show customer support panel"
+      <aside ref={dockRef} aria-label="Customer support panel" style={dockStyle} className={[styles.dock, mode !== 'expanded' ? styles.compactDock : ''].join(' ')}>
+        {mode !== 'expanded' ? (
+          <button type="button" aria-label="Open support menu; drag or use arrow keys to move" title="Support — click to open, drag to move" aria-expanded={false} onKeyDown={moveWithKeyboard}
             onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag} onLostPointerCapture={() => { drag.current = null; }}
             onClick={event => { if (!dragged.current || event.detail === 0) changeMode('expanded'); dragged.current = false; }}
-            className="flex size-12 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <LifeBuoy aria-hidden="true" className="size-5" />
+            className={styles.launcher}>
+            <Headset aria-hidden="true" className="size-7" strokeWidth={1.75} />
+            <span className={styles.launcherLabel}>Support</span>
           </button>
         ) : (
           <>
             <div className={styles.handle}>
               <button type="button" aria-label="Move support panel; use arrow keys to reposition" className={controlClass + ' cursor-grab touch-none active:cursor-grabbing'}
                 onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag} onLostPointerCapture={() => { drag.current = null; }}
-                onKeyDown={event => { const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key]; if (!delta) return; event.preventDefault(); const next = bounded({ x: position.x + delta[0], y: position.y + delta[1] }, dockRef.current); setPosition(next); save(mode, next); }}>
+                onKeyDown={moveWithKeyboard}>
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
               <p className={styles.dockTitle}>Support</p>
-              <button type="button" aria-label={mode === 'collapsed' ? 'Expand support panel' : 'Collapse support panel'} onClick={() => changeMode(mode === 'collapsed' ? 'expanded' : 'collapsed')} className={controlClass}><ChevronDown aria-hidden="true" className="size-4" /></button>
+              <button type="button" aria-label="Collapse support panel" onClick={() => changeMode('collapsed')} className={controlClass}><ChevronDown aria-hidden="true" className="size-4" /></button>
               <button type="button" aria-label="Hide support panel" onClick={() => changeMode('hidden')} className={controlClass}><X aria-hidden="true" className="size-4" /></button>
             </div>
             <nav aria-label="Support tools" className={styles.actions}>
@@ -193,7 +201,7 @@ export function CustomerActivityDock() {
               </div>
               <div className="space-y-4 p-4">
                 <p className="text-sm leading-6 text-muted-foreground">Ask about your project, share a delivery concern or get help using your workspace.</p>
-                <button type="button" onClick={() => setSheet('chat')} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Headphones aria-hidden="true" className="size-4" />Open live chat</button>
+                <button type="button" onClick={() => setSheet('chat')} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-theme-accent/30 bg-theme-accent-faint px-4 text-sm font-semibold text-theme-accent hover:bg-theme-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Headset aria-hidden="true" className="size-4" />Open live chat</button>
                 <a href="mailto:contact@rcentz.cc" className="block rounded-lg py-2 text-sm font-medium underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Email contact@rcentz.cc</a>
                 <p className="text-xs leading-5 text-muted-foreground">Messages are saved in your workspace. The team replies as soon as available.</p>
                 {error ? <p role="status" className="text-xs text-muted-foreground">{error}</p> : null}

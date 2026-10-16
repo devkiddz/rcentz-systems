@@ -17,14 +17,6 @@
 .dockTitle { grid-column: 1 / -1; grid-row: 1; padding-bottom: 4px; font-size: 11px; font-weight: 600; }
 .handle > button:first-child { width: 100%; }
 .actionLabel { font-size: 12px; }
-.collapsed { width: 56px; }
-.collapsed .actionLabel, .collapsed .dockTitle { display: none; }
-.collapsed .handle { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; }
-.collapsed .handle > button { width: 20px; height: 24px; }
-.collapsed .handle > button:first-child { grid-column: 1 / -1; width: 100%; height: 32px; }
-.collapsed .actions > button { justify-content: center; padding: 0; }
-.hiddenDock { width: 48px; border-radius: 50%; }
-.hiddenDock > button { cursor: grab; touch-action: none; }
 .sheet { position: fixed; z-index: 46; left: 8px; right: 8px; top: 80px; bottom: auto; max-height: min(560px, calc(100dvh - var(--customer-dock-space, 0px) - 96px)); border: 1px solid var(--border); border-radius: 16px; background: var(--background); box-shadow: 0 8px 32px rgb(0 0 0 / 10%); overflow: auto; }
 .chatSheet { border: 0; background: transparent; box-shadow: none; overflow: visible; }
 .chatSheet > div > section { width: 100%; max-height: min(520px, calc(100dvh - var(--customer-dock-space, 0px) - 96px)); margin: 0; }
@@ -40,18 +32,38 @@
   .actions { grid-template-columns: minmax(0, 1fr); }
   .actions > a, .actions > button { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 0 10px; }
   .actionLabel { font-size: 12px; }
-  .collapsed .handle { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; }
-  .collapsed .dockTitle { display: none; }
-  .collapsed .handle > button { width: 20px; height: 24px; }
-  .collapsed .handle > button:first-child { grid-column: 1 / -1; width: 100%; height: 32px; }
-  .collapsed .actions > a, .collapsed .actions > button { justify-content: center; padding: 0; }
 
   .actions { padding: 6px; }
-  .collapsed { width: 56px; }
-  .hiddenDock { width: 48px; border-radius: 50%; }
-  .hiddenDock > button { cursor: grab; touch-action: none; }
-  .hiddenDock > button:active { cursor: grabbing; }
   .mobileBar, .mobileRestore { display: none; }
   .sheet { left: var(--sheet-left); right: auto; top: var(--sheet-top); bottom: var(--sheet-bottom); width: var(--sheet-width); max-height: var(--sheet-height); }
   .chatSheet > div > section { max-height: min(520px, var(--sheet-height)); }
 }
+
+/* Both saved compact modes share a clear, labelled support launcher. */
+.dock.compactDock {
+  width: 72px;
+  overflow: visible;
+  border: 2px solid var(--theme-accent);
+  border-radius: 24px;
+  background: var(--background);
+  box-shadow: 0 0 0 4px var(--theme-accent-soft), 0 4px 18px var(--theme-accent-glow);
+}
+.launcher {
+  display: flex;
+  width: 100%;
+  min-height: 76px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 22px;
+  background: var(--theme-accent-faint);
+  color: var(--theme-accent);
+  cursor: grab;
+  touch-action: none;
+  transition: background-color 150ms ease;
+}
+.launcher:hover { background: var(--theme-accent-soft); }
+.launcher:active { cursor: grabbing; }
+.launcher:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 6px; }
+.launcherLabel { font-size: 11px; font-weight: 600; line-height: 1.2; }
