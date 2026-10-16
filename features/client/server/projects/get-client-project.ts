@@ -19,6 +19,15 @@ export const getClientProject = cache(
         name: true,
         slug: true,
 
+        serviceRequest: { select: { id: true } },
+        activities: {
+          where: {
+            metadata: { path: ["kind"], equals: "CLIENT_PRODUCT_BRIEF_V1" },
+            visibility: { in: ["CLIENT", "PUBLIC"] },
+          },
+          take: 1,
+          select: { id: true },
+        },
         description: true,
         purpose: true,
         vision: true,

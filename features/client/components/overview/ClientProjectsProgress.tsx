@@ -1,292 +1,182 @@
-import type { CSSProperties } from 'react';
-
-import Link from 'next/link';
-
-import { ArrowRight, CalendarDays, FolderKanban, Plus } from 'lucide-react';
-
-import type { ClientOverviewProject } from '@/features/client/server/overview/get-client-overview';
-
-type ClientProjectsProgressProps = {
-  projects: ClientOverviewProject[];
-};
-
-function formatStatus(status: string) {
-  return status
+import Link from "next/link";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  CalendarDays,
+  Plus,
+  Layers3,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  projectInitials,
+  safeProjectImage,
+} from "@/features/client/lib/workspace";
+import type { ClientOverviewProject } from "@/features/client/server/overview/get-client-overview";
+const label = (v: string) =>
+  v
     .toLowerCase()
-    .split('_')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
-
-function formatDate(date: Date | null) {
-  if (!date) {
-    return 'No target';
-  }
-
-  return new Intl.DateTimeFormat('en', {
-    month: 'short',
-    day: 'numeric'
-  }).format(date);
-}
-
-function clampProgress(progress: number) {
-  return Math.min(Math.max(progress, 0), 100);
-}
-
-function getProgressPresentation(progress: number) {
-  if (progress >= 95) {
-    return {
-      ring: 'var(--theme-accent)',
-
-      textClassName: 'text-theme-accent',
-
-      label: 'Near complete'
-    };
-  }
-
-  if (progress >= 70) {
-    return {
-      ring: '#0ea5e9',
-
-      textClassName: 'text-sky-500',
-
-      label: 'Advancing'
-    };
-  }
-
-  if (progress >= 40) {
-    return {
-      ring: '#f59e0b',
-
-      textClassName: 'text-amber-500',
-
-      label: 'In progress'
-    };
-  }
-
-  return {
-    ring: '#f43f5e',
-
-    textClassName: 'text-rose-500',
-
-    label: 'Early stage'
-  };
-}
-
+    .replaceAll("_", " ")
+    .replace(/^./, (s) => s.toUpperCase());
+const date = (v: Date | null) =>
+  v
+    ? new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "short",
+        timeZone: "Africa/Lagos",
+      }).format(v)
+    : "To be agreed";
 export function ClientProjectsProgress({
-  projects
-}: ClientProjectsProgressProps) {
+  projects,
+}: {
+  projects: ClientOverviewProject[];
+}) {
   return (
-    <section className="flex h-[320px] flex-col overflow-hidden rounded-[18px] border border-border bg-background">
-      <div className="flex shrink-0 items-start justify-between gap-4 px-4 py-4 sm:px-5">
+    <section className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold tracking-[-0.025em] text-foreground">
-            Your Projects
-          </p>
-
-          <p className="mt-1 text-[11px] text-muted">
-            Current delivery and project workspace
+          <h2 className="text-base font-semibold">Your projects</h2>
+          <p className="mt-1 text-xs leading-6 text-muted-foreground">
+            Delivery progress, next steps and recent project activity.
           </p>
         </div>
-
         <Link
           href="/dashboard/projects"
-          className="flex items-center gap-1 text-[11px] text-muted transition-colors hover:text-foreground"
+          className="inline-flex min-h-11 items-center gap-2 text-xs font-medium hover:underline"
         >
-          View all
-          <ArrowRight aria-hidden="true" className="size-3.5" />
+          View all <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
-      </div>
-
-      <div
-        className="
-          min-h-0
-          flex-1
-          overflow-y-auto
-          px-3
-          pb-3
-          [scrollbar-width:none]
-          [&::-webkit-scrollbar]:hidden
-
-          sm:px-4
-        "
-      >
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project) => {
-            const progress = clampProgress(project.progress);
-
-            const presentation = getProgressPresentation(progress);
-
-            const style = {
-              '--project-progress': `${progress}%`,
-
-              '--project-progress-color': presentation.ring
-            } as CSSProperties;
-
-            return (
-              <Link
-                key={project.id}
-                href={`/dashboard/projects/${project.id}`}
-                style={style}
-                className="
-                    group
-                    relative
-                    min-w-0
-                    rounded-[16px]
-                    border
-                    border-transparent
-                    bg-[linear-gradient(var(--background),var(--background))_padding-box,conic-gradient(var(--project-progress-color)_var(--project-progress),var(--border)_0)_border-box]
-                    p-[1px]
-                    transition-transform
-                    hover:-translate-y-px
-                  "
-              >
-                <div className="h-full rounded-[15px] bg-background px-3 py-3 transition-colors group-hover:bg-surface-raised">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-[12px] font-semibold tracking-[-0.02em] text-foreground">
-                        {project.name}
-                      </p>
-
-                      <p className="mt-0.5 truncate text-[10px] text-muted">
-                        {project.domain ?? project.liveUrl ?? 'Rcentz project'}
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 rounded-full bg-theme-accent-faint px-2 py-1 text-[9px] font-medium text-theme-accent">
-                      {formatStatus(String(project.status))}
-                    </span>
-                  </div>
-
-                  <div className="mt-3 flex items-center gap-2.5">
-                    <div
-                      className="relative flex size-12 shrink-0 items-center justify-center rounded-full"
-                      style={{
-                        background: `conic-gradient(
-                              ${presentation.ring} ${progress}%,
-                              var(--border) 0
-                            )`
-                      }}
+      </header>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {projects.slice(0, 6).map((project) => {
+          const progress = Math.round(
+            Math.min(100, Math.max(0, project.progress)),
+          );
+          const logo = safeProjectImage(project.logo?.url);
+          return (
+            <article
+              key={project.id}
+              className="min-w-0 rounded-xl border border-border bg-background p-4 transition-colors hover:border-foreground/30"
+            >
+              <div className="flex items-start gap-3">
+                <Avatar className="size-11 shrink-0 rounded-xl border border-border bg-muted">
+                  <AvatarImage
+                    src={logo || undefined}
+                    alt={project.name + " logo"}
+                    className="object-contain p-1"
+                  />
+                  <AvatarFallback className="rounded-xl text-sm font-semibold">
+                    {projectInitials(project.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <h3 className="break-words text-sm font-semibold leading-6">
+                    <Link
+                      href={"/dashboard/projects/" + project.id}
+                      className="rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <div className="absolute inset-[3px] rounded-full bg-background" />
-
-                      <span
-                        className={`relative z-10 text-[11px] font-semibold ${presentation.textClassName}`}
-                      >
-                        {progress}%
-                      </span>
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="text-[8px] uppercase tracking-[0.1em] text-muted">
-                        Progress
-                      </p>
-
-                      <p
-                        className={`mt-0.5 truncate text-[9px] font-medium ${presentation.textClassName}`}
-                      >
-                        {presentation.label}
-                      </p>
-
-                      <p className="mt-1 text-[9px] text-muted">
-                        {project.milestoneSummary.completed}/
-                        {project.milestoneSummary.total} milestones
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 border-t border-border pt-2.5">
-                    <p className="text-[9px] uppercase tracking-[0.1em] text-muted">
-                      Current delivery
-                    </p>
-
-                    <p className="mt-1 truncate text-[10px] font-medium text-foreground">
-                      {project.nextMilestone?.title ?? 'No open milestone'}
-                    </p>
-                  </div>
-
-                  <div className="mt-2 flex items-center gap-1 text-[9px] text-muted">
-                    <CalendarDays aria-hidden="true" className="size-3" />
-
-                    {formatDate(project.expectedEndAt)}
-                  </div>
+                      {project.name}
+                    </Link>
+                  </h3>
+                  <p className="mt-1 break-all text-xs leading-5 text-muted-foreground">
+                    {project.domain ||
+                      project.liveUrl ||
+                      "Domain not connected"}
+                  </p>
                 </div>
-              </Link>
-            );
-          })}
-
-          <NewProjectPlaceholder hasProjects={projects.length > 0} />
-        </div>
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="mt-1 size-4 shrink-0 text-muted-foreground"
+                />
+              </div>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+                <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-xs">
+                  {label(project.status)}
+                </span>
+                <span className="text-xs font-semibold">
+                  {progress}% complete
+                </span>
+              </div>
+              <div
+                role="progressbar"
+                aria-label={project.name + " progress"}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+                className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"
+              >
+                <div
+                  className="h-full rounded-full bg-theme-accent"
+                  style={{ width: progress + "%" }}
+                />
+              </div>
+              <dl className="mt-4 space-y-3 text-xs">
+                <div className="flex items-start justify-between gap-3">
+                  <dt className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
+                    <Layers3 aria-hidden="true" className="size-3.5" />
+                    Milestones
+                  </dt>
+                  <dd className="font-medium">
+                    {project.milestoneSummary.completed}/
+                    {project.milestoneSummary.total} complete
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Next delivery</dt>
+                  <dd className="mt-1 break-words font-medium leading-5">
+                    {project.status === "COMPLETED"
+                      ? "Delivery completed"
+                      : project.nextMilestone?.title ||
+                        "Awaiting delivery plan"}
+                  </dd>
+                </div>
+                <div className="flex items-start justify-between gap-3">
+                  <dt className="flex items-center gap-1.5 text-muted-foreground">
+                    <CalendarDays aria-hidden="true" className="size-3.5" />
+                    Target
+                  </dt>
+                  <dd className="text-right">{date(project.expectedEndAt)}</dd>
+                </div>
+              </dl>
+              <p className="mt-4 border-t border-border pt-3 text-xs leading-5 text-muted-foreground">
+                {project.status === "COMPLETED"
+                  ? "Project completed"
+                  : project.health.reason}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="text-muted-foreground">
+                  Updated {date(project.updatedAt)}
+                </span>
+                <Link
+                  href={"/dashboard/projects/" + project.id}
+                  className="inline-flex min-h-11 items-center gap-1 font-medium hover:underline"
+                >
+                  Open project{" "}
+                  <ArrowRight aria-hidden="true" className="size-3.5" />
+                </Link>
+              </div>
+            </article>
+          );
+        })}
       </div>
+      {!projects.length ? (
+        <p className="rounded-xl border border-dashed border-border p-6 text-sm leading-6 text-muted-foreground">
+          Your project workspaces and delivery details will appear here.
+        </p>
+      ) : null}
+      <footer className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+        <p className="text-xs text-muted-foreground">
+          {projects.length > 6
+            ? "Showing your six most recently updated projects."
+            : "Have another project in mind?"}
+        </p>
+        <Link
+          href="/start-project"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border px-3 text-xs font-semibold hover:bg-muted"
+        >
+          <Plus aria-hidden="true" className="size-4" />
+          Start a project
+        </Link>
+      </footer>
     </section>
-  );
-}
-
-function NewProjectPlaceholder({ hasProjects }: { hasProjects: boolean }) {
-  return (
-    <div
-      className="col-span-full w-full sm:col-span-2
-        flex
-        min-h-[190px]
-        flex-col
-        items-center
-        justify-center
-        rounded-[16px]
-        border
-        border-dashed
-        border-border
-        bg-surface-raised/40
-        px-5
-        py-5
-        text-center
-      "
-    >
-      <div
-        className="
-          flex
-          size-11
-          items-center
-          justify-center
-          rounded-2xl
-          border
-          border-theme-accent/20
-          bg-theme-accent-faint
-        "
-      >
-        <FolderKanban aria-hidden="true" className="size-4 text-theme-accent" />
-      </div>
-
-      <p className="mt-3 text-[12px] font-semibold text-foreground">
-        {hasProjects ? 'Start another project' : 'Start your first project'}
-      </p>
-
-      <p className="mt-1 max-w-[190px] text-[9px] leading-4 text-muted">
-        Tell Rcentz what you would like us to build, improve or manage.
-      </p>
-
-      <Link
-        href="/dashboard/onboarding"
-        className="whitespace-nowrap
-          mt-4
-          inline-flex
-          min-h-11
-          items-center
-          gap-1.5
-          rounded-xl
-          bg-foreground
-          px-3
-          text-[10px]
-          font-semibold
-          text-background
-          transition-all
-          duration-150
-          hover:-translate-y-px
-          hover:opacity-90
-        "
-      >
-        <Plus aria-hidden="true" className="size-3.5" />
-        Start a project
-      </Link>
-    </div>
   );
 }

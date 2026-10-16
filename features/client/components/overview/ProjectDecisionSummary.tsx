@@ -1,8 +1,79 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { Check, Circle, ArrowUpRight, Activity, BarChart3 } from "lucide-react";
 import type { ClientProject } from "@/features/client/server/projects/get-client-project";
 import type { ClientProjectAnalytics } from "@/features/analytics/server/read/get-client-project-analytics";
-import { Check, Circle, MessageSquare } from "lucide-react";
-import Link from "next/link";
-
+function Sparkline({ values, label }: { values: number[]; label: string }) {
+  const max = Math.max(1, ...values);
+  const points = values
+    .map(
+      (v, i) =>
+        `${4 + i * (192 / Math.max(1, values.length - 1))},${46 - (v / max) * 40}`,
+    )
+    .join(" ");
+  return (
+    <svg
+      viewBox="0 0 200 52"
+      role="img"
+      aria-label={label}
+      className="h-14 w-full"
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke="var(--theme-accent)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+function Card({
+  title,
+  badge,
+  children,
+  href,
+}: {
+  title: string;
+  badge?: string;
+  children: ReactNode;
+  href?: string;
+}) {
+  return (
+    <section className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-card">
+      <header className="flex min-h-14 items-center justify-between gap-3 border-b border-border px-4">
+        <h3 className="text-sm font-semibold">
+          {title}
+          {badge ? (
+            <span className="ml-2 rounded-full bg-muted px-2 py-1 text-xs font-normal text-muted-foreground">
+              {badge}
+            </span>
+          ) : null}
+        </h3>
+        {href ? (
+          <Link
+            href={href}
+            aria-label={"Open " + title.toLowerCase()}
+            className="inline-flex size-10 items-center justify-center rounded-lg hover:bg-muted"
+          >
+            <ArrowUpRight aria-hidden="true" className="size-4" />
+          </Link>
+        ) : null}
+      </header>
+      <div className="flex-1 p-4">{children}</div>
+    </section>
+  );
+}
+function displayDate(date: Date | string | null | undefined) {
+  return date
+    ? new Date(date).toLocaleString("en-GB", {
+        dateStyle: "short",
+        timeStyle: "short",
+        timeZone: "Africa/Lagos",
+      }) + " WAT"
+    : "No events recorded";
+}
 export function ProjectDecisionSummary({
   project,
   analytics,
@@ -10,182 +81,239 @@ export function ProjectDecisionSummary({
   project: ClientProject;
   analytics?: ClientProjectAnalytics;
 }) {
-  const checklist = project.deliverables.slice(0, 4);
+  const a = analytics?.available ? analytics : null;
+  const complete = project.deliverables.filter(
+    (d) => d.status === "ACCEPTED",
+  ).length;
   const reviews = [
-    ...project.approvals
-      .slice(0, 3)
-      .map((item) => ({
-        id: item.id,
-        title: item.title.replace(/^Demo review:\s*/i, ""),
-        done: item.status === "ACCEPTED",
-      })),
-    ...project.supportTickets
-      .slice(0, 2)
-      .map((item) => ({
-        id: item.id,
-        title: item.subject.replace(/^\[DEMO\]\s*/i, ""),
-        done: ["CLOSED", "RESOLVED"].includes(item.status),
-      })),
+    ...project.approvals.map((v) => ({
+      id: v.id,
+      title: v.title,
+      done: v.status === "ACCEPTED",
+    })),
+    ...project.supportTickets.map((v) => ({
+      id: v.id,
+      title: v.subject,
+      done: ["CLOSED", "RESOLVED"].includes(v.status),
+    })),
   ];
-  const available = analytics?.available ? analytics : null;
-  const days = available?.daily.slice(-6) ?? [];
-  const max = Math.max(1, ...days.map((day) => day.pageViews));
-  const points = days
-    .map(
-      (day, index) => `${12 + index * 44},${78 - (day.pageViews / max) * 58}`,
-    )
-    .join(" ");
-  const demo = available?.collection.sample ?? false;
   return (
-    <div className="grid gap-3 lg:grid-cols-3">
-      <SummaryCard title="Delivery checklist">
-        {checklist.length ? (
-          checklist.map((item) => {
-            const done = item.status === "ACCEPTED";
-            return (
-              <p
-                key={item.id}
-                className="flex items-start gap-2 text-xs leading-5"
-              >
-                {done ? (
-                  <Check
-                    aria-hidden="true"
-                    className="mt-0.5 size-3.5 shrink-0 text-theme-accent"
-                  />
-                ) : (
-                  <Circle
-                    aria-hidden="true"
-                    className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
-                  />
-                )}
-                <span className={done ? "text-muted-foreground" : ""}>
-                  {item.title}
-                </span>
-              </p>
-            );
-          })
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            Your delivery checklist will appear here.
-          </p>
-        )}
-        <p className="pt-2 text-[10px] text-muted-foreground">
-          {
-            project.deliverables.filter((item) => item.status === "ACCEPTED")
-              .length
-          }{" "}
-          / {project.deliverables.length} accepted
-        </p>
-      </SummaryCard>
-      <SummaryCard title="Reviews & support">
-        {reviews.length ? (
-          reviews.map((item) => (
-            <p
-              key={item.id}
-              className="flex items-start gap-2 text-xs leading-5"
-            >
-              {item.done ? (
-                <Check
-                  aria-hidden="true"
-                  className="mt-0.5 size-3.5 shrink-0 text-theme-accent"
-                />
-              ) : (
-                <Circle
-                  aria-hidden="true"
-                  className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
-                />
-              )}
-              <span
-                className={
-                  item.done ? "text-muted-foreground line-through" : ""
-                }
-              >
-                {item.title}
-              </span>
-            </p>
-          ))
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            No review or support requests yet.
-          </p>
-        )}
-        <Link
-          href={
-            project.conversations[0]
-              ? `/dashboard/messages?conversation=${project.conversations[0].id}`
-              : "/dashboard/messages"
-          }
-          className="inline-flex min-h-9 items-center gap-2 text-xs font-medium"
+    <div className="grid items-stretch gap-4 lg:grid-cols-3">
+      <Card
+        title="Delivery checklist"
+        badge={complete + "/" + project.deliverables.length}
+      >
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable delivery checklist"
+          className="max-h-64 space-y-2 overflow-y-auto rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <MessageSquare aria-hidden="true" className="size-3" /> Project
-          conversations
-        </Link>
-      </SummaryCard>
-      <SummaryCard title="Performance analytics">
-        <p className="text-[10px] text-muted-foreground">
-          {demo ? "Sample analytics · last 6 days" : "Page views · last 6 days"}
-        </p>
-        {available ? (
-          <>
-            <svg
-              viewBox="0 0 244 96"
-              role="img"
-              aria-label={`Page views for the last six days: ${days.map((day) => `${day.label}: ${day.pageViews}`).join(", ")}`}
-              className="h-24 w-full"
-            >
-              {[24, 48, 72].map((y) => (
-                <line
-                  key={y}
-                  x1="8"
-                  x2="236"
-                  y1={y}
-                  y2={y}
-                  stroke="var(--border)"
-                  strokeWidth="0.6"
-                />
-              ))}
-              <polyline
-                points={points}
-                fill="none"
-                stroke="var(--theme-accent)"
-                strokeWidth="1.4"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div className="flex justify-between text-[9px] text-muted-foreground">
-              <span>{days[0]?.label}</span>
-              <span>{days.at(-1)?.label}</span>
-            </div>
-            <p className="pt-2 text-xs">
-              <strong>
-                {days
-                  .reduce((sum, day) => sum + day.pageViews, 0)
-                  .toLocaleString("en-NG")}
-              </strong>{" "}
-              page views
+          {project.deliverables.length ? (
+            project.deliverables.map((d) => {
+              const done = d.status === "ACCEPTED";
+              return (
+                <div
+                  key={d.id}
+                  className={
+                    "flex items-start gap-3 rounded-lg border p-3 " +
+                    (done
+                      ? "border-theme-accent/20 bg-theme-accent-faint"
+                      : "border-border bg-muted/20")
+                  }
+                >
+                  {done ? (
+                    <Check
+                      aria-hidden="true"
+                      className="mt-0.5 size-4 shrink-0 text-theme-accent"
+                    />
+                  ) : (
+                    <Circle
+                      aria-hidden="true"
+                      className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p
+                      className={
+                        "break-words text-xs font-medium leading-6 " +
+                        (done ? "text-theme-accent line-through" : "")
+                      }
+                    >
+                      {d.title}
+                    </p>
+                    <p className="mt-1 text-xs capitalize text-muted-foreground">
+                      {d.status.toLowerCase().replaceAll("_", " ")}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p className="py-6 text-sm leading-6 text-muted-foreground">
+              The team will add delivery items as the project scope is agreed.
             </p>
+          )}
+        </div>
+        <Link
+          href="#milestones"
+          className="mt-4 inline-flex min-h-11 items-center text-xs font-medium hover:underline"
+        >
+          Review milestones →
+        </Link>
+      </Card>
+      <Card
+        title="Observability"
+        badge={a?.collection.sample ? "Sample" : a ? "30 days" : undefined}
+        href="#analytics"
+      >
+        {a ? (
+          <>
+            <div className="flex items-center gap-2 text-xs">
+              <Activity
+                aria-hidden="true"
+                className="size-4 text-theme-accent"
+              />
+              <span>Collection {a.collection.status.toLowerCase()}</span>
+            </div>
+            {[
+              {
+                label: "Recorded events",
+                values: a.daily.map((d) => d.totalEvents),
+              },
+              { label: "Page views", values: a.daily.map((d) => d.pageViews) },
+            ].map((metric) => (
+              <div
+                key={metric.label}
+                className="mt-4 grid grid-cols-2 items-center gap-3"
+              >
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    {metric.label}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold">
+                    {metric.values
+                      .reduce((sum, v) => sum + v, 0)
+                      .toLocaleString("en-NG")}
+                  </p>
+                </div>
+                <Sparkline
+                  values={metric.values}
+                  label={metric.label + " over the last 30 days"}
+                />
+              </div>
+            ))}
+            <dl className="mt-4 space-y-3 border-t border-border pt-4 text-xs">
+              <div>
+                <dt className="text-muted-foreground">Last event received</dt>
+                <dd className="mt-1">
+                  {displayDate(a.collection.lastIngestedAt)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Last aggregation</dt>
+                <dd className="mt-1">
+                  {a.collection.lastAggregatedAt
+                    ? displayDate(a.collection.lastAggregatedAt)
+                    : "Awaiting aggregation"}
+                </dd>
+              </div>
+            </dl>
           </>
         ) : (
-          <p className="py-6 text-xs leading-5 text-muted-foreground">
-            Performance data will appear when analytics is connected.
-          </p>
+          <div className="py-6 text-sm leading-6 text-muted-foreground">
+            Project observability will appear when analytics collection is
+            connected.
+          </div>
         )}
-      </SummaryCard>
+        <details className="mt-4 border-t border-border pt-3">
+          <summary className="cursor-pointer text-xs font-medium">
+            Reviews and support ({reviews.length})
+          </summary>
+          <div
+            tabIndex={0}
+            role="region"
+            aria-label="Scrollable reviews and support"
+            className="mt-3 max-h-48 space-y-2 overflow-y-auto"
+          >
+            {reviews.length ? (
+              reviews.map((r) => (
+                <p
+                  key={r.id}
+                  className="rounded-lg bg-muted/30 p-3 text-xs leading-6"
+                >
+                  {r.done ? "Completed · " : "Open · "}
+                  {r.title}
+                </p>
+              ))
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                No review or support requests.
+              </p>
+            )}
+          </div>
+        </details>
+      </Card>
+      <Card
+        title="Analytics"
+        badge={a?.collection.sample ? "Sample data" : a ? "30 days" : undefined}
+        href="#analytics"
+      >
+        {a ? (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Sessions</p>
+                <p className="mt-2 text-2xl font-semibold">
+                  {a.summary.sessions.toLocaleString("en-NG")}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Page views</p>
+                <p className="mt-2 text-2xl font-semibold">
+                  {a.summary.pageViews.toLocaleString("en-NG")}
+                </p>
+              </div>
+            </div>
+            <div className="mt-5">
+              <Sparkline
+                values={a.daily.map((d) => d.sessions)}
+                label="Daily sessions over the last 30 days"
+              />
+            </div>
+            <p className="mt-4 text-xs text-muted-foreground">
+              {a.summary.clicks.toLocaleString("en-NG")} recorded clicks ·{" "}
+              {a.summary.totalEvents.toLocaleString("en-NG")} events
+            </p>
+            <Link
+              href="#analytics"
+              className="mt-5 inline-flex min-h-11 items-center text-xs font-semibold hover:underline"
+            >
+              View full analytics →
+            </Link>
+          </>
+        ) : (
+          <div className="flex min-h-52 flex-col items-center justify-center text-center">
+            <BarChart3
+              aria-hidden="true"
+              className="size-8 text-muted-foreground"
+            />
+            <h4 className="mt-4 text-sm font-semibold">
+              Understand your project traffic
+            </h4>
+            <p className="mt-2 text-xs leading-6 text-muted-foreground">
+              Recorded visitors, page views and engagement will appear once
+              tracking is enabled by the team.
+            </p>
+            <Link
+              href="/dashboard/messages"
+              className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold"
+            >
+              Discuss analytics
+            </Link>
+          </div>
+        )}
+      </Card>
     </div>
-  );
-}
-function SummaryCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="min-w-0 rounded-xl border border-border bg-background p-4">
-      <h3 className="mb-3 text-xs font-semibold">{title}</h3>
-      <div className="space-y-2">{children}</div>
-    </section>
   );
 }

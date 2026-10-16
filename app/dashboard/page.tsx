@@ -16,8 +16,8 @@ export default async function DashboardPage() {
   const overview = await getClientOverview(user.id);
 
   return (
-    <main className="px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[var(--section-max)] space-y-5">
+    <main className="py-6">
+      <div className="mx-auto w-full max-w-none space-y-5">
 
 
         <section className="grid items-start gap-5 lg:grid-cols-2">

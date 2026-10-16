@@ -46,7 +46,7 @@ export default async function DashboardLayout({
     >
       <NotificationLiveRefresh />
 
-      <DashboardCanvas>
+      <DashboardCanvas fluid>
         <div className="pb-24 md:pb-0">
           <WorkspacePageChrome>
             <ClientDashboardIdentityRail summary={dashboardIdentity} />

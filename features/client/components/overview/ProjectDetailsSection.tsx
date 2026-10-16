@@ -1,3 +1,5 @@
+import { hasProjectBrief } from "@/features/client/lib/workspace";
+import { FileText, Plus } from "lucide-react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Radio } from "lucide-react";
@@ -19,7 +21,7 @@ import {
 } from "lucide-react";
 
 import { CopyProjectIdButton } from "@/features/client/components/overview/CopyProjectIdButton";
-import { MilestoneHealthChart } from "@/features/client/components/overview/MilestoneHealthChart";
+
 import { ProjectScreenshotCarousel } from "@/features/client/components/overview/ProjectScreenshotCarousel";
 
 import { ClientProjectMilestonesSection } from "@/features/client/components/projects/ClientProjectMilestonesSection";
@@ -96,9 +98,7 @@ export function ProjectDetailsSection({
   const repositoryUrl = project.portfolio?.repositoryUrl ?? null;
 
   const projectTagline =
-    project.portfolio?.tagline ??
-    project.description ??
-    "Project delivery workspace";
+    project.portfolio?.tagline ?? "Project delivery workspace";
 
   const domain =
     project.infrastructure?.primaryDomain ??
@@ -125,17 +125,6 @@ export function ProjectDetailsSection({
     (milestone) => milestone.status === "COMPLETED",
   ).length;
 
-  const activeMilestones = milestones.filter(
-    (milestone) =>
-      milestone.status === "IN_PROGRESS" ||
-      milestone.status === "REVIEW" ||
-      milestone.status === "BLOCKED",
-  ).length;
-
-  const remainingMilestones = milestones.filter(
-    (milestone) => milestone.status === "PLANNED",
-  ).length;
-
   const hasScopeInformation =
     Boolean(project.purpose) ||
     Boolean(project.expectedOutcome) ||
@@ -144,294 +133,288 @@ export function ProjectDetailsSection({
     Boolean(currentDeliverable?.extensionReason);
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-surface">
-      <div className="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 sm:px-6">
-        <div>
-          <h2 className="text-sm font-semibold tracking-[-0.025em] text-foreground">
-            Project Details
-          </h2>
-
-          <p className="mt-1 hidden text-xs text-muted-foreground sm:block">
-            Current delivery, access and project state
-          </p>
-        </div>
-      </div>
-
-      <div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(220px,0.8fr)]">
-        <div className="min-w-0">
-          <p className="mb-3 text-xs font-semibold">
-            Latest application preview
-          </p>
-          <ProjectScreenshotCarousel
-            screenshots={project.media}
-            projectName={project.name}
-            projectTagline={projectTagline}
-            liveUrl={liveUrl}
-            compact
-          />
-        </div>
-        <div className="min-w-0 space-y-5 xl:pt-7">
+    <div className="space-y-4">
+      <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+        <div className="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 sm:px-6">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Application access
+            <h2 className="text-sm font-semibold tracking-[-0.025em] text-foreground">
+              Project Details
+            </h2>
+
+            <p className="mt-1 hidden text-xs text-muted-foreground sm:block">
+              Current delivery, access and project state
             </p>
-            <p className="mt-2 text-sm font-semibold">{projectTagline}</p>
-            {liveUrl ? (
-              <a
+          </div>
+        </div>
+
+        <div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-5">
+          <div className="min-w-0 xl:col-span-2">
+            <p className="mb-3 text-xs font-semibold">
+              Latest application preview
+            </p>
+            <ProjectScreenshotCarousel
+              screenshots={project.media}
+              projectName={project.name}
+              projectTagline={projectTagline}
+              liveUrl={liveUrl}
+              compact
+            />
+          </div>
+          <div className="min-w-0 space-y-5 xl:col-span-3 xl:pt-7">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Application access
+              </p>
+              <p className="mt-2 text-sm font-semibold">{projectTagline}</p>
+              {liveUrl ? (
+                <a
+                  href={liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 text-xs font-medium text-emerald-700 dark:text-emerald-400"
+                >
+                  <Radio
+                    aria-hidden="true"
+                    className="size-3.5 motion-safe:animate-pulse"
+                  />{" "}
+                  Live application
+                  <ExternalLink aria-hidden="true" className="size-3" />
+                </a>
+              ) : (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Preview not published yet
+                </p>
+              )}
+            </div>
+            <div className="space-y-3">
+              <AccessRow
+                icon={Globe2}
+                label="Domain"
+                value={domain}
                 href={liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 text-xs font-medium text-emerald-700 dark:text-emerald-400"
+              />
+              <Link
+                href={"/dashboard/projects/" + project.id + "/brief"}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-3 text-xs font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <Radio
-                  aria-hidden="true"
-                  className="size-3.5 motion-safe:animate-pulse"
-                />{" "}
-                Live application
-                <ExternalLink aria-hidden="true" className="size-3" />
-              </a>
-            ) : (
-              <p className="mt-2 text-xs text-muted-foreground">
-                Preview not published yet
-              </p>
-            )}
-          </div>
-          <div className="space-y-3">
-            <AccessRow
-              icon={Globe2}
-              label="Domain"
-              value={domain}
-              href={liveUrl}
-            />
-            <AccessRow
-              icon={ServerCog}
-              label="Hosting"
-              value={hostingProvider}
-            />
-            <AccessRow
-              icon={GitBranch}
-              label="Repository"
-              value={repositoryUrl ? "Source repository" : "Not connected"}
-              href={repositoryUrl}
-            />
-            <ProjectIdRow projectId={project.id} />
+                {hasProjectBrief(project) ? (
+                  <FileText aria-hidden="true" className="size-4" />
+                ) : (
+                  <Plus aria-hidden="true" className="size-4" />
+                )}
+                {hasProjectBrief(project)
+                  ? "Review brief"
+                  : "Add product brief"}
+              </Link>
+              <AccessRow
+                icon={ServerCog}
+                label="Hosting"
+                value={hostingProvider}
+              />
+              <AccessRow
+                icon={GitBranch}
+                label="Repository"
+                value={repositoryUrl ? "Source repository" : "Not connected"}
+                href={repositoryUrl}
+              />
+              <ProjectIdRow projectId={project.id} />
+            </div>
           </div>
         </div>
-        <div className="rounded-xl border border-border bg-background">
-          <MilestoneHealthChart
-            completed={completedMilestones}
-            active={activeMilestones}
-            remaining={remainingMilestones}
-            total={milestones.length}
-            compact
-            segments={milestones
-              .filter((item) => item.status === "COMPLETED")
-              .map((item) => item.title)}
+        <div className="grid grid-cols-2 gap-2 border-t border-border px-4 py-4 sm:grid-cols-4 sm:px-6">
+          <ProjectMeta
+            label="Started"
+            value={formatDate(project.startedAt)}
+            icon={CalendarDays}
           />
-          <div className="border-t border-border px-4 py-3 text-center">
-            <p className="text-xs font-medium">{humanize(project.status)}</p>
-            <p className="mt-2 text-[10px] text-muted-foreground">
-              Last updated
-            </p>
-            <time
-              dateTime={project.updatedAt.toISOString()}
-              className="mt-1 block text-[11px] text-muted-foreground"
-            >
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "medium",
-                timeStyle: "short",
-                timeZone: "Africa/Lagos",
-              }).format(project.updatedAt)}{" "}
-              WAT
-            </time>
-          </div>
+          <ProjectMeta
+            label="Status"
+            value={humanize(project.status)}
+            icon={Flag}
+            accent
+          />
+          <ProjectMeta
+            label="Progress"
+            value={`${clampProgress(project.progress)}%`}
+            icon={CircleGauge}
+          />
+          <ProjectMeta
+            label={project.completedAt ? "Completed" : "Expected completion"}
+            value={formatDate(project.completedAt ?? project.expectedEndAt)}
+            icon={CalendarDays}
+          />
         </div>
-      </div>
-      <div className="grid grid-cols-2 gap-2 border-t border-border px-4 py-4 sm:grid-cols-4 sm:px-6">
-        <ProjectMeta
-          label="Started"
-          value={formatDate(project.startedAt)}
-          icon={CalendarDays}
-        />
-        <ProjectMeta
-          label="Status"
-          value={humanize(project.status)}
-          icon={Flag}
-          accent
-        />
-        <ProjectMeta
-          label="Progress"
-          value={`${clampProgress(project.progress)}%`}
-          icon={CircleGauge}
-        />
-        <ProjectMeta
-          label={project.completedAt ? "Completed" : "Expected completion"}
-          value={formatDate(project.completedAt ?? project.expectedEndAt)}
-          icon={CalendarDays}
-        />
-      </div>
-      <div className="border-t border-border p-4 sm:p-6">
-        <p className="mb-4 text-xs leading-6 text-muted-foreground">
-          Review the latest preview and keep decisions connected to your
-          project.
-        </p>
-        <ProjectDecisionSummary project={project} analytics={analytics} />
-        <Link
-          href="#analytics"
-          className="mt-4 inline-flex min-h-9 items-center gap-2 text-xs font-medium text-theme-accent"
-        >
-          View full performance analysis{" "}
-          <ChevronDown aria-hidden="true" className="size-3" />
-        </Link>
-      </div>
-
-      <AnimatedDetails
-        title="Milestone progress"
-        meta={`${completedMilestones} of ${milestones.length} completed`}
-      >
-        <ClientProjectMilestonesSection project={project} />
-      </AnimatedDetails>
-
-      <AnimatedDetails
-        title="Project Scope & Agreements"
-        meta="Delivery context"
-      >
-        {hasScopeInformation ? (
-          <div className="grid gap-6 md:grid-cols-2">
-            <ScopeItem
-              title="Project Purpose"
-              value={
-                project.purpose ?? "No project purpose has been published."
-              }
-            />
-
-            <ScopeItem
-              title="Expected Outcome"
-              value={
-                project.expectedOutcome ??
-                "No expected outcome has been published."
-              }
-            />
-
-            {currentDeliverable?.agreementSummary ? (
-              <ScopeItem
-                title="Current Agreement"
-                value={currentDeliverable.agreementSummary}
-              />
-            ) : null}
-
-            {currentDeliverable?.rationale ? (
-              <ScopeItem
-                title="Why This Deliverable"
-                value={currentDeliverable.rationale}
-              />
-            ) : null}
-
-            {currentDeliverable ? (
-              <div className="md:col-span-2">
-                <div className="rounded-xl border border-border bg-surface p-4 sm:p-5">
-                  <div className="grid gap-5 sm:grid-cols-3">
-                    <ScopeDate
-                      label="Original deadline"
-                      value={formatDate(currentDeliverable.originalDueDate)}
-                    />
-
-                    <ScopeDate
-                      label="Current deadline"
-                      value={formatDate(currentDeliverable.dueDate)}
-                    />
-
-                    <ScopeDate
-                      label="Delivery status"
-                      value={humanize(currentDeliverable.status)}
-                    />
-                  </div>
-
-                  {currentDeliverable.extensionReason ? (
-                    <div className="mt-5 border-t border-border pt-4">
-                      <p className="text-xs font-medium text-muted-foreground">
-                        Why the deadline changed
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground">
-                        {currentDeliverable.extensionReason}
-                      </p>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <p className="text-sm leading-6 text-muted-foreground">
-            No client-visible scope or agreement information has been published
-            yet.
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 sm:px-6">
+          <p className="text-xs leading-6 text-muted-foreground">
+            To request a project update, review the latest preview and send your
+            feedback to the team.
           </p>
-        )}
-      </AnimatedDetails>
-
-      <AnimatedDetails
-        title="Development Summary"
-        meta="Technology and technical context"
+          <Link
+            href={
+              project.conversations[0]
+                ? "/dashboard/messages?conversation=" +
+                  project.conversations[0].id
+                : "/dashboard/messages"
+            }
+            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-muted"
+          >
+            Project conversations →
+          </Link>
+        </div>
+      </section>
+      <ProjectDecisionSummary project={project} analytics={analytics} />
+      <section
+        id="milestones"
+        className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface"
       >
-        <div className="overflow-hidden rounded-xl border border-border bg-background">
-          <div className="p-4 sm:p-5">
-            <h3 className="text-sm font-semibold text-foreground">
-              Technologies
-            </h3>
+        <AnimatedDetails
+          title="Milestone progress"
+          meta={`${completedMilestones} of ${milestones.length} completed`}
+        >
+          <ClientProjectMilestonesSection project={project} />
+        </AnimatedDetails>
 
-            <p className="mt-1 text-xs text-muted-foreground">
-              Core technologies powering this project
-            </p>
+        <AnimatedDetails
+          title="Project Scope & Agreements"
+          meta="Delivery context"
+        >
+          {hasScopeInformation ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              <ScopeItem
+                title="Project Purpose"
+                value={
+                  project.purpose ?? "No project purpose has been published."
+                }
+              />
 
-            {technologies.length > 0 ? (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {technologies.map((technology) => (
-                  <TechnologyBadge
-                    key={technology.id}
-                    name={technology.name}
-                    category={technology.category}
-                    featured={technology.featured}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="mt-5 text-xs text-muted-foreground">
-                No technologies recorded.
-              </p>
-            )}
+              <ScopeItem
+                title="Expected Outcome"
+                value={
+                  project.expectedOutcome ??
+                  "No expected outcome has been published."
+                }
+              />
 
-            {technologiesWithNotes.length > 0 ? (
-              <div className="mt-6 border-t border-border pt-5">
-                <div>
-                  <h4 className="text-xs font-semibold text-foreground">
-                    Technology Notes
-                  </h4>
+              {currentDeliverable?.agreementSummary ? (
+                <ScopeItem
+                  title="Current Agreement"
+                  value={currentDeliverable.agreementSummary}
+                />
+              ) : null}
 
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Why these technologies are used in this project
-                  </p>
+              {currentDeliverable?.rationale ? (
+                <ScopeItem
+                  title="Why This Deliverable"
+                  value={currentDeliverable.rationale}
+                />
+              ) : null}
+
+              {currentDeliverable ? (
+                <div className="md:col-span-2">
+                  <div className="rounded-xl border border-border bg-surface p-4 sm:p-5">
+                    <div className="grid gap-5 sm:grid-cols-3">
+                      <ScopeDate
+                        label="Original deadline"
+                        value={formatDate(currentDeliverable.originalDueDate)}
+                      />
+
+                      <ScopeDate
+                        label="Current deadline"
+                        value={formatDate(currentDeliverable.dueDate)}
+                      />
+
+                      <ScopeDate
+                        label="Delivery status"
+                        value={humanize(currentDeliverable.status)}
+                      />
+                    </div>
+
+                    {currentDeliverable.extensionReason ? (
+                      <div className="mt-5 border-t border-border pt-4">
+                        <p className="text-xs font-medium text-muted-foreground">
+                          Why the deadline changed
+                        </p>
+
+                        <p className="mt-2 text-sm leading-6 text-foreground">
+                          {currentDeliverable.extensionReason}
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
+              ) : null}
+            </div>
+          ) : (
+            <p className="text-sm leading-6 text-muted-foreground">
+              No client-visible scope or agreement information has been
+              published yet.
+            </p>
+          )}
+        </AnimatedDetails>
 
-                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {technologiesWithNotes.map((technology) => (
-                    <TechnologyNoteCard
+        <AnimatedDetails
+          title="Development Summary"
+          meta="Technology and technical context"
+        >
+          <div className="overflow-hidden rounded-xl border border-border bg-background">
+            <div className="p-4 sm:p-5">
+              <h3 className="text-sm font-semibold text-foreground">
+                Technologies
+              </h3>
+
+              <p className="mt-1 text-xs text-muted-foreground">
+                Core technologies powering this project
+              </p>
+
+              {technologies.length > 0 ? (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {technologies.map((technology) => (
+                    <TechnologyBadge
                       key={technology.id}
                       name={technology.name}
                       category={technology.category}
-                      purpose={technology.purpose}
-                      rationale={technology.rationale}
-                      description={technology.description}
                       featured={technology.featured}
                     />
                   ))}
                 </div>
-              </div>
-            ) : null}
+              ) : (
+                <p className="mt-5 text-xs text-muted-foreground">
+                  No technologies recorded.
+                </p>
+              )}
+
+              {technologiesWithNotes.length > 0 ? (
+                <div className="mt-6 border-t border-border pt-5">
+                  <div>
+                    <h4 className="text-xs font-semibold text-foreground">
+                      Technology Notes
+                    </h4>
+
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Why these technologies are used in this project
+                    </p>
+                  </div>
+
+                  <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    {technologiesWithNotes.map((technology) => (
+                      <TechnologyNoteCard
+                        key={technology.id}
+                        name={technology.name}
+                        category={technology.category}
+                        purpose={technology.purpose}
+                        rationale={technology.rationale}
+                        description={technology.description}
+                        featured={technology.featured}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
-        </div>
-      </AnimatedDetails>
-    </section>
+        </AnimatedDetails>
+      </section>
+    </div>
   );
 }
 

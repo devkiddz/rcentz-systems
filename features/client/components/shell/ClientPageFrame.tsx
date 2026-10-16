@@ -9,7 +9,7 @@ export function ClientPageFrame({
   children: ReactNode;
 }) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-none px-4 py-6 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
         {description}

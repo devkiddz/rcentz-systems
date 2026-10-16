@@ -1,11 +1,11 @@
-import { projectImagesConfigured } from '@/features/admin/server/media/project-images';
-import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
-import { AdminProjectImages } from './AdminProjectImages';
-import type { ReactNode } from 'react';
+import { projectImagesConfigured } from "@/features/admin/server/media/project-images";
+import { DeliveryProgress } from "@/components/ui/DeliveryProgress";
+import { AdminProjectImages } from "./AdminProjectImages";
+import type { ReactNode } from "react";
 
-import Link from 'next/link';
+import Link from "next/link";
 
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from "lucide-react";
 
 import {
   ArrowLeft,
@@ -24,14 +24,14 @@ import {
   ReceiptText,
   ServerCog,
   UserRound,
-  Wrench
-} from 'lucide-react';
+  Wrench,
+} from "lucide-react";
 
-import { MilestoneHealthChart } from '@/features/client/components/overview/MilestoneHealthChart';
+import { MilestoneHealthChart } from "@/features/client/components/overview/MilestoneHealthChart";
 
-import { AdminProjectMilestoneManager } from '@/features/admin/components/projects/AdminProjectMilestoneManager';
+import { AdminProjectMilestoneManager } from "@/features/admin/components/projects/AdminProjectMilestoneManager";
 
-import type { AdminProject } from '@/features/admin/server/projects/get-admin-project';
+import type { AdminProject } from "@/features/admin/server/projects/get-admin-project";
 
 type AdminProjectPageProps = {
   project: AdminProject;
@@ -40,11 +40,11 @@ type AdminProjectPageProps = {
 function humanize(value: string) {
   return value
     .toLowerCase()
-    .split('_')
-    .map(word => {
+    .split("_")
+    .map((word) => {
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
-    .join(' ');
+    .join(" ");
 }
 
 function clampProgress(value: number) {
@@ -53,13 +53,13 @@ function clampProgress(value: number) {
 
 function formatDate(value: Date | string | null | undefined) {
   if (!value) {
-    return 'Not set';
+    return "Not set";
   }
 
-  return new Intl.DateTimeFormat('en-NG', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
+  return new Intl.DateTimeFormat("en-NG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   }).format(new Date(value));
 }
 
@@ -67,78 +67,99 @@ function formatCurrency(
   value: {
     toString(): string;
   } | null,
-  currency: string
+  currency: string,
 ) {
   if (!value) {
-    return 'Not set';
+    return "Not set";
   }
 
   const amount = Number(value.toString());
 
   if (!Number.isFinite(amount)) {
-    return 'Not set';
+    return "Not set";
   }
 
-  return new Intl.NumberFormat('en-NG', {
-    style: 'currency',
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
     currency,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 
 function getStatusDotClass(status: string) {
   switch (status) {
-    case 'COMPLETED':
-      return 'bg-theme-accent';
+    case "COMPLETED":
+      return "bg-theme-accent";
 
-    case 'ON_HOLD':
-    case 'REVIEW':
-      return 'bg-[var(--chart-warning)]';
+    case "ON_HOLD":
+    case "REVIEW":
+      return "bg-[var(--chart-warning)]";
 
-    case 'CANCELLED':
-    case 'BLOCKED':
-      return 'bg-[var(--chart-danger)]';
+    case "CANCELLED":
+    case "BLOCKED":
+      return "bg-[var(--chart-danger)]";
 
     default:
-      return 'bg-theme-accent';
+      return "bg-theme-accent";
   }
 }
 
 export function AdminProjectPage({ project }: AdminProjectPageProps) {
-  const milestones = project.milestones.filter(milestone => milestone.status !== 'CANCELLED');
+  const milestones = project.milestones.filter(
+    (milestone) => milestone.status !== "CANCELLED",
+  );
 
-  const completedMilestones = milestones.filter(milestone => milestone.status === 'COMPLETED').length;
-
-  const activeMilestones = milestones.filter(
-    milestone =>
-      milestone.status === 'IN_PROGRESS' || milestone.status === 'REVIEW' || milestone.status === 'BLOCKED'
+  const completedMilestones = milestones.filter(
+    (milestone) => milestone.status === "COMPLETED",
   ).length;
 
-  const remainingMilestones = milestones.filter(milestone => milestone.status === 'PLANNED').length;
+  const activeMilestones = milestones.filter(
+    (milestone) =>
+      milestone.status === "IN_PROGRESS" ||
+      milestone.status === "REVIEW" ||
+      milestone.status === "BLOCKED",
+  ).length;
+
+  const remainingMilestones = milestones.filter(
+    (milestone) => milestone.status === "PLANNED",
+  ).length;
 
   const currentMilestone =
-    milestones.find(milestone => milestone.status === 'IN_PROGRESS') ??
-    milestones.find(milestone => milestone.status === 'REVIEW') ??
-    milestones.find(milestone => milestone.status === 'BLOCKED') ??
-    milestones.find(milestone => milestone.status === 'PLANNED') ??
+    milestones.find((milestone) => milestone.status === "IN_PROGRESS") ??
+    milestones.find((milestone) => milestone.status === "REVIEW") ??
+    milestones.find((milestone) => milestone.status === "BLOCKED") ??
+    milestones.find((milestone) => milestone.status === "PLANNED") ??
     null;
 
   const currentDeliverable =
-    project.deliverables.find(deliverable => deliverable.status === 'IN_PROGRESS') ??
-    project.deliverables.find(deliverable => deliverable.status === 'REVIEW') ??
-    project.deliverables.find(deliverable => deliverable.status === 'READY') ??
-    project.deliverables.find(deliverable => deliverable.status === 'BLOCKED') ??
-    project.deliverables.find(deliverable => deliverable.status === 'PLANNED') ??
+    project.deliverables.find(
+      (deliverable) => deliverable.status === "IN_PROGRESS",
+    ) ??
+    project.deliverables.find(
+      (deliverable) => deliverable.status === "REVIEW",
+    ) ??
+    project.deliverables.find(
+      (deliverable) => deliverable.status === "READY",
+    ) ??
+    project.deliverables.find(
+      (deliverable) => deliverable.status === "BLOCKED",
+    ) ??
+    project.deliverables.find(
+      (deliverable) => deliverable.status === "PLANNED",
+    ) ??
     null;
 
   const clientLabel =
-    project.client?.clientProfile?.companyName ?? project.client?.name ?? 'No client assigned';
+    project.client?.clientProfile?.companyName ??
+    project.client?.name ??
+    "No client assigned";
 
   const liveUrl = project.portfolio?.liveUrl ?? null;
 
   const repositoryUrl = project.portfolio?.repositoryUrl ?? null;
 
-  const canPreview = project.visibility === 'PUBLIC' && Boolean(project.portfolio?.publishedAt);
+  const canPreview =
+    project.visibility === "PUBLIC" && Boolean(project.portfolio?.publishedAt);
 
   return (
     <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
@@ -146,7 +167,8 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
         <section>
           <Link
             href="/admin/projects"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground">
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground"
+          >
             <ArrowLeft className="size-3.5" />
             Projects
           </Link>
@@ -156,7 +178,10 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   aria-hidden="true"
-                  className={['size-1.5 rounded-full', getStatusDotClass(project.status)].join(' ')}
+                  className={[
+                    "size-1.5 rounded-full",
+                    getStatusDotClass(project.status),
+                  ].join(" ")}
                 />
 
                 <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent">
@@ -169,7 +194,13 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
               </h1>
 
               <p className="mt-1.5 max-w-3xl text-sm leading-6 text-muted">
-                {project.serviceRequest ? 'Manage delivery, milestones and decisions for this project.' : (project.purpose ?? project.description ?? 'Project delivery workspace.').slice(0, 180)}
+                {project.serviceRequest
+                  ? "Manage delivery, milestones and decisions for this project."
+                  : (
+                      project.purpose ??
+                      project.description ??
+                      "Project delivery workspace."
+                    ).slice(0, 180)}
               </p>
             </div>
 
@@ -178,28 +209,49 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
 
               <StatusBadge>{humanize(project.visibility)}</StatusBadge>
 
-              {project.serviceRequest && project.serviceRequest.status !== 'DRAFT' ? (
-                <Link href={`/admin/projects/${project.id}/onboarding`} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              {project.serviceRequest &&
+              project.serviceRequest.status !== "DRAFT" ? (
+                <Link
+                  href={`/admin/projects/${project.id}/onboarding`}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <FileStack aria-hidden="true" className="size-4" />
                   Preview onboarding
                 </Link>
               ) : null}
               <Link
                 href={`/admin/projects/${project.id}/edit`}
-                className="inline-flex h-9 items-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90">
+                className="inline-flex h-9 items-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90"
+              >
                 <Pencil className="size-3.5" />
                 Edit project
               </Link>
             </div>
           </div>
 
+          {project.activities.length ? (
+            <details className="mt-5 rounded-xl border border-border bg-background p-4">
+              <summary className="cursor-pointer text-sm font-semibold">
+                Customer product brief ·{" "}
+                {formatDate(project.activities[0].createdAt)}
+              </summary>
+              <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-muted-foreground">
+                {project.activities[0].description}
+              </p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Customer requirements for review. Scope and costs still require
+                agreement.
+              </p>
+            </details>
+          ) : null}
           {canPreview || liveUrl ? (
             <div className="mt-5 flex flex-wrap gap-2">
               {canPreview ? (
                 <Link
                   href={`/portfolio/${project.slug}`}
                   target="_blank"
-                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
+                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted"
+                >
                   Public preview
                   <ArrowUpRight className="size-3.5" />
                 </Link>
@@ -210,7 +262,8 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   href={liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
+                  className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted"
+                >
                   Live project
                   <ArrowUpRight className="size-3.5" />
                 </a>
@@ -253,14 +306,18 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           <header className="border-b border-border bg-surface-raised px-5 py-5 sm:px-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-foreground">Project control</h2>
+                <h2 className="text-sm font-semibold text-foreground">
+                  Project control
+                </h2>
 
                 <p className="mt-1 text-xs text-muted">
                   Delivery status and agreed project details.
                 </p>
               </div>
 
-              <span className="text-xs text-muted">Updated {formatDate(project.updatedAt)}</span>
+              <span className="text-xs text-muted">
+                Updated {formatDate(project.updatedAt)}
+              </span>
             </div>
           </header>
 
@@ -276,22 +333,42 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                     {clampProgress(project.progress)}%
                   </span>
 
-                  <span className="text-xs font-medium text-muted">{humanize(project.status)}</span>
+                  <span className="text-xs font-medium text-muted">
+                    {humanize(project.status)}
+                  </span>
                 </div>
 
                 <DeliveryProgress value={project.progress} />
-                <Link href={`/admin/projects/${project.id}/edit`} className="mt-2 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-theme-accent hover:underline">
-                  Update overall progress <Pencil aria-hidden="true" className="size-3.5" />
+                <Link
+                  href={`/admin/projects/${project.id}/edit`}
+                  className="mt-2 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-theme-accent hover:underline"
+                >
+                  Update overall progress{" "}
+                  <Pencil aria-hidden="true" className="size-3.5" />
                 </Link>
-                <p className="text-xs leading-5 text-muted">Set by the team; milestone progress is tracked separately.</p>
+                <p className="text-xs leading-5 text-muted">
+                  Set by the team; milestone progress is tracked separately.
+                </p>
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <ProjectMeta icon={CalendarDays} label="Started" value={formatDate(project.startedAt)} />
+                <ProjectMeta
+                  icon={CalendarDays}
+                  label="Started"
+                  value={formatDate(project.startedAt)}
+                />
 
-                <ProjectMeta icon={CalendarDays} label="Target" value={formatDate(project.expectedEndAt)} />
+                <ProjectMeta
+                  icon={CalendarDays}
+                  label="Target"
+                  value={formatDate(project.expectedEndAt)}
+                />
 
-                <ProjectMeta icon={Flag} label="Status" value={humanize(project.status)} />
+                <ProjectMeta
+                  icon={Flag}
+                  label="Status"
+                  value={humanize(project.status)}
+                />
 
                 <ProjectMeta
                   icon={CircleGauge}
@@ -307,14 +384,22 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">Client</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">
+                      Client
+                    </p>
 
-                    <p className="mt-1 truncate text-sm font-semibold text-foreground">{clientLabel}</p>
+                    <p className="mt-1 truncate text-sm font-semibold text-foreground">
+                      {clientLabel}
+                    </p>
 
                     {project.client ? (
-                      <p className="mt-1 truncate text-xs text-muted">{project.client.email}</p>
+                      <p className="mt-1 truncate text-xs text-muted">
+                        {project.client.email}
+                      </p>
                     ) : (
-                      <p className="mt-1 text-xs text-muted">Client assignment is pending.</p>
+                      <p className="mt-1 text-xs text-muted">
+                        Client assignment is pending.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -332,12 +417,16 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           </div>
         </section>
 
-        <AdminProjectImages projectId={project.id} images={project.media} configured={projectImagesConfigured()} />
+        <AdminProjectImages
+          projectId={project.id}
+          images={project.media}
+          configured={projectImagesConfigured()}
+        />
 
         <AdminProjectMilestoneManager
           projectId={project.id}
           projectName={project.name}
-          milestones={project.milestones.map(milestone => ({
+          milestones={project.milestones.map((milestone) => ({
             id: milestone.id,
 
             title: milestone.title,
@@ -375,8 +464,8 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
 
               processes: milestone._count.processes,
 
-              files: milestone._count.files
-            }
+              files: milestone._count.files,
+            },
           }))}
         />
 
@@ -411,24 +500,27 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
         </section>
 
         <section className="grid items-start gap-5 xl:grid-cols-2">
-          <AdminInformationPanel title="Project access" description="Infrastructure and technical access">
+          <AdminInformationPanel
+            title="Project access"
+            description="Infrastructure and technical access"
+          >
             <InfoRow
               icon={Globe2}
               label="Domain"
-              value={project.infrastructure?.primaryDomain ?? 'Not recorded'}
+              value={project.infrastructure?.primaryDomain ?? "Not recorded"}
               href={liveUrl}
             />
 
             <InfoRow
               icon={ServerCog}
               label="Hosting"
-              value={project.infrastructure?.hostingProvider ?? 'Not recorded'}
+              value={project.infrastructure?.hostingProvider ?? "Not recorded"}
             />
 
             <InfoRow
               icon={ServerCog}
               label="Database"
-              value={project.infrastructure?.databaseProvider ?? 'Not recorded'}
+              value={project.infrastructure?.databaseProvider ?? "Not recorded"}
             />
 
             <InfoRow
@@ -436,15 +528,24 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
               label="Repository"
               value={
                 repositoryUrl
-                  ? repositoryUrl.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '')
-                  : 'Not connected'
+                  ? repositoryUrl
+                      .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+                      .replace(/\/$/, "")
+                  : "Not connected"
               }
               href={repositoryUrl}
             />
           </AdminInformationPanel>
 
-          <AdminInformationPanel title="Commercial state" description="Connected business records">
-            <InfoRow icon={ReceiptText} label="Invoices" value={String(project._count.invoices)} />
+          <AdminInformationPanel
+            title="Commercial state"
+            description="Connected business records"
+          >
+            <InfoRow
+              icon={ReceiptText}
+              label="Invoices"
+              value={String(project._count.invoices)}
+            />
 
             <InfoRow
               icon={MessageSquareText}
@@ -452,17 +553,31 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
               value={String(project._count.conversations)}
             />
 
-            <InfoRow icon={Wrench} label="Support tickets" value={String(project._count.supportTickets)} />
+            <InfoRow
+              icon={Wrench}
+              label="Support tickets"
+              value={String(project._count.supportTickets)}
+            />
 
-            <InfoRow icon={CalendarDays} label="Updated" value={formatDate(project.updatedAt)} />
+            <InfoRow
+              icon={CalendarDays}
+              label="Updated"
+              value={formatDate(project.updatedAt)}
+            />
           </AdminInformationPanel>
         </section>
 
-        <AdminDetails title="Deliverables" meta={`${project.deliverables.length} records`}>
+        <AdminDetails
+          title="Deliverables"
+          meta={`${project.deliverables.length} records`}
+        >
           {project.deliverables.length > 0 ? (
             <div className="grid gap-3 md:grid-cols-2">
-              {project.deliverables.map(deliverable => (
-                <article key={deliverable.id} className="rounded-xl border border-border bg-background p-4">
+              {project.deliverables.map((deliverable) => (
+                <article
+                  key={deliverable.id}
+                  className="rounded-xl border border-border bg-background p-4"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-mono text-xs uppercase tracking-[0.1em] text-theme-accent">
@@ -486,11 +601,20 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   ) : null}
 
                   <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
-                    <RecordStat label="Progress" value={`${clampProgress(deliverable.progress)}%`} />
+                    <RecordStat
+                      label="Progress"
+                      value={`${clampProgress(deliverable.progress)}%`}
+                    />
 
-                    <RecordStat label="Target" value={formatDate(deliverable.dueDate)} />
+                    <RecordStat
+                      label="Target"
+                      value={formatDate(deliverable.dueDate)}
+                    />
 
-                    <RecordStat label="Visibility" value={humanize(deliverable.visibility)} />
+                    <RecordStat
+                      label="Visibility"
+                      value={humanize(deliverable.visibility)}
+                    />
                   </div>
                 </article>
               ))}
@@ -502,13 +626,19 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
 
         <AdminDetails title="Scope & agreements" meta="Project intelligence">
           <div className="grid gap-4 md:grid-cols-2">
-            <ScopeCard title="Purpose" value={project.purpose ?? 'No project purpose recorded.'} />
+            <ScopeCard
+              title="Purpose"
+              value={project.purpose ?? "No project purpose recorded."}
+            />
 
-            <ScopeCard title="Vision" value={project.vision ?? 'No project vision recorded.'} />
+            <ScopeCard
+              title="Vision"
+              value={project.vision ?? "No project vision recorded."}
+            />
 
             <ScopeCard
               title="Expected outcome"
-              value={project.expectedOutcome ?? 'No expected outcome recorded.'}
+              value={project.expectedOutcome ?? "No expected outcome recorded."}
             />
 
             <ScopeCard
@@ -518,27 +648,31 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
                   ? `${currentDeliverable.title} — ${humanize(currentDeliverable.status)}`
                   : currentMilestone
                     ? `${currentMilestone.title} — ${humanize(currentMilestone.status)}`
-                    : 'No active delivery record.'
+                    : "No active delivery record."
               }
             />
           </div>
         </AdminDetails>
 
-        <AdminDetails title="Technology" meta={`${project.technologies.length} technologies`}>
+        <AdminDetails
+          title="Technology"
+          meta={`${project.technologies.length} technologies`}
+        >
           {project.technologies.length > 0 ? (
             <div className="flex flex-wrap gap-2">
-              {project.technologies.map(technology => (
+              {project.technologies.map((technology) => (
                 <span
                   key={technology.id}
                   className={[
-                    'rounded-full border px-3 py-1.5 font-mono text-xs',
+                    "rounded-full border px-3 py-1.5 font-mono text-xs",
                     technology.featured
-                      ? 'border-theme-accent/30 bg-theme-accent-faint text-theme-accent-strong'
-                      : 'border-border bg-background text-muted'
-                  ].join(' ')}>
+                      ? "border-theme-accent/30 bg-theme-accent-faint text-theme-accent-strong"
+                      : "border-border bg-background text-muted",
+                  ].join(" ")}
+                >
                   {technology.name}
 
-                  {technology.category ? ` · ${technology.category}` : ''}
+                  {technology.category ? ` · ${technology.category}` : ""}
                 </span>
               ))}
             </div>
@@ -563,7 +697,7 @@ function OverviewMetric({
   icon: Icon,
   label,
   value,
-  note
+  note,
 }: {
   icon: LucideIcon;
   label: string;
@@ -577,7 +711,9 @@ function OverviewMetric({
           <Icon className="size-3.5 text-theme-accent" />
         </div>
 
-        <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">{value}</span>
+        <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">
+          {value}
+        </span>
       </div>
 
       <p className="mt-4 text-xs font-semibold text-foreground">{label}</p>
@@ -591,7 +727,7 @@ function ManagementCard({
   icon: Icon,
   label,
   value,
-  note
+  note,
 }: {
   icon: LucideIcon;
   label: string;
@@ -611,13 +747,23 @@ function ManagementCard({
           <p className="mt-1 text-xs leading-4 text-muted">{note}</p>
         </div>
 
-        <span className="ml-auto shrink-0 text-2xl font-semibold tabular-nums text-foreground">{value}</span>
+        <span className="ml-auto shrink-0 text-2xl font-semibold tabular-nums text-foreground">
+          {value}
+        </span>
       </div>
     </div>
   );
 }
 
-function ProjectMeta({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+function ProjectMeta({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="min-w-0 rounded-xl border border-border bg-surface-subtle p-4">
       <div className="flex items-center gap-2">
@@ -626,7 +772,9 @@ function ProjectMeta({ icon: Icon, label, value }: { icon: LucideIcon; label: st
         <span className="text-xs text-muted">{label}</span>
       </div>
 
-      <p className="mt-2 break-words text-sm font-semibold text-foreground">{value}</p>
+      <p className="mt-2 break-words text-sm font-semibold text-foreground">
+        {value}
+      </p>
     </div>
   );
 }
@@ -634,7 +782,7 @@ function ProjectMeta({ icon: Icon, label, value }: { icon: LucideIcon; label: st
 function AdminInformationPanel({
   title,
   description,
-  children
+  children,
 }: {
   title: string;
   description: string;
@@ -657,7 +805,7 @@ function InfoRow({
   icon: Icon,
   label,
   value,
-  href
+  href,
 }: {
   icon: LucideIcon;
   label: string;
@@ -677,19 +825,30 @@ function InfoRow({
           href={href}
           target="_blank"
           rel="noreferrer"
-          className="flex min-w-0 items-center justify-end gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent">
+          className="flex min-w-0 items-center justify-end gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent"
+        >
           <span className="truncate">{value}</span>
 
           <ArrowUpRight className="size-3 shrink-0" />
         </a>
       ) : (
-        <p className="break-words text-sm font-medium text-foreground sm:text-right">{value}</p>
+        <p className="break-words text-sm font-medium text-foreground sm:text-right">
+          {value}
+        </p>
       )}
     </div>
   );
 }
 
-function AdminDetails({ title, meta, children }: { title: string; meta: string; children: ReactNode }) {
+function AdminDetails({
+  title,
+  meta,
+  children,
+}: {
+  title: string;
+  meta: string;
+  children: ReactNode;
+}) {
   return (
     <details className="group overflow-hidden rounded-2xl border border-border bg-surface">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 bg-surface-raised px-5 transition-colors hover:bg-surface-muted sm:px-6 [&::-webkit-details-marker]:hidden">
@@ -716,7 +875,9 @@ function RecordStat({ label, value }: { label: string; value: string }) {
 function ScopeCard({ title, value }: { title: string; value: string }) {
   return (
     <article className="rounded-xl border border-border bg-background p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-theme-accent">{title}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-theme-accent">
+        {title}
+      </p>
 
       <p className="mt-2 text-xs leading-5 text-foreground">{value}</p>
     </article>

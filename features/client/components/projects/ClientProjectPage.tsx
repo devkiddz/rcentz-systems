@@ -51,8 +51,7 @@ export function ClientProjectPage({
               </h1>
 
               <p className="mt-1.5 max-w-2xl text-[13px] leading-6 text-muted-foreground">
-                {project.description ??
-                  project.purpose ??
+                {project.portfolio?.tagline ||
                   "Project delivery, management and performance intelligence."}
               </p>
             </div>
