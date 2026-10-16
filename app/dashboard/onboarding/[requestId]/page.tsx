@@ -1,3 +1,4 @@
+import { ServiceSelectionSummary } from "@/features/services/components/selection/ServiceSelectionSummary";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -23,7 +24,23 @@ export default async function EditBriefPage({
   const request = await prisma.serviceRequest.findFirst({
     where: { id: requestId, userId: user.id },
     include: {
-      service: { select: { slug: true } },
+      service: {
+        select: {
+          slug: true,
+          name: true,
+          status: true,
+          publishedAt: true,
+          features: {
+            orderBy: [{ sortOrder: "asc" }, { slug: "asc" }],
+            select: {
+              slug: true,
+              name: true,
+              description: true,
+              expectedOutcome: true,
+            },
+          },
+        },
+      },
       project: { select: { id: true } },
       answers: {
         where: { question: { key: BRIEF_KEY } },
@@ -102,8 +119,34 @@ export default async function EditBriefPage({
           ) : null}
         </section>
       </div>
+      {data?.serviceSelection ? (
+        <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-8">
+          <ServiceSelectionSummary selection={data.serviceSelection} />
+        </div>
+      ) : null}
       {editable ? (
         <ProjectBriefWizard
+          serviceOptions={
+            data?.serviceSelection
+              ? {
+                  slug: data.serviceSelection.serviceSlug,
+                  name: data.serviceSelection.serviceName,
+                  features: [
+                    ...data.serviceSelection.features,
+                    ...(request.service.status === "ACTIVE" &&
+                    request.service.publishedAt &&
+                    request.service.publishedAt <= new Date()
+                      ? request.service.features.filter(
+                          (f) =>
+                            !data.serviceSelection!.features.some(
+                              (old) => old.slug === f.slug,
+                            ),
+                        )
+                      : []),
+                  ],
+                }
+              : undefined
+          }
           key={request.updatedAt.toISOString()}
           name={user.name}
           initialBrief={data?.brief || legacyBrief(request)}

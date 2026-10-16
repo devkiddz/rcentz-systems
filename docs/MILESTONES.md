@@ -1742,3 +1742,10 @@ Implementation and controlled checks passed; both production builds passed. Inst
 Public service catalogue — 16 October 2026
 
 Prepared: published API offers exposed through a premium responsive catalogue, service search/categories, illustrative previews, functional enquiry entry and crawlable public metadata/index/sitemap. Local build, controlled regressions and production-browser checks passed. Catalogue installation/deployment and authenticated live acceptance remain pending. Existing acquisition-depth/review revisions d3e2cbc/ae8a5fd have successful Vercel checks; OA-07 requires separate runtime evidence. Follow PUBLIC-SERVICE-CATALOGUE-20261016.md.
+
+
+Service feature selection — 16 October 2026
+
+Catalogue release 59548051c1dc1345c86a7ac85fd07918a7e9288f was pushed and returned a successful Vercel check. Public /services, /sitemap.xml and /robots.txt returned HTTP 200 (35 service links and 42 public sitemap URLs). Authenticated enquiry acceptance remains separate.
+
+Prepared on top: public service review, authenticated feature choices, selected-service onboarding and saved customer/admin selection summaries. Canonical feature validation and preserved request snapshots use existing request metadata; no migration or seed. Controlled checks, TypeScript, changed-file ESLint and production build passed. Installation, deployment and live customer/admin acceptance of this selection update remain pending. See SERVICE-FEATURE-SELECTION-20261016.md. This does not complete payments, Teams, task editing or ticket lifecycle.

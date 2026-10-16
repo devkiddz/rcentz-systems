@@ -25,6 +25,8 @@ import {
   type BriefErrors,
   type ProjectBrief,
 } from "../lib/project-brief";
+import { ServiceFeaturePicker } from "@/features/services/components/selection/ServiceFeaturePicker";
+import type { SelectionFeature } from "@/features/services/lib/service-selection";
 import { BriefFilePicker } from "./BriefFilePicker";
 import { BriefIllustration } from "./BriefIllustration";
 
@@ -37,7 +39,7 @@ const steps = [
 ];
 const icons = [Globe2, Layers3, ShoppingBag, Smartphone, Workflow, HelpCircle];
 const fieldsByStep: (keyof ProjectBrief)[][] = [
-  ["build"],
+  ["build", "serviceChoice"],
   ["company", "title", "goals", "audience"],
   ["startingPoint", "website", "features"],
   ["currency", "budget", "timeline", "notes"],
@@ -49,6 +51,7 @@ const inputClass =
 export function ProjectBriefWizard({
   name,
   initialBrief,
+  serviceOptions,
   requestId,
   updatedAt,
   existingFileCount = 0,
@@ -56,6 +59,7 @@ export function ProjectBriefWizard({
 }: {
   name: string;
   initialBrief?: ProjectBrief;
+  serviceOptions?: { slug: string; name: string; features: SelectionFeature[] };
   requestId?: string;
   updatedAt?: string;
   uploadsEnabled?: boolean;
@@ -275,7 +279,9 @@ export function ProjectBriefWizard({
               ? requestId
                 ? "Refine your project brief."
                 : "Your idea, ready to take shape."
-              : steps[step]}
+              : step === 0 && brief.serviceChoice
+                ? "Review your service features."
+                : steps[step]}
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             {
@@ -309,7 +315,41 @@ export function ProjectBriefWizard({
             }}
             noValidate
           >
-            {step === 0 ? (
+            {step === 0 && serviceOptions && brief.serviceChoice ? (
+              <div className="space-y-5">
+                <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                  <p className="text-xs text-muted-foreground">
+                    Selected service
+                  </p>
+                  <h2 className="mt-2 text-lg font-semibold">
+                    {serviceOptions.name}
+                  </h2>
+                  {!requestId ? (
+                    <Link
+                      href={"/services/" + serviceOptions.slug + "#configure"}
+                      className="mt-3 inline-flex min-h-11 items-center text-sm underline"
+                    >
+                      Back to service selection
+                    </Link>
+                  ) : null}
+                  <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                    Review your feature preferences below. Your project details
+                    follow on the next step.
+                  </p>
+                </div>
+                <ServiceFeaturePicker
+                  features={serviceOptions.features}
+                  choice={brief.serviceChoice}
+                  onChange={(choice) => update("serviceChoice", choice)}
+                  disabled={pending}
+                />
+                {errors.serviceChoice ? (
+                  <p role="alert" className="text-sm text-destructive">
+                    {errors.serviceChoice}
+                  </p>
+                ) : null}
+              </div>
+            ) : step === 0 ? (
               <fieldset>
                 <legend className="sr-only">Choose the type of project</legend>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -538,6 +578,36 @@ export function ProjectBriefWizard({
                     ["Audience", brief.audience],
                     ["Starting point", brief.startingPoint],
                     ["Existing link", brief.website || "Not provided"],
+                    ...(brief.serviceChoice
+                      ? [
+                          [
+                            "Selected service",
+                            serviceOptions?.name ||
+                              brief.serviceChoice.serviceSlug,
+                          ],
+                          [
+                            "Selected catalogue features",
+                            brief.serviceChoice.featureSlugs
+                              .map(
+                                (slug) =>
+                                  serviceOptions?.features.find(
+                                    (f) => f.slug === slug,
+                                  )?.name || slug,
+                              )
+                              .join(", ") || "No predefined features",
+                          ],
+                          [
+                            "Feature guidance",
+                            brief.serviceChoice.needsAdvice
+                              ? "Requested"
+                              : "Not requested",
+                          ],
+                          [
+                            "Additional service requirements",
+                            brief.serviceChoice.requirements || "None",
+                          ],
+                        ]
+                      : []),
                     ["Must-have features", brief.features],
                     [
                       "Budget",

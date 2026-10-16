@@ -1,13 +1,20 @@
-import { serviceMetadata, serviceJsonLd } from '@/features/services/lib/service-seo';
-import type { Metadata } from 'next';
+import {
+  serviceMetadata,
+  serviceJsonLd,
+} from "@/features/services/lib/service-seo";
+import type { Metadata } from "next";
 
-import { notFound } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { notFound } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
-import { ServiceDetail } from '@/features/services/components/detail/ServiceDetail';
-import { getServiceBySlug } from '@/features/services/server/get-service-by-slug';
-import { getVisitorCurrency } from '@/features/services/server/get-visitor-currency';
-import { defaultLocale, isSupportedLocale, type SupportedLocale } from '@/i18n/config';
+import { ServiceDetail } from "@/features/services/components/detail/ServiceDetail";
+import { getServiceBySlug } from "@/features/services/server/get-service-by-slug";
+import { getVisitorCurrency } from "@/features/services/server/get-visitor-currency";
+import {
+  defaultLocale,
+  isSupportedLocale,
+  type SupportedLocale,
+} from "@/i18n/config";
 
 type ServicePageProps = {
   params: Promise<{
@@ -15,7 +22,7 @@ type ServicePageProps = {
   }>;
 };
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 async function getResolvedLocale(): Promise<SupportedLocale> {
   const locale = await getLocale();
@@ -23,10 +30,15 @@ async function getResolvedLocale(): Promise<SupportedLocale> {
   return isSupportedLocale(locale) ? locale : defaultLocale;
 }
 
-export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ServicePageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const [currency, locale] = await Promise.all([getVisitorCurrency(), getResolvedLocale()]);
+  const [currency, locale] = await Promise.all([
+    getVisitorCurrency(),
+    getResolvedLocale(),
+  ]);
 
   const service = await getServiceBySlug(slug, currency, locale);
 
@@ -40,7 +52,10 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 export default async function ServicePage({ params }: ServicePageProps) {
   const { slug } = await params;
 
-  const [currency, locale] = await Promise.all([getVisitorCurrency(), getResolvedLocale()]);
+  const [currency, locale] = await Promise.all([
+    getVisitorCurrency(),
+    getResolvedLocale(),
+  ]);
 
   const service = await getServiceBySlug(slug, currency, locale);
 
@@ -48,5 +63,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
     notFound();
   }
 
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:serviceJsonLd(service)}}/><ServiceDetail service={service} /></>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serviceJsonLd(service) }}
+      />
+      <ServiceDetail service={service} />
+    </>
+  );
 }

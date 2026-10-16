@@ -1,100 +1,188 @@
-import type { ServiceDetail as ServiceDetailData } from '../../server/get-service-by-slug';
-import { getSuggestedServices } from '../../server/get-suggested-services';
-
-import { ServiceDeliverySection } from './ServiceDeliverySection';
-import { ServiceDetailCTA } from './ServiceDetailCTA';
-import { ServiceDetailHero } from './ServiceDetailHero';
-import { ServiceFaqSection } from './ServiceFaqSection';
-import { ServiceFeaturesOutcomesSection } from './ServiceFeaturesOutcomesSection';
-import { ServiceOnboardingPreview } from './ServiceOnboardingPreview';
-import { ServiceOverviewSection } from './ServiceOverviewSection';
-import { ServicePricePanel } from './ServicePricePanel';
-import { ServiceTechnologySection } from './ServiceTechnologySection';
-import { SuggestedServicesTray } from './SuggestedServicesTray';
-
-type ServiceDetailProps = {
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Layers3, CalendarDays } from "lucide-react";
+import { getCurrentUser } from "@/features/auth/server/get-current-user";
+import { cookies } from "next/headers";
+import type { ServiceDetail as ServiceDetailData } from "../../server/get-service-by-slug";
+import {
+  openServiceChoice,
+  SERVICE_CHOICE_COOKIE,
+} from "../../server/selection-token";
+import { ServiceConfigurator } from "../selection/ServiceConfigurator";
+import { ServicePricePanel } from "./ServicePricePanel";
+const panel = "rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6";
+export async function ServiceDetail({
+  service,
+}: {
   service: ServiceDetailData;
-};
-
-export async function ServiceDetail({ service }: ServiceDetailProps) {
-  const suggestedServices = await getSuggestedServices({
-    serviceId: service.id,
-    categoryId: service.category?.id ?? null,
-    limit: 8
-  });
-
+}) {
+  const user = await getCurrentUser();
+  const choice =
+    user?.status === "ACTIVE"
+      ? openServiceChoice(
+          (await cookies()).get(SERVICE_CHOICE_COOKIE)?.value,
+          user.id,
+          process.env.BETTER_AUTH_SECRET || "",
+        )
+      : null;
+  const initialChoice =
+    choice?.serviceSlug === service.slug
+      ? {
+          ...choice,
+          featureSlugs: choice.featureSlugs.filter((slug) =>
+            service.features.some((f) => f.slug === slug),
+          ),
+        }
+      : undefined;
   return (
-    <div className="relative">
-      <ServiceDetailHero service={service} />
-
-      <ServiceOverviewSection service={service} />
-
-      {(service.features.length > 0 || service.outcomes.length > 0) && (
-        <ServiceFeaturesOutcomesSection features={service.features} outcomes={service.outcomes} />
-      )}
-
-      {service.technologies.length > 0 && <ServiceTechnologySection service={service} />}
-
-      {(service.deliveryMinDays ||
-        service.deliveryMaxDays ||
-        service.deliveryNote ||
-        service.milestoneTemplates.length > 0) && <ServiceDeliverySection service={service} />}
-
-      {(service.prices.length > 0 || service.onboardingQuestions.length > 0) && (
-        <section className="relative py-20 sm:py-24">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-surface-muted/20" />
-
-          <div className="rcentz-section relative">
-            <div className="mb-10 max-w-[680px] sm:mb-12">
-              <div className="flex items-center gap-2.5">
-                <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-theme-accent sm:text-[9px]">
-                  Project direction
-                </span>
-
-                <span className="h-px w-8 bg-theme-accent/35" />
-              </div>
-
-              <h2 className="mt-4 max-w-[640px] text-[2rem] font-semibold leading-[1] tracking-[-0.05em] text-foreground sm:text-[2.8rem]">
-                Understand the project cost. Then define the project.
-              </h2>
-
-              <p className="mt-5 max-w-[610px] text-[13px] leading-7 text-muted sm:text-[15px]">
-                Pricing provides an initial direction. The onboarding process helps us understand the exact
-                scope, workflows, integrations and requirements before a final project proposal is prepared.
-              </p>
-            </div>
-
-            <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start lg:gap-7">
-              {service.prices.length > 0 ? <ServicePricePanel service={service} /> : null}
-
-              {service.onboardingQuestions.length > 0 ? <ServiceOnboardingPreview service={service} /> : null}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {service.faqs.length > 0 && <ServiceFaqSection service={service} />}
-
-      {/* =========================================
-          FINAL CTA
-          ========================================= */}
-
-      <section className="relative pb-20 pt-4 sm:pb-28 sm:pt-8">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-1/2 h-[300px] w-[680px] -translate-x-1/2 rounded-full bg-theme-accent-faint blur-3xl"
-        />
-
-        <div className="rcentz-section relative">
-          <ServiceDetailCTA service={service} />
+    <div className="rcentz-section space-y-6 py-6 sm:py-10">
+      <Link
+        href="/services"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft aria-hidden="true" className="size-4" />
+        All services
+      </Link>
+      <header className={panel}>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-theme-accent-faint px-3 py-1 text-xs font-medium text-theme-accent">
+            {service.category?.name || "Business solutions"}
+          </span>
+          <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+            Service overview
+          </span>
         </div>
-      </section>
-
-      {/* =========================================
-          SUGGESTED SERVICES
-          ========================================= */}
-
-      {suggestedServices.length > 0 ? <SuggestedServicesTray services={suggestedServices} /> : null}
+        <h1 className="mt-4 max-w-4xl break-words text-3xl font-semibold tracking-tight sm:text-4xl">
+          {service.name}
+        </h1>
+        {service.shortDescription ? (
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
+            {service.shortDescription}
+          </p>
+        ) : null}
+        <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-border pt-5 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-2">
+            <Layers3 aria-hidden="true" className="size-4" />
+            {service.features.length} available features
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <CalendarDays aria-hidden="true" className="size-4" />
+            {service.deliveryMinDays && service.deliveryMaxDays
+              ? `${service.deliveryMinDays}–${service.deliveryMaxDays} days · scope dependent`
+              : "Timeline confirmed after review"}
+          </span>
+          <a
+            href="#configure"
+            className="inline-flex min-h-11 items-center gap-2 font-medium text-foreground"
+          >
+            {user?.status === "ACTIVE"
+              ? "Choose your features"
+              : "Explore features"}
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </a>
+        </div>
+      </header>
+      <div className="grid items-start gap-6 xl:grid-cols-2">
+        <div className="min-w-0 space-y-6">
+          <section className={panel}>
+            <h2 className="text-lg font-semibold">What this service can do</h2>
+            <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-muted-foreground">
+              {service.description ||
+                service.shortDescription ||
+                "We shape the service around your business requirements."}
+            </p>
+            {service.outcomes.length ? (
+              <ul className="mt-5 space-y-3">
+                {service.outcomes.map((outcome) => (
+                  <li key={outcome.id} className="rounded-xl bg-muted/30 p-4">
+                    <h3 className="text-sm font-medium">{outcome.title}</h3>
+                    {outcome.description ? (
+                      <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                        {outcome.description}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
+          {service.milestoneTemplates.length || service.deliveryNote ? (
+            <section className={panel}>
+              <h2 className="text-lg font-semibold">
+                How delivery takes shape
+              </h2>
+              {service.deliveryNote ? (
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {service.deliveryNote}
+                </p>
+              ) : null}
+              <ol className="mt-4 space-y-4">
+                {service.milestoneTemplates.map((m, i) => (
+                  <li key={m.id} className="flex gap-3">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border text-xs">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-medium">{m.title}</h3>
+                      <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                        {m.description || m.purpose || m.expectedOutcome}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : null}
+          {service.prices.length ? (
+            <ServicePricePanel service={service} />
+          ) : (
+            <section className={panel}>
+              <h2 className="text-lg font-semibold">
+                Pricing follows your scope
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                Choose the features you need and share your budget during
+                onboarding. We will review the requirements before preparing a
+                proposal.
+              </p>
+            </section>
+          )}
+          {service.faqs.length ? (
+            <section className={panel}>
+              <h2 className="text-lg font-semibold">
+                Questions before you start
+              </h2>
+              <div className="mt-4 divide-y divide-border">
+                {service.faqs.map((faq) => (
+                  <details key={faq.id} className="py-4">
+                    <summary className="cursor-pointer text-sm font-medium">
+                      {faq.question}
+                    </summary>
+                    <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
+                      {faq.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </div>
+        <div className="min-w-0">
+          <ServiceConfigurator
+            key={service.slug}
+            slug={service.slug}
+            features={service.features.map(
+              ({ slug, name, description, expectedOutcome }) => ({
+                slug,
+                name,
+                description,
+                expectedOutcome,
+              }),
+            )}
+            canConfigure={user?.status === "ACTIVE"}
+            initialChoice={initialChoice}
+          />
+        </div>
+      </div>
     </div>
   );
 }

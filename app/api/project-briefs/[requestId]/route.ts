@@ -1,3 +1,7 @@
+import {
+  makeServiceSelection,
+  describeServiceSelection,
+} from "@/features/services/lib/service-selection";
 import { getCurrentUser } from "@/features/auth/server/get-current-user";
 import {
   validateBrief,
@@ -78,21 +82,82 @@ export async function PATCH(
       if (!["DRAFT", "PENDING"].includes(saved.status) || saved.project)
         return 409;
       if (saved.updatedAt.toISOString() !== input.updatedAt) return 412;
+      const data = readBriefData(saved.answers[0]?.metadata);
+      const prior = data?.serviceSelection;
+      if (
+        prior &&
+        (!brief.serviceChoice ||
+          brief.serviceChoice.serviceSlug !== prior.serviceSlug)
+      )
+        return 409;
+      const slug =
+        brief.serviceChoice?.serviceSlug ||
+        buildOptions.find((option) => option.value === brief.build)?.service;
       const service = await tx.service.findFirst({
         where: {
-          slug: buildOptions.find((option) => option.value === brief.build)
-            ?.service,
-          status: "ACTIVE",
+          slug,
+          ...(prior
+            ? { id: saved.serviceId }
+            : {
+                status: "ACTIVE",
+                ...(brief.serviceChoice
+                  ? { publishedAt: { not: null, lte: new Date() } }
+                  : {}),
+              }),
         },
-        select: { id: true },
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          status: true,
+          publishedAt: true,
+          features: {
+            orderBy: [{ sortOrder: "asc" }, { slug: "asc" }],
+            select: {
+              slug: true,
+              name: true,
+              description: true,
+              expectedOutcome: true,
+            },
+          },
+        },
       });
       if (!service) return 409;
-      const data = readBriefData(saved.answers[0]?.metadata);
+      const available =
+        service.status === "ACTIVE" &&
+        service.publishedAt &&
+        service.publishedAt <= new Date()
+          ? service.features
+          : [];
+      const canonical = prior
+        ? {
+            slug: prior.serviceSlug,
+            name: prior.serviceName,
+            features: [
+              ...prior.features,
+              ...available.filter(
+                (f) => !prior.features.some((old) => old.slug === f.slug),
+              ),
+            ],
+          }
+        : service;
+      let serviceSelection;
+      try {
+        serviceSelection = brief.serviceChoice
+          ? makeServiceSelection(canonical, brief.serviceChoice)
+          : undefined;
+      } catch {
+        return 409;
+      }
       const updated = await tx.serviceRequest.update({
         where: { id: requestId },
         data: {
           title: brief.title,
-          description: describeBrief(brief),
+          description:
+            describeBrief(brief) +
+            (serviceSelection
+              ? "\n\n" + describeServiceSelection(serviceSelection)
+              : ""),
           serviceId: service.id,
           currency: brief.currency,
           budget: brief.guidance ? null : brief.budget,
@@ -102,7 +167,12 @@ export async function PATCH(
       await writeBriefData(
         tx,
         { id: requestId, serviceId: service.id },
-        { version: 1, brief, attachments: data?.attachments || [] },
+        {
+          version: 1,
+          brief,
+          attachments: data?.attachments || [],
+          ...(serviceSelection ? { serviceSelection } : {}),
+        },
       );
       return updated.updatedAt.toISOString();
     });

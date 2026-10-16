@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            'This build option is not accepting briefs yet. Contact contact@rcentz.cc and we will help.'
+            'This service or a selected feature is no longer available. Return to the service page and review your choices, or contact contact@rcentz.cc.'
         },
         { status: 409 }
       );
