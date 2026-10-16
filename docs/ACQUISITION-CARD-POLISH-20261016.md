@@ -1,0 +1,9 @@
+# Acquisition card polish — 16 October 2026
+
+Applies to Systems dc6150a. The production view correctly retained three candidates after reviewed archival, but repeated titles in summaries, grouped country/budget/source on one line, and displayed incomplete previews as ellipses.
+
+The list now renders a dedicated server component with separate type/stage badges, source identity, readable title, bounded excerpt, budget/location fields, subject-relevance and capability-review context, optional collection date, and distinct review/original-source actions. Reddit community prefixes and duplicate marketplace suffixes are shortened for display only; the original stored title and evidence remain unchanged. Title-only or punctuation-only previews show an explicit incomplete-preview message. Missing stored budgets read Not recorded; the component does not infer or update budgets from snippets.
+
+Uses existing colors, border/ring tokens, radius/spacing classes, fonts, responsive grid and workspace shell. No new CSS variables, dependencies, API operations, data writes, auth behavior, collection or schedule changes. Existing authorization and commercial response validation still run before list rendering. External source links pass the existing evidence URL guard and use noopener/noreferrer; all text renders escaped. Labels do not represent buyer verification or delivery-fit approval.
+
+Validation: production build and TypeScript, targeted ESLint, existing commercial workspace/authority regressions, and browser rendering of the actual component with compiled production CSS at 320px, 390px and 1280px in dark/light themes. No horizontal overflow was detected, and currency symbols remained intact. Check the live result at mobile and desktop widths in both themes after the exact pushed deployment. Card polish does not close discovery-quality or source-verification acceptance.
