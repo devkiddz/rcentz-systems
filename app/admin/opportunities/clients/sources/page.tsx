@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AcquisitionHeader } from '@/features/opportunities/components/AcquisitionHeader';
 import { opportunityRequest } from '@/server/opportunities/client';
 import { requireOpportunityAdministrator } from '@/server/opportunities/workspace-access';
 import { addClientSource, updateClientSourceDecision } from './actions';
@@ -25,18 +25,13 @@ export default async function ClientDiscoverySourcesPage() {
   const active = sources.filter(s => s.approval === 'APPROVED' && s.enabled).length;
   return <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
     <div className="rcentz-dashboard-inner mx-auto w-full max-w-6xl space-y-6">
-      <Link className="text-sm text-muted-foreground hover:underline" href="/admin/opportunities/clients">← Client Acquisition</Link>
-      <header className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Client Acquisition / Discovery</p>
-        <h1 className="text-2xl font-semibold tracking-tight">Source Management</h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">Register and review public commercial discovery sources. Source approval is separate from collection.</p>
-      </header>
+      <AcquisitionHeader active="sources" title="Source management" description="Review and maintain sources used for manual opportunity intake. Source approval is separate from web discovery."/>
       <section className="grid gap-3 sm:grid-cols-3" aria-label="Source registry summary">
         {[['Registered sources', sources.length], ['Approved sources', approved], ['Approved and enabled', active]].map(([label, value]) =>
           <div className={card} key={label}><p className="text-sm text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-semibold tabular-nums">{value}</p></div>)}
       </section>
       <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-        <strong className="font-medium text-foreground">Collection is not connected.</strong> Approving or enabling a source does not fetch websites, schedule jobs or create prospects.
+        <strong className="font-medium text-foreground">Registry feeds are not connected to collection.</strong> These sources support manual intake. Public web discovery runs separately; approving a registry source does not change its searches.
       </div>
       <section className="space-y-4" aria-labelledby="sources-heading">
         <div className="flex flex-wrap items-center justify-between gap-3"><h2 id="sources-heading" className="text-lg font-semibold">Registered sources</h2><span className="text-sm text-muted-foreground">{sources.length} records</span></div>

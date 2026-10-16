@@ -1,3 +1,4 @@
+import { AcquisitionHeader } from '@/features/opportunities/components/AcquisitionHeader';
 import Link from 'next/link';
 import { opportunityRequest } from '@/server/opportunities/client';
 import { requireOpportunityAdministrator } from '@/server/opportunities/workspace-access';
@@ -15,7 +16,7 @@ const fields = [
   { name: 'regions', label: 'Target regions', hint: 'Countries or regions; leave blank to explore worldwide.' },
   { name: 'industries', label: 'Target industries', hint: 'Business sectors worth investigating.' },
   { name: 'engagementTypes', label: 'Engagement types', hint: 'For example: custom projects, retainers, partnerships.' },
-  { name: 'preferredSources', label: 'Preferred discovery sources', hint: 'Source categories or approved sites; not credentials.' },
+  { name: 'preferredSources', label: 'Preferred discovery sources', hint: 'Adds source wording to rotating queries. This does not restrict results to those websites.' },
   { name: 'businessProblems', label: 'Business problems to identify', hint: 'Signals that a customer may need a solution.' },
 ] as const;
 
@@ -30,11 +31,7 @@ export default async function ClientAcquisitionSettings({ searchParams }: { sear
   return (
     <main className="rcentz-dashboard-frame px-4 py-6 sm:px-6 lg:px-8">
       <div className="rcentz-dashboard-inner mx-auto w-full max-w-6xl space-y-5">
-        <Link className="text-sm text-muted-foreground hover:underline" href="/admin/opportunities/clients">← Client Acquisition</Link>
-        <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">Acquisition Configuration</h1>
-          <p className="text-sm text-muted-foreground">Commercial discovery preferences, independent of Career & Freelance.</p>
-        </header>
+      <AcquisitionHeader active="settings" title="Acquisition preferences" description="Shape the hunt around Rcentz’s markets, services and available capacity."/>
         {query.saved === '1' ? <p role="status" className="rounded-md border border-border bg-card p-3 text-sm">Acquisition preferences and daily discovery setting saved.</p> : null}
         <section className="space-y-3 rounded-xl border border-border bg-card p-5">
           <h2 className="font-semibold">Rcentz operating profile</h2>
@@ -52,7 +49,7 @@ export default async function ClientAcquisitionSettings({ searchParams }: { sear
         <form action={saveClientAcquisitionSettings} className="space-y-5 rounded-xl border border-border bg-card p-5">
           <div className="space-y-1">
             <h2 className="font-semibold">Client discovery preferences</h2>
-            <p className="text-sm text-muted-foreground">Lists are comma-separated. Empty lists keep discovery open rather than excluding unknown markets.</p>
+            <p className="text-sm text-muted-foreground">Lists are comma-separated. Empty lists keep discovery open rather than excluding unknown markets. Regions and industries shape queries; they are not verified eligibility filters.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {fields.map((field) => <label key={field.name} className="space-y-2 text-sm">
