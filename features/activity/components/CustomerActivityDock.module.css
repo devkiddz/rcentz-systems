@@ -41,22 +41,22 @@
 
 /* Both saved compact modes share a clear, labelled support launcher. */
 .dock.compactDock {
-  width: 72px;
+  width: 48px;
   overflow: visible;
   border: 2px solid var(--theme-accent);
-  border-radius: 24px;
+  border-radius: 50%;
   background: var(--background);
   box-shadow: 0 0 0 4px var(--theme-accent-soft), 0 4px 18px var(--theme-accent-glow);
 }
 .launcher {
   display: flex;
   width: 100%;
-  min-height: 76px;
+  min-height: 44px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  border-radius: 22px;
+  gap: 0;
+  border-radius: 50%;
   background: var(--theme-accent-faint);
   color: var(--theme-accent);
   cursor: grab;
@@ -66,4 +66,17 @@
 .launcher:hover { background: var(--theme-accent-soft); }
 .launcher:active { cursor: grabbing; }
 .launcher:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 6px; }
-.launcherLabel { font-size: 11px; font-weight: 600; line-height: 1.2; }
+
+.launcherIcon {
+  display: inline-flex;
+  transform: perspective(160px) rotateX(var(--support-rotate-x, 0deg)) rotateY(var(--support-rotate-y, 0deg));
+  transition: transform 120ms ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .dock.compactDock:has(.launcher:hover) {
+    box-shadow: 0 0 0 4px var(--theme-accent-soft), 0 0 16px var(--theme-accent-glow);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .launcherIcon { transform: none; transition: none; }
+}

@@ -119,6 +119,32 @@ export function CustomerActivityDock() {
     drag.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, start: position, last: position };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
+  function resetLauncherTilt(button: HTMLButtonElement) {
+    button.style.removeProperty('--support-rotate-x');
+    button.style.removeProperty('--support-rotate-y');
+  }
+  function followPointer(event: ReactPointerEvent<HTMLButtonElement>) {
+    const button = event.currentTarget;
+    if (drag.current) {
+      resetLauncherTilt(button);
+      moveDrag(event);
+      return;
+    }
+    if (
+      event.pointerType !== 'mouse' ||
+      !window.matchMedia('(hover: hover) and (pointer: fine)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      resetLauncherTilt(button);
+      return;
+    }
+    const rect = button.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
+    const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
+    button.style.setProperty('--support-rotate-x', `${-y * 12}deg`);
+    button.style.setProperty('--support-rotate-y', `${x * 12}deg`);
+  }
   function moveWithKeyboard(event: ReactKeyboardEvent<HTMLButtonElement>) {
     const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key];
     if (!delta) return;
@@ -151,7 +177,7 @@ export function CustomerActivityDock() {
   const projectParts = pathname.split('/');
   const projectId = projectParts[1] === 'dashboard' && projectParts[2] === 'projects' && projectParts[3] ? projectParts[3] : undefined;
   const dockStyle = { '--dock-x': position.x + 'px', '--dock-y': position.y + 'px' } as CSSProperties;
-  const dockWidth = mode === 'expanded' ? 180 : 72;
+  const dockWidth = mode === 'expanded' ? 180 : 48;
   const sheetTop = Math.max(80, Math.min(window.innerHeight - 180, position.y));
   const leftSpace = position.x;
   const rightSpace = window.innerWidth - position.x - dockWidth;
@@ -165,11 +191,11 @@ export function CustomerActivityDock() {
       <aside ref={dockRef} aria-label="Customer support panel" style={dockStyle} className={[styles.dock, mode !== 'expanded' ? styles.compactDock : ''].join(' ')}>
         {mode !== 'expanded' ? (
           <button type="button" aria-label="Open support menu; drag or use arrow keys to move" title="Support — click to open, drag to move" aria-expanded={false} onKeyDown={moveWithKeyboard}
-            onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={finishDrag} onLostPointerCapture={() => { drag.current = null; }}
+            onPointerDown={event => { resetLauncherTilt(event.currentTarget); startDrag(event); }} onPointerMove={followPointer} onPointerLeave={event => resetLauncherTilt(event.currentTarget)} onPointerUp={finishDrag} onPointerCancel={event => { resetLauncherTilt(event.currentTarget); finishDrag(); }} onLostPointerCapture={event => { resetLauncherTilt(event.currentTarget); drag.current = null; }}
             onClick={event => { if (!dragged.current || event.detail === 0) changeMode('expanded'); dragged.current = false; }}
             className={styles.launcher}>
-            <Headset aria-hidden="true" className="size-7" strokeWidth={1.75} />
-            <span className={styles.launcherLabel}>Support</span>
+            <span className={styles.launcherIcon}><Headset aria-hidden="true" className="size-5" strokeWidth={1.75} /></span>
+            <span className="sr-only">Support</span>
           </button>
         ) : (
           <>
