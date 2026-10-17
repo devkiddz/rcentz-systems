@@ -1,4 +1,5 @@
 "use client";
+import { ClientAvatarEditor } from "./ClientAvatarEditor";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { accountFields, billingFields } from "../../lib/settings";
@@ -6,13 +7,16 @@ export function ClientDetailsForm({
   section,
   initial,
   updatedAt,
+  avatar,
 }: {
   section: "account" | "billing";
   initial: Record<string, string>;
   updatedAt: string | null;
+  avatar?: { image: string | null; configured: boolean };
 }) {
   const [values, setValues] = useState(initial);
   const [version, setVersion] = useState(updatedAt);
+  const [avatarBusy, setAvatarBusy] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -23,7 +27,7 @@ export function ClientDetailsForm({
       className="rounded-2xl border border-border bg-card p-5 sm:p-6"
       onSubmit={async (e) => {
         e.preventDefault();
-        if (pending) return;
+        if (pending || avatarBusy) return;
         setPending(true);
         setError("");
         setSaved(false);
@@ -48,6 +52,7 @@ export function ClientDetailsForm({
         }
       }}
     >
+      {section === "account" && avatar ? <ClientAvatarEditor image={avatar.image} name={values.name || initial.name || "Your"} configured={avatar.configured} updatedAt={version} disabled={pending || avatarBusy} onBusyChange={setAvatarBusy} onSaved={next => { setVersion(next); router.refresh(); }} /> : null}
       <div className="grid gap-5 sm:grid-cols-2">
         {fields.map((f) => (
           <label
@@ -63,7 +68,7 @@ export function ClientDetailsForm({
                 rows={3}
                 value={values[f.key] || ""}
                 maxLength={f.max}
-                disabled={pending}
+                disabled={pending || avatarBusy}
                 onChange={(e) => {
                   setValues({ ...values, [f.key]: e.target.value });
                   setSaved(false);
@@ -92,7 +97,7 @@ export function ClientDetailsForm({
                 minLength={f.key === "name" ? 2 : undefined}
                 maxLength={f.max}
                 value={values[f.key] || ""}
-                disabled={pending}
+                disabled={pending || avatarBusy}
                 onChange={(e) => {
                   setValues({ ...values, [f.key]: e.target.value });
                   setSaved(false);
@@ -115,7 +120,7 @@ export function ClientDetailsForm({
       ) : null}
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || avatarBusy}
         className="mt-5 min-h-11 rounded-xl bg-foreground px-5 text-sm font-semibold text-background disabled:opacity-60"
       >
         {pending

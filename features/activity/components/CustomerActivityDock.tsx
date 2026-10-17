@@ -39,7 +39,53 @@ export function CustomerActivityDock() {
   const dragged = useRef(false);
   const sheetRef = useRef<HTMLElement>(null);
   const dockRef = useRef<HTMLElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
   const closeSheet = useCallback(() => { setSheet(null); returnFocus.current?.focus(); }, []);
+
+  // Follow the page pointer, without React renders on each mouse movement.
+  useEffect(() => {
+    const button = launcherRef.current;
+    if (!button || mode === 'expanded') return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+    let frame = 0;
+    let pointer: { x: number; y: number } | null = null;
+    function reset() {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0; pointer = null;
+      if (button) resetLauncherTilt(button);
+    }
+    function paint() {
+      frame = 0;
+      if (!button || !pointer || drag.current || reduced.matches || !fine.matches || document.hidden) { reset(); return; }
+      const rect = button.getBoundingClientRect();
+      const x = Math.max(-1, Math.min(1, (pointer.x - rect.left - rect.width / 2) / Math.max(160, window.innerWidth / 2)));
+      const y = Math.max(-1, Math.min(1, (pointer.y - rect.top - rect.height / 2) / Math.max(160, window.innerHeight / 2)));
+      button.style.setProperty('--support-rotate-x', `${-y * 28}deg`);
+      button.style.setProperty('--support-rotate-y', `${x * 28}deg`);
+      button.style.setProperty('--support-shift-x', `${x * 2}px`);
+      button.style.setProperty('--support-shift-y', `${y * 2}px`);
+    }
+    function follow(event: PointerEvent) {
+      if (event.pointerType !== 'mouse' || drag.current || reduced.matches || !fine.matches) { reset(); return; }
+      pointer = { x: event.clientX, y: event.clientY };
+      if (!frame) frame = window.requestAnimationFrame(paint);
+    }
+    function leave(event: PointerEvent) { if (!event.relatedTarget) reset(); }
+    window.addEventListener('pointermove', follow, { passive: true });
+    window.addEventListener('pointerout', leave);
+    window.addEventListener('blur', reset);
+    document.addEventListener('visibilitychange', reset);
+    reduced.addEventListener('change', reset); fine.addEventListener('change', reset);
+    return () => {
+      reset();
+      window.removeEventListener('pointermove', follow);
+      window.removeEventListener('pointerout', leave);
+      window.removeEventListener('blur', reset);
+      document.removeEventListener('visibilitychange', reset);
+      reduced.removeEventListener('change', reset); fine.removeEventListener('change', reset);
+    };
+  }, [mode, feed?.accountKey]);
 
   useEffect(() => {
     let disposed = false;
@@ -122,28 +168,8 @@ export function CustomerActivityDock() {
   function resetLauncherTilt(button: HTMLButtonElement) {
     button.style.removeProperty('--support-rotate-x');
     button.style.removeProperty('--support-rotate-y');
-  }
-  function followPointer(event: ReactPointerEvent<HTMLButtonElement>) {
-    const button = event.currentTarget;
-    if (drag.current) {
-      resetLauncherTilt(button);
-      moveDrag(event);
-      return;
-    }
-    if (
-      event.pointerType !== 'mouse' ||
-      !window.matchMedia('(hover: hover) and (pointer: fine)').matches ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      resetLauncherTilt(button);
-      return;
-    }
-    const rect = button.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
-    const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
-    button.style.setProperty('--support-rotate-x', `${-y * 12}deg`);
-    button.style.setProperty('--support-rotate-y', `${x * 12}deg`);
+    button.style.removeProperty('--support-shift-x');
+    button.style.removeProperty('--support-shift-y');
   }
   function moveWithKeyboard(event: ReactKeyboardEvent<HTMLButtonElement>) {
     const delta = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[event.key];
@@ -190,8 +216,8 @@ export function CustomerActivityDock() {
       <CustomerMobileNavigation counts={feed.counts} mode={navMode} onModeChange={changeNavMode} />
       <aside ref={dockRef} aria-label="Customer support panel" style={dockStyle} className={[styles.dock, mode !== 'expanded' ? styles.compactDock : ''].join(' ')}>
         {mode !== 'expanded' ? (
-          <button type="button" aria-label="Open support menu; drag or use arrow keys to move" title="Support — click to open, drag to move" aria-expanded={false} onKeyDown={moveWithKeyboard}
-            onPointerDown={event => { resetLauncherTilt(event.currentTarget); startDrag(event); }} onPointerMove={followPointer} onPointerLeave={event => resetLauncherTilt(event.currentTarget)} onPointerUp={finishDrag} onPointerCancel={event => { resetLauncherTilt(event.currentTarget); finishDrag(); }} onLostPointerCapture={event => { resetLauncherTilt(event.currentTarget); drag.current = null; }}
+          <button ref={launcherRef} type="button" aria-label="Open support menu; drag or use arrow keys to move" title="Support — click to open, drag to move" aria-expanded={false} onKeyDown={moveWithKeyboard}
+            onPointerDown={event => { resetLauncherTilt(event.currentTarget); startDrag(event); }} onPointerMove={moveDrag} onPointerUp={finishDrag} onPointerCancel={event => { resetLauncherTilt(event.currentTarget); finishDrag(); }} onLostPointerCapture={event => { resetLauncherTilt(event.currentTarget); drag.current = null; }}
             onClick={event => { if (!dragged.current || event.detail === 0) changeMode('expanded'); dragged.current = false; }}
             className={styles.launcher}>
             <span className={styles.launcherIcon}><Headset aria-hidden="true" className="size-5" strokeWidth={1.75} /></span>

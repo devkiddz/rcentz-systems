@@ -1,3 +1,4 @@
+import { projectImagesConfigured } from "@/features/admin/server/media/project-images";
 import Link from "next/link";
 import { requireAuth } from "@/features/auth/server/require-auth";
 import { ClientPageFrame } from "@/features/client/components/shell/ClientPageFrame";
@@ -29,6 +30,7 @@ export default async function ProfilePage() {
       <ClientDetailsForm
         key={user.id}
         section="account"
+        avatar={{ image: user.image, configured: projectImagesConfigured() }}
         updatedAt={user.updatedAt.toISOString()}
         initial={{
           name: user.name,

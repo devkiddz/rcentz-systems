@@ -69,8 +69,9 @@
 
 .launcherIcon {
   display: inline-flex;
-  transform: perspective(160px) rotateX(var(--support-rotate-x, 0deg)) rotateY(var(--support-rotate-y, 0deg));
-  transition: transform 120ms ease-out;
+  transform: perspective(100px) translate(var(--support-shift-x, 0px), var(--support-shift-y, 0px)) rotateX(var(--support-rotate-x, 0deg)) rotateY(var(--support-rotate-y, 0deg));
+  transition: transform 100ms ease-out;
+  filter: drop-shadow(1px 2px 0 var(--theme-accent-soft));
 }
 @media (hover: hover) and (pointer: fine) {
   .dock.compactDock:has(.launcher:hover) {
