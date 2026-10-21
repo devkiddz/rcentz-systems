@@ -9,5 +9,5 @@ export default async function AdminProjectRoute({params}:AdminProjectRouteProps)
  const {projectId}=await params;
  const project=await getAdminProject(projectId);
  if (!project) notFound();
- return <><AdminProjectPage project={project}/><div className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6"><AdminProjectGovernancePanel projectId={projectId}/></div></>;
+ return <><AdminProjectPage project={project}/><div className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6"><details className="rounded-xl border border-border p-4"><summary className="cursor-pointer text-sm font-medium">Manual milestone review and exceptions</summary><AdminProjectGovernancePanel projectId={projectId}/></details></div></>;
 }

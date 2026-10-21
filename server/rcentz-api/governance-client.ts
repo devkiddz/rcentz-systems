@@ -5,6 +5,8 @@ import { requireAdmin } from '@/features/auth/server/require-admin';
 const path = '/api/v1/internal/systems/project-governance';
 import type { ProjectMilestoneMutationInput } from '@/features/admin/server/projects/project-milestone-actions';
 export type GovernanceOperation =
+  | {operation:'delivery:read';projectId:string;cursor?:string}
+  | {operation:'delivery:commits';projectId:string;milestoneId:string;cursor?:string}
   | {operation:'governance:read';projectId:string}
   | {operation:'milestone:create';input:ProjectMilestoneMutationInput}
   | {operation:'milestone:update';milestoneId:string;input:ProjectMilestoneMutationInput}

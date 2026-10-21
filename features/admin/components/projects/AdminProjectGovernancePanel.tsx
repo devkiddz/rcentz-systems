@@ -43,7 +43,7 @@ export function AdminProjectGovernancePanel({projectId}:{projectId:string}) {
    </label>
    {item ? <><div className="flex flex-wrap gap-3 text-xs text-muted-foreground"><span>Criteria revision: {revision||'None'}</span><span>Review: {approved?'Approved':latest?.decision??'Not reviewed'}</span><span>{item.status}</span></div>
     <ul className="space-y-2">{item.criteria.map(c=><li key={c.id} className="rounded-lg border border-border p-3 text-sm"><div className="flex flex-wrap justify-between gap-3"><div><strong>{c.title}</strong> <span className="text-xs text-muted-foreground">{c.required?'Required':'Optional'} · {c.verified?'Verified':'Unverified'}</span>{c.description&&<p className="text-xs text-muted-foreground">{c.description}</p>}</div><div className="flex gap-2"><button className="text-xs underline" disabled={pending} onClick={()=>{setEditing(c.id);setTitle(c.title);setDescription(c.description??'');setRequired(c.required);}}>Edit</button><button className="text-xs underline" disabled={pending} onClick={()=>{
-      if (!c.verified && evidence.trim().length<3) {setError('Enter evidence reference/details below before verification.');return;}
+      if (!c.verified && evidence.trim().length<10) {setError('Enter evidence details (at least 10 characters) before verification.');return;}
       submit({operation:'criterion:verify',projectId,milestoneId:item.id,criterionId:c.id,verified:!c.verified,evidence:c.verified?null:{description:evidence.trim()}});
      }}>{c.verified?'Revoke':'Verify'}</button></div></div></li>)}</ul>
     <label className="block text-xs">Evidence for verification (reference, commit SHA or description)<input className={field} value={evidence} maxLength={1000} onChange={e=>setEvidence(e.target.value)}/></label>

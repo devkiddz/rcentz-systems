@@ -428,6 +428,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           projectName={project.name}
           milestones={project.milestones.map((milestone) => ({
             id: milestone.id,
+            deliveryManaged: Boolean(milestone.delivery),
 
             title: milestone.title,
 
