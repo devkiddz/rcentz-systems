@@ -149,8 +149,8 @@ export function ClientCommandSearch() {
         <DialogContent className="overflow-hidden border-border bg-background p-0 shadow-lg sm:max-w-[410px]">
           <DialogTitle className="sr-only">Search client workspace</DialogTitle>
 
-          <Command className="rounded-none bg-background text-foreground">
-            <div className="border-b border-border bg-background px-3">
+          <Command className="bg-background text-foreground">
+            <div className="bg-background px-3">
               <CommandInput
                 placeholder="Search workspace..."
                 className="min-h-14 border-0 bg-transparent py-2 text-sm text-foreground placeholder:text-muted"

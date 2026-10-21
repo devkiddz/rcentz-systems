@@ -1,0 +1,15 @@
+{
+  "app/admin/opportunities/layout.tsx": null,
+  "app/admin/opportunities/page.tsx": "663631fb4940ae0dccc02d35fa7f83d7969e751b4c660480e3d3194121be3679",
+  "app/admin/commercial-capabilities/page.tsx": null,
+  "app/admin/opportunities/settings/page.tsx": "f1037937b70e015501a155a582c63503a3f25069bc72c1cd2ce5fa7f8fa2260d",
+  "app/admin/opportunities/capabilities/page.tsx": "a33b9907c146b7d827b32462d4723b5a14f75cf758e326e3c3bced3534511538",
+  "app/admin/opportunities/legacy/page.tsx": null,
+  "app/admin/opportunities/clients/page.tsx": null,
+  "app/admin/opportunities/career/page.tsx": null,
+  "app/admin/opportunities/career/settings/page.tsx": null,
+  "app/admin/opportunities/clients/settings/page.tsx": null,
+  "app/admin/opportunities/legacy/settings/page.tsx": null,
+  "features/admin/components/shell/AdminSidebar.tsx": "10cbbd97070135e14ff710256aa506bb4af0122744dcf5b13ecbefb2e2f14892",
+  "server/opportunities/workspace-access.ts": null
+}

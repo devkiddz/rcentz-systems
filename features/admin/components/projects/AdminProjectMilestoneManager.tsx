@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useState, useTransition } from 'react';
@@ -20,7 +20,7 @@ import {
 
 import {
   adminProjectMilestonePriorityOptions,
-  adminProjectMilestoneStatusOptions,
+
   adminProjectMilestoneVisibilityOptions
 } from '@/features/admin/types/project-milestones';
 
@@ -253,11 +253,11 @@ export function AdminProjectMilestoneManager({
 
                       <span className="text-xs text-muted">{humanize(milestone.status)}</span>
 
-                      <span className="text-xs text-muted">·</span>
+                      <span className="text-xs text-muted">Â·</span>
 
                       <span className="text-xs text-muted">{humanize(milestone.priority)}</span>
 
-                      <span className="text-xs text-muted">·</span>
+                      <span className="text-xs text-muted">Â·</span>
 
                       <span className="text-xs text-muted">{humanize(milestone.visibility)}</span>
                     </div>
@@ -417,7 +417,7 @@ function MilestoneForm({
           </p>
 
           <p className="mt-1 text-xs text-muted">
-            Delivery state and client visibility are controlled here.
+            Edit milestone details here. Delivery state and progress are governed separately.
           </p>
         </div>
 
@@ -450,18 +450,17 @@ function MilestoneForm({
             />
           </Field>
 
-          <Field label="Status" required>
-            <select
-              name="status"
-              required
-              defaultValue={milestone?.status ?? 'PLANNED'}
-              className={selectClassName}>
-              {adminProjectMilestoneStatusOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          <input
+            type="hidden"
+            name="status"
+            value={milestone?.status ?? 'PLANNED'}
+            readOnly
+          />
+          <Field label="Status">
+            <p className="rounded-lg border border-border bg-surface-raised px-3 py-2 text-xs text-muted">
+              {humanize(milestone?.status ?? 'PLANNED')}
+              {' · Managed through milestone governance'}
+            </p>
           </Field>
 
           <Field label="Priority" required>
@@ -492,16 +491,17 @@ function MilestoneForm({
             </select>
           </Field>
 
-          <Field label="Progress" required>
-            <Input
-              name="progress"
-              type="number"
-              min={0}
-              max={100}
-              step={1}
-              required
-              defaultValue={milestone?.progress ?? 0}
-            />
+          <input
+            type="hidden"
+            name="progress"
+            value={milestone?.progress ?? 0}
+            readOnly
+          />
+          <Field label="Progress">
+            <p className="rounded-lg border border-border bg-surface-raised px-3 py-2 text-xs text-muted">
+              {milestone?.progress ?? 0}%
+              {' · Calculated through milestone governance'}
+            </p>
           </Field>
 
           <Field label="Sort order">
@@ -613,3 +613,4 @@ function MilestoneStat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
