@@ -343,7 +343,7 @@ export async function createAdminProject(
     }
   }
 
-  await prisma.project.create({
+  const createdProject = await prisma.project.create({
     data: {
       clientId:
         clientId || null,
@@ -398,5 +398,5 @@ export async function createAdminProject(
     );
   }
 
-  redirect('/admin/projects');
+  redirect(`/admin/projects/${createdProject.id}/sources`);
 }
