@@ -1,3 +1,4 @@
+import { MilestoneDisclosure } from '@/features/projects/components/MilestoneDisclosure';
 import { CalendarDays, CheckCircle2, CircleDot, FileText, Layers3, PackageCheck } from 'lucide-react';
 
 import type { ClientProject } from '@/features/client/server/projects/get-client-project';
@@ -194,9 +195,8 @@ export function ClientProjectMilestonesSection({ project }: ClientProjectMilesto
               const record = milestone.records[0] ?? null;
 
               return (
-                <div
-                  key={milestone.id}
-                  className="grid gap-5 px-4 py-5 sm:px-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+                <MilestoneDisclosure key={milestone.id} projectId={project.id} milestoneId={milestone.id} title={milestone.title} status={milestone.status}>
+                <div className="grid gap-5 px-5 pb-5 sm:px-6 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
@@ -210,7 +210,7 @@ export function ClientProjectMilestonesSection({ project }: ClientProjectMilesto
                       <span className="text-[10px] text-muted-foreground">{humanize(milestone.status)}</span>
                     </div>
 
-                    <p className="mt-1.5 text-[13px] font-semibold text-foreground">{milestone.title}</p>
+
 
                     {topics.length > 0 ? (
                       <p className="mt-1.5 line-clamp-1 text-[10px] text-muted-foreground">
@@ -258,6 +258,7 @@ export function ClientProjectMilestonesSection({ project }: ClientProjectMilesto
                     </div>
                   </div>
                 </div>
+                </MilestoneDisclosure>
               );
             })}
           </div>

@@ -1,4 +1,5 @@
-﻿'use client';
+'use client';
+import { MilestoneDisclosure } from '@/features/projects/components/MilestoneDisclosure';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useState, useTransition } from 'react';
@@ -25,6 +26,7 @@ import {
 } from '@/features/admin/types/project-milestones';
 
 type MilestoneItem = {
+  deliveryManaged: boolean;
   id: string;
 
   title: string;
@@ -186,7 +188,7 @@ export function AdminProjectMilestoneManager({
             }}
             className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90">
             <Plus className="size-3.5" />
-            Add milestone
+            Add manual milestone
           </button>
         </div>
       </header>
@@ -238,7 +240,8 @@ export function AdminProjectMilestoneManager({
             const canDelete = milestone.status === 'PLANNED' && milestone.visibility === 'INTERNAL';
 
             return (
-              <article key={milestone.id} className="px-5 py-5 sm:px-6">
+              <MilestoneDisclosure key={milestone.id} projectId={projectId} milestoneId={milestone.id} title={milestone.title} status={milestone.status}>
+              <article className="px-5 pb-5 sm:px-6">
                 <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -253,18 +256,16 @@ export function AdminProjectMilestoneManager({
 
                       <span className="text-xs text-muted">{humanize(milestone.status)}</span>
 
-                      <span className="text-xs text-muted">Â·</span>
+                      <span className="text-xs text-muted">·</span>
 
                       <span className="text-xs text-muted">{humanize(milestone.priority)}</span>
 
-                      <span className="text-xs text-muted">Â·</span>
+                      <span className="text-xs text-muted">·</span>
 
                       <span className="text-xs text-muted">{humanize(milestone.visibility)}</span>
                     </div>
 
-                    <h3 className="mt-2 text-sm font-semibold tracking-[-0.02em] text-foreground">
-                      {milestone.title}
-                    </h3>
+
 
                     {milestone.description ? (
                       <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted">
@@ -286,7 +287,7 @@ export function AdminProjectMilestoneManager({
                       <MilestoneStat label="Features" value={String(milestone.counts.features)} />
                     </div>
 
-                    <div className="flex items-center gap-2 lg:border-l lg:border-border lg:pl-4">
+                    {!milestone.deliveryManaged ? <div className="flex items-center gap-2 lg:border-l lg:border-border lg:pl-4">
                       <button
                         type="button"
                         onClick={() => {
@@ -339,10 +340,11 @@ export function AdminProjectMilestoneManager({
                           <Trash2 className="size-3.5" />
                         </button>
                       )}
-                    </div>
+                    </div> : <span className="text-xs text-muted">Tracked from GitHub</span>}
                   </div>
                 </div>
               </article>
+              </MilestoneDisclosure>
             );
           })}
         </div>
@@ -352,7 +354,7 @@ export function AdminProjectMilestoneManager({
 
           <p className="mt-3 text-sm font-semibold text-foreground">No milestones yet</p>
 
-          <p className="mt-1 text-xs text-muted">Create the first delivery milestone for this project.</p>
+          <p className="mt-1 text-xs text-muted">Linked GitHub milestone commits will appear here. You can also add a manual milestone.</p>
         </div>
       )}
     </section>

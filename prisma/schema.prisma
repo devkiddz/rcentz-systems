@@ -1421,6 +1421,8 @@ model SubscriptionUsageRecord {
 // =========================================================
 
 model Project {
+  deliverySources DeliverySource[]
+  governanceEvents ProjectGovernanceEvent[]
   id               String  @id @default(cuid())
   clientId         String?
   serviceRequestId String? @unique
@@ -1575,6 +1577,8 @@ model ProjectTechnology {
 }
 
 model ProjectMilestone {
+  delivery DeliveryMilestone?
+  governanceEvents ProjectGovernanceEvent[]
   id          String @id @default(cuid())
   projectId   String
   createdById String
@@ -3370,4 +3374,79 @@ model ProjectProgressOverride {
 
   @@index([projectId, createdAt])
   @@index([actorId, createdAt])
+}
+
+// Provider facts are ingested only by the server-controlled delivery engine.
+model DeliverySource {
+  id String @id
+  projectId String
+  repository String
+  branch String
+  configHash String
+  cursorSha String
+  activeKey String?
+  leaseToken String?
+  leaseUntil DateTime?
+  lastSyncedAt DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  milestones DeliveryMilestone[]
+  commits DeliveryCommit[]
+  @@unique([repository, branch])
+  @@index([projectId])
+}
+model DeliveryMilestone {
+  id String @id @default(cuid())
+  sourceId String
+  key String
+  milestoneId String @unique
+  phase String @default("OPEN")
+  completionSha String?
+  checkedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  source DeliverySource @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  milestone ProjectMilestone @relation(fields: [milestoneId], references: [id], onDelete: Restrict)
+  commits DeliveryCommit[]
+  observations DeliveryObservation[]
+  @@unique([sourceId, key])
+  @@index([sourceId, phase, checkedAt])
+}
+model DeliveryCommit {
+  id String @id @default(cuid())
+  sourceId String
+  deliveryMilestoneId String?
+  sha String
+  message String
+  committedAt DateTime
+  issue String?
+  createdAt DateTime @default(now())
+  source DeliverySource @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  deliveryMilestone DeliveryMilestone? @relation(fields: [deliveryMilestoneId], references: [id], onDelete: Restrict)
+  @@unique([sourceId, sha])
+  @@index([deliveryMilestoneId, createdAt, id])
+}
+model DeliveryObservation {
+  id String @id @default(cuid())
+  deliveryMilestoneId String
+  commitSha String
+  snapshot Json
+  fingerprint String
+  createdAt DateTime @default(now())
+  deliveryMilestone DeliveryMilestone @relation(fields: [deliveryMilestoneId], references: [id], onDelete: Restrict)
+  @@index([deliveryMilestoneId, createdAt, id])
+}
+model ProjectGovernanceEvent {
+  id String @id @default(cuid())
+  projectId String
+  milestoneId String?
+  actorId String
+  operation String
+  snapshot Json
+  createdAt DateTime @default(now())
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  milestone ProjectMilestone? @relation(fields: [milestoneId], references: [id], onDelete: Restrict)
+  @@index([projectId, createdAt])
+  @@index([milestoneId, createdAt])
 }

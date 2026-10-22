@@ -173,6 +173,7 @@ export const getAdminProject = cache(async (projectId: string) => {
           completedAt: true,
 
           completionNotes: true,
+          delivery: { select: { id: true } },
 
           createdAt: true,
           updatedAt: true,
