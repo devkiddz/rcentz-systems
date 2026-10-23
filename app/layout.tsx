@@ -22,8 +22,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
   title: {
-    default: 'rcentz',
-    template: '%s | rcentz'
+    default: 'Systems | Rcentz',
+    template: '%s | Systems'
   },
   description: 'rcentz builds and operates modern software, digital products, and client systems.'
 };
