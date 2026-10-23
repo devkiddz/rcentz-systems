@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 import { Activity, ArrowUpRight, CheckCircle2, LockKeyhole, Rocket, ServerCog } from 'lucide-react';
 
-import { RcentzLogo } from '@/ui-shell/brand/RcentzLogo';
-import { RcentzMark } from '@/ui-shell/brand/RcentzMark';
+import { RcentzBrandLockup } from '@/ui-shell/brand/RcentzBrandLockup';
+import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
 
 type AuthMode = 'login' | 'register';
 
@@ -53,9 +53,7 @@ export function AuthSplitShell({ children, mode }: AuthSplitShellProps) {
         <section className="relative hidden min-h-screen border-r border-border/70 px-10 py-10 lg:flex lg:flex-col xl:px-14 xl:py-12">
           <div className="flex items-center justify-between gap-8">
             <Link href="/" aria-label="Rcentz home" className="inline-flex items-center gap-2.5">
-              <RcentzLogo />
-
-              <span className="text-sm font-semibold tracking-[-0.025em] text-foreground">rcentz</span>
+              <RcentzBrandLockup className="w-26 shrink-0 md:w-36 xl:w-40" />
             </Link>
 
             <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
@@ -81,7 +79,7 @@ export function AuthSplitShell({ children, mode }: AuthSplitShellProps) {
                 <div className="flex items-center justify-between border-b border-border/70 px-5 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-8 items-center justify-center rounded-xl border border-border bg-background">
-                      <RcentzMark title="" className="size-4 text-theme-accent" />
+                      <RcentzBrandSymbol className="size-4" />
                     </div>
 
                     <div>
@@ -200,7 +198,7 @@ export function AuthSplitShell({ children, mode }: AuthSplitShellProps) {
           <div className="flex items-center justify-between gap-8 border-t border-border/70 pt-6 font-mono text-[8px] uppercase tracking-[0.15em] text-muted">
             <span>Rcentz Systems</span>
 
-            <span>Software · Systems · Production</span>
+            <span>Software Â· Systems Â· Production</span>
           </div>
         </section>
 
@@ -208,9 +206,7 @@ export function AuthSplitShell({ children, mode }: AuthSplitShellProps) {
           <div className="w-full max-w-[460px]">
             <div className="mb-12 flex items-center justify-between lg:hidden">
               <Link href="/" aria-label="Rcentz home" className="inline-flex items-center gap-2.5">
-                <RcentzLogo />
-
-                <span className="text-sm font-semibold tracking-[-0.025em] text-foreground">rcentz</span>
+                <RcentzBrandLockup className="w-26 shrink-0 md:w-36 xl:w-40" />
               </Link>
 
               <div className="flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.15em] text-muted">

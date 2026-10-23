@@ -88,7 +88,7 @@ export function ServicesHero() {
           <div className="relative overflow-hidden rounded-t-2xl border border-border-strong bg-background/95 lg:rounded-2xl">
             <div className="flex h-9 items-center justify-between border-b border-border px-3">
               <span className="text-xs font-medium text-muted-foreground">
-                rcentz.systems
+                Rcentz Systems
               </span>
               <span className="text-xs text-muted-foreground">
                 Project workspace

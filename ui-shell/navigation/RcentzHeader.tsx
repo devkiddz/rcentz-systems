@@ -1,6 +1,6 @@
 'use client';
 
-import { RcentzBrandLogo } from '../brand/RcentzBrandLogo';
+import { RcentzBrandLockup } from '../brand/RcentzBrandLockup';
 
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
@@ -74,7 +74,7 @@ export function RcentzHeader() {
               onClick={closeMobileNavigation}
               aria-label="Rcentz Systems home"
               className="flex shrink-0 items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <RcentzBrandLogo className="h-auto w-20 shrink-0 sm:w-24" />
+              <RcentzBrandLockup className="w-26 shrink-0 md:w-28 xl:w-32" />
             </Link>
 
             <div className="hidden min-w-0 flex-1 xl:block">
