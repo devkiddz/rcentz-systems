@@ -78,6 +78,11 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
         <div className="rcentz-dashboard-inner mx-auto w-full max-w-[1200px] space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
+              href={`/admin/projects/${project.id}/sources`}
+              className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-border bg-background px-4 text-xs font-semibold text-foreground transition-colors hover:bg-surface-muted">
+              Manage GitHub sources
+            </Link>
+            <Link
               href={`/admin/projects/${project.id}`}
               className="inline-flex items-center gap-2 text-xs font-medium text-muted transition-colors hover:text-foreground">
               <ArrowLeft className="size-3.5" />
