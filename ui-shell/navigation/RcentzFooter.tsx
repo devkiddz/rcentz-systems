@@ -122,7 +122,11 @@ export function RcentzFooter() {
         ))}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5 text-xs text-muted-foreground">
-        <p>Â© {new Date().getFullYear()} Rcentz Systems.</p>
+        <div className="space-y-1">
+          <p>&copy; {new Date().getFullYear()} Rcentz. All rights reserved.</p>
+          <p>Systems&trade; is a product of Rcentz.</p>
+          <p>Rcentz product family: Waffi&trade; &middot; Products&trade; &middot; Business Suite&trade;</p>
+        </div>
         <div className="flex flex-wrap items-center gap-5">
           <Link
             href="/login"
