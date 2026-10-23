@@ -60,9 +60,9 @@
      RCENTZ BRAND ACCENT
      --------------------------------------------------------- */
 
-  --theme-accent-vivid: #171717;
-  --theme-accent: #404040;
-  --theme-accent-strong: #171717;
+  --theme-accent-vivid: #4260E6;
+  --theme-accent: #4260E6;
+  --theme-accent-strong: #1B22A7;
 
   --theme-accent-soft: rgb(0 0 0 / 0.06);
   --theme-accent-faint: rgb(0 0 0 / 0.025);
@@ -192,7 +192,7 @@
 
   /*
     Environmental canvas
-    ↓
+    â†“
     Canonical Rcentz content axis
 
     Canvas geometry is intentionally preserved for now.
@@ -293,9 +293,9 @@
      RCENTZ BRAND ACCENT
      --------------------------------------------------------- */
 
-  --theme-accent-vivid: #ededed;
-  --theme-accent: #d4d4d4;
-  --theme-accent-strong: #ffffff;
+  --theme-accent-vivid: #4260E6;
+  --theme-accent: #4260E6;
+  --theme-accent-strong: #4260E6;
 
   --theme-accent-soft: rgb(255 255 255 / 0.07);
   --theme-accent-faint: rgb(255 255 255 / 0.025);

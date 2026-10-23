@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowUpRight, Mail } from 'lucide-react';
-import { RcentzBrandLogo } from '../brand/RcentzBrandLogo';
+import { RcentzBrandLockup } from '../brand/RcentzBrandLockup';
 import { RcentzGithubIcon } from '../brand/RcentzGithubIcon';
 import { projectEntryUrl } from '@/features/systems/lib/project-entry';
 
@@ -63,7 +63,7 @@ export function RcentzFooter() {
             aria-label="Rcentz Systems home"
             className="inline-flex min-h-11 items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <RcentzBrandLogo className="h-auto w-20" />
+            <RcentzBrandLockup className="w-28" />
           </Link>
           <p className="mt-3 max-w-xs text-sm leading-6 text-muted-foreground">
             Applications, connected workflows and digital infrastructure built
@@ -122,7 +122,7 @@ export function RcentzFooter() {
         ))}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5 text-xs text-muted-foreground">
-        <p>© {new Date().getFullYear()} Rcentz Systems.</p>
+        <p>Â© {new Date().getFullYear()} Rcentz Systems.</p>
         <div className="flex flex-wrap items-center gap-5">
           <Link
             href="/login"
