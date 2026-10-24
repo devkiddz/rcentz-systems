@@ -4,28 +4,32 @@ import { useState } from 'react';
 
 import { Bell, CheckSquare2, UsersRound } from 'lucide-react';
 
-import { AdminClientsOverview } from './AdminClientsOverview';
+import { AdminClientIntelligenceOverview } from './AdminClientIntelligenceOverview';
 import { AdminNotificationsOverview } from './AdminNotificationsOverview';
 import { AdminTasksOverview } from './AdminTasksOverview';
 
 import type { OverviewClient } from '@/features/admin/server/overview/get-overview-clients';
+import type { CommercialPreview } from '@/features/admin/server/overview/get-commercial-preview';
 import type { OverviewNotifications } from '@/features/admin/server/overview/get-overview-notifications';
+import type { OverviewMessages } from '@/features/admin/server/overview/get-overview-messages';
 import type { OverviewTasks } from '@/features/admin/server/overview/get-overview-tasks';
 
 type AdminOperationsTabsProps = {
   tasks: OverviewTasks;
   clients: OverviewClient[];
+  commercialPreview: CommercialPreview;
   notifications: OverviewNotifications;
+  messages: OverviewMessages;
 };
 
 type OperationsTab = 'tasks' | 'clients' | 'notifications';
 
-export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOperationsTabsProps) {
+export function AdminOperationsTabs({ tasks, clients, notifications, commercialPreview, messages }: AdminOperationsTabsProps) {
   const [activeTab, setActiveTab] = useState<OperationsTab>('tasks');
 
   const taskCount = tasks.tasks.length;
   const clientCount = clients.length;
-  const notificationCount = notifications.unreadCount;
+  const notificationCount = notifications.unreadCount + messages.unreadCount;
 
   const tabs = [
     {
@@ -49,7 +53,7 @@ export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOper
   ];
 
   return (
-    <section className="flex h-[420px] max-h-[420px] flex-col overflow-hidden rounded-2xl border border-border bg-background">
+    <section className="flex h-[500px] max-h-[500px] min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-background lg:h-[460px] lg:max-h-[460px]">
       <div
         role="tablist"
         aria-label="Admin operations"
@@ -88,13 +92,16 @@ export function AdminOperationsTabs({ tasks, clients, notifications }: AdminOper
         })}
       </div>
 
-      <div className="min-h-0 flex-1 p-4">
-        <div role="tabpanel" className="flex h-full min-h-0 flex-col">
+      <div className="min-h-0 min-w-0 flex-1 p-3 sm:p-4">
+        <div role="tabpanel" className="flex h-full min-h-0 min-w-0 flex-col">
           {activeTab === 'tasks' ? <AdminTasksOverview data={tasks} /> : null}
 
-          {activeTab === 'clients' ? <AdminClientsOverview clients={clients} /> : null}
+          {activeTab === 'clients' ? <AdminClientIntelligenceOverview
+            clients={clients}
+            commercialPreview={commercialPreview}
+          /> : null}
 
-          {activeTab === 'notifications' ? <AdminNotificationsOverview data={notifications} /> : null}
+          {activeTab === 'notifications' ? <AdminNotificationsOverview data={notifications} messages={messages} /> : null}
         </div>
       </div>
     </section>

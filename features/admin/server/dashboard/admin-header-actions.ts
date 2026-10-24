@@ -104,8 +104,27 @@ export async function markAdminConversationRead(
     '/admin',
     'layout'
   );
+  revalidatePath('/admin/messages');
 
   return {
     success: true as const
   };
+}
+export async function markAllAdminConversationsRead() {
+  const admin = await requireAdmin();
+  const cutoff = new Date();
+
+  await prisma.conversationParticipant.updateMany({
+    where: {
+      userId: admin.id,
+      leftAt: null,
+      conversation: { status: 'ACTIVE' }
+    },
+    data: { lastReadAt: cutoff }
+  });
+
+  revalidatePath('/admin', 'layout');
+  revalidatePath('/admin/messages');
+
+  return { success: true as const };
 }

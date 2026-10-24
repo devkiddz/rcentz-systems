@@ -163,6 +163,7 @@ export async function getAdminHeaderFeed(
           take: 1,
 
           select: {
+            id: true,
             body: true,
             senderId: true,
             createdAt: true,
@@ -214,6 +215,7 @@ export async function getAdminHeaderFeed(
 
       return {
         id: conversation.id,
+        latestMessageId: latestMessage?.id ?? null,
 
         title,
 

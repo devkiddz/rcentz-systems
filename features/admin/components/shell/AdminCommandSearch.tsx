@@ -113,7 +113,7 @@ export function AdminCommandSearch() {
             <div className="border-b border-border bg-background px-3">
               <CommandInput
                 placeholder="Search admin..."
-                className="min-h-14 py-2 border-0 bg-transparent text-sm text-foreground placeholder:text-muted"
+                className="min-h-14 py-2 border-0 bg-transparent text-sm text-foreground placeholder:text-muted outline-none! focus:outline-none! focus-visible:outline-none! focus-visible:ring-0! focus-visible:shadow-none!"
               />
             </div>
 

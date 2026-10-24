@@ -20,12 +20,12 @@ export function AdminOverviewMetrics({ metrics }: AdminOverviewMetricsProps) {
     <section
       aria-label="Overview metrics"
       className="overflow-hidden rounded-2xl border border-border bg-border">
-      <div className="gap-px flex min-w-0 overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-smooth pb-2 lg:grid lg:grid-cols-5 lg:overflow-visible lg:snap-none lg:pb-0 flex-nowrap [&>*]:!w-[220px] [&>*]:!min-w-[220px] [&>*]:!max-w-none [&>*]:!flex-none [&>*]:snap-start lg:[&>*]:!w-auto lg:[&>*]:!min-w-0 lg:[&>*]:!max-w-none lg:[&>*]:!flex-auto">
+      <div className="flex w-full min-w-0 flex-nowrap gap-px overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-smooth lg:grid lg:grid-cols-5 lg:overflow-visible lg:snap-none">
         {metrics.map(metric => (
           <Link
             key={metric.label}
             href={metric.href}
-            className="group min-w-0 bg-background px-4 py-4 transition-colors hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-theme-accent/40 sm:min-w-[44%] xl:min-w-0 xl:px-5">
+            className="group box-border block w-[220px] min-w-[220px] flex-none shrink-0 snap-start bg-background px-4 py-4 transition-colors hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-theme-accent/40 lg:w-auto lg:min-w-0 lg:flex-auto lg:snap-none xl:px-5">
             <div className="flex items-center justify-between gap-3">
               <p className="truncate text-xs font-medium text-muted transition-colors group-hover:text-foreground">
                 {metric.label}

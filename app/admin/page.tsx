@@ -7,8 +7,10 @@ import { AdminOverviewMetrics } from '@/features/admin/components/overview/Admin
 import { getActiveProjectMonitors } from '@/features/admin/server/overview/get-active-project-monitors';
 import { getFinanceOverview } from '@/features/admin/server/overview/get-finance-overview';
 import { getOverviewClients } from '@/features/admin/server/overview/get-overview-clients';
+import { getCommercialPreview } from '@/features/admin/server/overview/get-commercial-preview';
 import { getOverviewMetrics } from '@/features/admin/server/overview/get-overview-metrics';
 import { getOverviewNotifications } from '@/features/admin/server/overview/get-overview-notifications';
+import { getOverviewMessages } from '@/features/admin/server/overview/get-overview-messages';
 import { getOverviewTasks } from '@/features/admin/server/overview/get-overview-tasks';
 
 import { requireAdmin } from '@/features/auth/server/require-admin';
@@ -31,6 +33,12 @@ export default async function AdminPage() {
     getOverviewNotifications(user.id),
     getFinanceOverview()
   ]);
+
+  const commercialPreview = await getCommercialPreview(
+    user.role === 'SUPER_ADMIN'
+  );
+
+  const overviewMessages = await getOverviewMessages(user.id);
 
   const metrics = [
     {
@@ -87,7 +95,9 @@ export default async function AdminPage() {
         <AdminOperationsTabs
           tasks={overviewTasks}
           clients={overviewClients}
+          commercialPreview={commercialPreview}
           notifications={overviewNotifications}
+          messages={overviewMessages}
         />
       </section>
 

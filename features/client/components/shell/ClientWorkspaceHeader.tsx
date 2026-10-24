@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import {
+  ArrowLeftRight,
   BriefcaseBusiness,
   FolderPlus,
   Headphones,
@@ -13,6 +14,7 @@ import {
   ShoppingBag
 } from 'lucide-react';
 
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,6 +36,7 @@ type Props = {
     name: string;
     email: string;
     image: string | null;
+    role: 'USER' | 'CLIENT' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN';
   };
 };
 
@@ -206,6 +209,17 @@ export function ClientWorkspaceHeader({ user }: Props) {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && (
+              <Link
+                href="/admin"
+                aria-label="Go to admin workspace"
+                title="Go to admin workspace"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface-raised px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40 sm:px-3">
+                <ArrowLeftRight aria-hidden="true" className="size-4" />
+                <span className="hidden sm:inline">Admin workspace</span>
+              </Link>
+            )}
 
             <button
               type="button"
