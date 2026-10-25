@@ -388,6 +388,32 @@ function ProjectCard({ project, activity }: { project: AdminProjectListItem; act
           <DeliveryProgress value={project.progress} label="Project progress" />
         </div>
 
+        {project.milestonePreview.length > 0 ? (
+          <div className="rounded-xl border border-border bg-background px-3 py-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
+                Milestones · {project.milestonePreview.length}
+              </p>
+              <span className="text-[10px] text-muted">Recorded status</span>
+            </div>
+            <ol className="mt-2 space-y-2">
+              {project.milestonePreview.slice(0, 2).map(milestone => (
+                <li key={milestone.id} className="flex items-center justify-between gap-2 text-xs">
+                  <span className="min-w-0 truncate text-foreground" title={milestone.title}>
+                    {milestone.title}
+                  </span>
+                  <span className="shrink-0 text-[10px] text-muted">{humanize(milestone.status)}</span>
+                </li>
+              ))}
+            </ol>
+            {project.milestonePreview.length > 2 ? (
+              <p className="mt-2 text-[10px] text-muted">
+                +{project.milestonePreview.length - 2} more in More details
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className="rounded-xl border border-border bg-surface-raised p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
             Highlight
@@ -419,6 +445,20 @@ function ProjectCard({ project, activity }: { project: AdminProjectListItem; act
               <ProjectMetric label="Features" value={project._count.features} />
               <ProjectMetric label="Tasks" value={project._count.tasks} />
             </div>
+
+            {project.milestonePreview.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">Recorded milestones</p>
+                <ol className="space-y-2">
+                  {project.milestonePreview.map(milestone => (
+                    <li key={milestone.id} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-2 text-xs">
+                      <span className="min-w-0 break-words text-foreground">{milestone.title}</span>
+                      <span className="shrink-0 text-muted">{humanize(milestone.status)} · {milestone.progress}%</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
 
             <MilestoneHealthChart
               completed={project.milestoneHealth.completed}

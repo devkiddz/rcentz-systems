@@ -110,9 +110,15 @@ export const getAdminProjects =
                   'CANCELLED'
               }
             },
-
+            orderBy: [
+              { sortOrder: 'asc' },
+              { createdAt: 'asc' }
+            ],
             select: {
-              status: true
+              id: true,
+              title: true,
+              status: true,
+              progress: true
             }
           },
 
@@ -175,6 +181,14 @@ export const getAdminProjects =
 
             screenshot:
               media[0] ?? null,
+
+            // Display canonical milestone records; counts alone hide their identity.
+            milestonePreview: milestones.map(milestone => ({
+              id: milestone.id,
+              title: milestone.title,
+              status: milestone.status,
+              progress: milestone.progress
+            })),
 
             milestoneHealth: {
               completed,
