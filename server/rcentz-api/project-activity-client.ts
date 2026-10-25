@@ -1,3 +1,4 @@
+
 import 'server-only';
 
 import { createHmac, randomUUID } from 'node:crypto';
@@ -21,8 +22,13 @@ export type ProjectMilestoneActivity = ProjectActivityEntry & {
 
 export type ProjectActivitySummary = {
   projectId: string;
-  state: 'NO_SOURCE' | 'SOURCE_LIMIT_EXCEEDED' |
-    'AWAITING_SYNC' | 'SYNC_ERROR' | 'SYNCED' | 'UNAVAILABLE';
+  state:
+    | 'NO_SOURCE'
+    | 'SOURCE_LIMIT_EXCEEDED'
+    | 'AWAITING_SYNC'
+    | 'SYNC_ERROR'
+    | 'SYNCED'
+    | 'UNAVAILABLE';
   verification: 'NOT_EVALUATED';
   latestCommit: ProjectActivityEntry | null;
   latestMilestoneEvent: ProjectMilestoneActivity | null;
@@ -53,16 +59,18 @@ async function readBatch(
   const nonce = randomUUID();
 
   const signature = createHmac('sha256', secret)
-    .update(JSON.stringify([
-      'rcentz-api:v1',
-      'POST',
-      endpoint,
-      'systems',
-      userId,
-      issuedAt,
-      nonce,
-      body
-    ]))
+    .update(
+      JSON.stringify([
+        'rcentz-api:v1',
+        'POST',
+        endpoint,
+        'systems',
+        userId,
+        issuedAt,
+        nonce,
+        body
+      ])
+    )
     .digest('hex');
 
   const response = await fetch(new URL(endpoint, base), {
@@ -81,7 +89,11 @@ async function readBatch(
     body
   });
 
-  if (!response.ok) throw new Error('Activity API unavailable');
+  if (!response.ok) {
+    throw new Error(
+      `Activity API returned HTTP ${response.status}`
+    );
+  }
 
   const envelope: unknown = await response.json();
 
@@ -105,30 +117,58 @@ async function readBatch(
 export async function readProjectActivitySummaries(
   projectIds: string[]
 ): Promise<Record<string, ProjectActivitySummary>> {
-  if (!projectIds.length) return {};
+  if (!projectIds.length) {
+    return {};
+  }
 
   const user = await requireAdmin();
   const secret = process.env.RCENTZ_SYSTEMS_API_SECRET;
   const baseValue = process.env.RCENTZ_API_URL;
 
   const result: Record<string, ProjectActivitySummary> = {};
-  for (const id of projectIds) result[id] = unavailable(id);
 
-  if (!secret || secret.length < 32 || !baseValue) return result;
+  for (const id of projectIds) {
+    result[id] = unavailable(id);
+  }
+
+  if (!secret || secret.length < 32 || !baseValue) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(
+        '[PMC-01 activity request] Missing or invalid API configuration'
+      );
+    }
+
+    return result;
+  }
 
   let base: URL;
+
   try {
     base = new URL(baseValue);
+
+    const validHttps = base.protocol === 'https:';
+
+    const validLocalHttp =
+      process.env.NODE_ENV !== 'production' &&
+      base.protocol === 'http:' &&
+      ['localhost', '127.0.0.1'].includes(base.hostname);
+
     if (
-      base.username || base.password || base.search || base.hash ||
-      (base.protocol !== 'https:' &&
-        !(process.env.NODE_ENV !== 'production' &&
-          base.protocol === 'http:' &&
-          ['localhost', '127.0.0.1'].includes(base.hostname)))
+      base.username ||
+      base.password ||
+      base.search ||
+      base.hash ||
+      (!validHttps && !validLocalHttp)
     ) {
-      return result;
+      throw new Error('Invalid API URL');
     }
   } catch {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(
+        '[PMC-01 activity request] Invalid RCENTZ_API_URL'
+      );
+    }
+
     return result;
   }
 
@@ -138,7 +178,13 @@ export async function readProjectActivitySummaries(
     const ids = projectIds.slice(i, i + 20);
 
     try {
-      const summaries = await readBatch(ids, user.id, base, secret);
+      const summaries = await readBatch(
+        ids,
+        user.id,
+        base,
+        secret
+      );
+
       const expected = new Set(ids);
 
       for (const item of summaries) {
@@ -146,8 +192,17 @@ export async function readProjectActivitySummaries(
           result[item.projectId] = item;
         }
       }
-    } catch {
-      // A missing deployment or failed read must not break the project register.
+    } catch (error) {
+      // Activity failures must not break the project register.
+      // Only log safe diagnostics during local development.
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(
+          '[PMC-01 activity request]',
+          error instanceof Error
+            ? error.message
+            : 'Unknown activity request error'
+        );
+      }
     }
   }
 
