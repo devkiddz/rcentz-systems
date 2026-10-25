@@ -1,18 +1,17 @@
-'use client';
+﻿'use client';
+import type { ProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
+import { ProjectActivityRows } from '@/features/admin/components/projects/ProjectActivityRows';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useMemo, useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import {
-  ArrowUpRight,
   CheckCircle2,
+  CheckCheck,
   Clock3,
-  Eye,
   FolderKanban,
-  ImageIcon,
   Plus,
   Search,
   UserRound
@@ -27,6 +26,8 @@ import type {
 
 type AdminProjectsPageProps = {
   data: AdminProjectsData;
+
+  activity: Record<string, ProjectActivitySummary>;
 };
 
 type ProjectFilter = 'ALL' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'UNASSIGNED';
@@ -64,7 +65,7 @@ function formatDate(value: Date | null) {
   }).format(value);
 }
 
-export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
+export function AdminProjectsPage({ data, activity }: AdminProjectsPageProps) {
   const [filter, setFilter] = useState<ProjectFilter>('ALL');
 
   const [search, setSearch] = useState('');
@@ -257,9 +258,9 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
           </header>
 
           <div className="p-5 sm:p-6">
-            <div className="grid gap-6 xl:grid-cols-2">
+            <div className="grid items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
               {projects.map(project => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project} activity={activity[project.id]} />
               ))}
 
               {filter === 'ALL' && !search.trim() ? <CreateProjectPlaceholder /> : null}
@@ -281,187 +282,160 @@ export function AdminProjectsPage({ data }: AdminProjectsPageProps) {
   );
 }
 
-function ProjectCard({ project }: { project: AdminProjectListItem }) {
+
+function ProjectCard({ project, activity }: { project: AdminProjectListItem; activity?: ProjectActivitySummary }) {
+  const [expanded, setExpanded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const clientLabel =
-    project.client?.clientProfile?.companyName ?? project.client?.name ?? 'No client assigned';
+    project.client?.clientProfile?.companyName ??
+    project.client?.name ??
+    'Unassigned';
 
-  const canPreview = project.visibility === 'PUBLIC' && Boolean(project.portfolio?.publishedAt);
+  const canPreview =
+    project.visibility === 'PUBLIC' &&
+    Boolean(project.portfolio?.publishedAt);
 
-  const liveUrl = project.portfolio?.liveUrl ?? null;
+  const highlight =
+    project.status === 'ON_HOLD'
+      ? 'Project currently on hold'
+      : !project.client
+        ? 'Client assignment required'
+        : project.milestoneHealth.active > 0
+          ? `${project.milestoneHealth.active} active milestone(s)`
+          : project.milestoneHealth.total === 0
+            ? 'No milestones recorded'
+            : project.status === 'COMPLETED'
+              ? 'Project delivery completed'
+              : 'No active milestone recorded';
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md">
-      <Link
-        href={`/admin/projects/${project.id}`}
-        aria-label={`Open ${project.name} admin workspace`}
-        className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40"
-      />
+    <article className="relative flex min-w-0 flex-col overflow-visible rounded-2xl border border-border bg-surface transition-colors hover:border-border-strong">
+      <div className="flex flex-1 flex-col gap-4 p-4">
 
-      <div className="relative aspect-[16/6] overflow-hidden border-b border-border bg-surface-muted">
-        {project.screenshot ? (
-          <Image
-            src={project.screenshot.url}
-            unoptimized={project.screenshot.url.startsWith('/api/projects/')}
-            alt={project.screenshot.alt ?? `${project.name} project`}
-            fill
-            sizes="(max-width: 1279px) 100vw, 50vw"
-            className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="mx-auto flex size-11 items-center justify-center rounded-xl border border-border bg-background">
-                <ImageIcon className="size-4 text-muted" />
-              </div>
-
-              <p className="mt-2 text-xs text-muted">No project image</p>
+        <div className="flex items-start gap-3">
+          <div
+            className="relative size-16 shrink-0"
+            role="img"
+            aria-label={`${project.name}: ${project.progress}% complete`}
+          >
+            <svg viewBox="0 0 64 64" className="absolute inset-0 size-full -rotate-90" aria-hidden="true">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" strokeWidth="4" className="text-theme-accent/15" />
+              <circle
+                cx="32" cy="32" r="28" fill="none"
+                stroke="currentColor" strokeWidth="4" strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 28}
+                strokeDashoffset={2 * Math.PI * 28 * (1 - Math.min(100, Math.max(0, project.progress)) / 100)}
+                className="text-theme-accent transition-all duration-500"
+              />
+            </svg>
+            <div className="absolute inset-2 flex items-center justify-center rounded-full bg-background">
+              <CheckCheck
+                aria-hidden="true"
+                strokeWidth={2}
+                className={project.progress >= 100 ? "size-6 text-theme-accent" : "size-6 text-theme-accent/35"}
+              />
             </div>
           </div>
-        )}
-
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/5" />
-
-        <span className="absolute bottom-3 left-3 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 font-mono text-[7px] uppercase tracking-[0.1em] text-white/80 backdrop-blur-md">
-          {humanize(project.type)}
-        </span>
-      </div>
-
-      <header className="border-b border-border bg-surface-raised px-5 py-5 sm:px-6">
-        <div className="flex items-start justify-between gap-5">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
               <StatusDot status={project.status} />
-
-              <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">
+              <span className="truncate text-[11px] font-semibold uppercase tracking-wide text-muted">
                 {humanize(project.status)}
               </span>
             </div>
 
-            <h2 className="mt-2.5 truncate text-base font-semibold tracking-[-0.025em] text-foreground">
-              {project.name}
-            </h2>
-
-            <p className="mt-1.5 truncate font-mono text-xs text-muted">{project.slug}</p>
-          </div>
-
-          <span className="shrink-0 rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium uppercase tracking-[0.08em] text-muted">
-            {humanize(project.visibility)}
-          </span>
-        </div>
-      </header>
-
-      <div className="grid md:grid-cols-[minmax(0,0.92fr)_minmax(230px,1.08fr)]">
-        <div className="border-b border-border p-5 sm:p-6 md:border-b-0 md:border-r">
-          <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
-              <UserRound className="size-4 text-theme-accent" />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted">Client</p>
-
-              <p className="mt-1 truncate text-xs font-semibold text-foreground">{clientLabel}</p>
-
-              {project.client ? (
-                <p className="mt-1 truncate text-xs text-muted">{project.client.email}</p>
-              ) : (
-                <p className="mt-1 text-xs text-muted">Assignment pending</p>
-              )}
-            </div>
-          </div>
-
-          {project.description ? (
-            <p className="mt-5 line-clamp-3 text-xs leading-5 text-muted">{project.description}</p>
-          ) : null}
-
-          <div className="mt-6">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-xs font-medium text-muted">Overall progress</span>
-
-              <span className="text-sm font-semibold tabular-nums text-foreground">
-                {project.progress}%
-              </span>
-            </div>
-
-            <DeliveryProgress value={project.progress} label="Project progress" />
-          </div>
-
-          <div className="mt-6 grid grid-cols-3 gap-3">
-            <ProjectMetric label="Deliverables" value={project._count.deliverables} />
-
-            <ProjectMetric label="Features" value={project._count.features} />
-
-            <ProjectMetric label="Tasks" value={project._count.tasks} />
-          </div>
-        </div>
-
-        <div className="min-h-[250px] p-2">
-          <MilestoneHealthChart
-            completed={project.milestoneHealth.completed}
-            active={project.milestoneHealth.active}
-            remaining={project.milestoneHealth.remaining}
-            total={project.milestoneHealth.total}
-          />
-        </div>
-      </div>
-
-      <footer className="border-t border-border bg-surface-muted/40 px-5 py-4 sm:px-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <MetaItem label="Started" value={formatDate(project.startedAt)} />
-
-            <MetaItem label="Target" value={formatDate(project.expectedEndAt)} />
-
-            <MetaItem label="Updated" value={formatDate(project.updatedAt)} />
-          </div>
-
-          <div className="relative z-20 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-            {canPreview ? (
-              <Link
-                href={`/portfolio/${project.slug}`}
-                target="_blank"
-                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-raised">
-                <Eye className="size-3.5" />
-                Preview
-              </Link>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-muted opacity-50">
-                <Eye className="size-3.5" />
-                Preview
-              </button>
-            )}
-
-            {liveUrl ? (
-              <a
-                href={liveUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-raised">
-                <ArrowUpRight className="size-3.5" />
-                Live view
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex h-8 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-semibold text-muted opacity-50">
-                <ArrowUpRight className="size-3.5" />
-                Live view
-              </button>
-            )}
-
             <Link
               href={`/admin/projects/${project.id}`}
-              className="ml-auto inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-foreground px-3 text-xs font-semibold text-background transition-opacity hover:opacity-90">
-              <FolderKanban className="size-3.5" />
-              Open workspace
+              className="mt-1.5 block truncate text-sm font-semibold text-foreground hover:underline">
+              {project.name}
             </Link>
+
+            <p className="mt-1 truncate text-xs text-muted">{clientLabel}</p>
+          </div>
+
+          <div className="relative shrink-0">
+            <button
+              type="button"
+              aria-label={`Options for ${project.name}`}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(open => !open)}
+              className="flex size-8 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-raised">
+              <span aria-hidden="true">...</span>
+            </button>
+
+            {menuOpen ? (
+              <div className="absolute right-0 top-full z-30 mt-1 w-44 rounded-xl border border-border bg-background p-1 shadow-lg">
+                <Link href={`/admin/projects/${project.id}`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Open workspace</Link>
+                <Link href={`/admin/projects/${project.id}/edit`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Edit project</Link>
+                <Link href={`/admin/projects/${project.id}/sources`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Development sources</Link>
+                {canPreview ? (
+                  <Link href={`/portfolio/${project.slug}`} target="_blank" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Public preview</Link>
+                ) : null}
+                {project.portfolio?.liveUrl ? (
+                  <a href={project.portfolio.liveUrl} target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Live website</a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
-      </footer>
+
+        <div>
+          <div className="mb-2 flex items-center justify-between text-xs">
+            <span className="text-muted">Overall progress</span>
+            <span className="font-semibold tabular-nums text-foreground">{project.progress}%</span>
+          </div>
+          <DeliveryProgress value={project.progress} label="Project progress" />
+        </div>
+
+        <div className="rounded-xl border border-border bg-surface-raised p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
+            Highlight
+          </p>
+          <p className="mt-1.5 text-xs leading-5 text-foreground">{highlight}</p>
+        </div>
+
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded(open => !open)}
+          className="mt-auto flex w-full items-center justify-center rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">
+          {expanded ? 'Show less' : 'More details'}
+        </button>
+
+        {expanded ? (
+          <div className="space-y-4 border-t border-border pt-4">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
+                Project details
+              </p>
+              <p className="mt-2 break-words text-xs leading-5 text-muted">
+                {project.description || 'No project description recorded.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              <ProjectMetric label="Deliverables" value={project._count.deliverables} />
+              <ProjectMetric label="Features" value={project._count.features} />
+              <ProjectMetric label="Tasks" value={project._count.tasks} />
+            </div>
+
+            <MilestoneHealthChart
+              completed={project.milestoneHealth.completed}
+              active={project.milestoneHealth.active}
+              remaining={project.milestoneHealth.remaining}
+              total={project.milestoneHealth.total}
+            />
+
+            <div className="flex flex-wrap gap-3 text-xs">
+              <MetaItem label="Started" value={formatDate(project.startedAt)} />
+              <MetaItem label="Target" value={formatDate(project.expectedEndAt)} />
+              <MetaItem label="Updated" value={formatDate(project.updatedAt)} />
+            </div>
+          </div>
+        ) : null}
+      </div>
+          <ProjectActivityRows activity={activity} />
     </article>
   );
 }
