@@ -30,6 +30,7 @@ import {
 import { MilestoneHealthChart } from "@/features/client/components/overview/MilestoneHealthChart";
 
 import { AdminProjectMilestoneManager } from "@/features/admin/components/projects/AdminProjectMilestoneManager";
+import { ProjectDevelopmentObservability } from "@/features/admin/components/projects/ProjectDevelopmentObservability";
 
 import type { AdminProject } from "@/features/admin/server/projects/get-admin-project";
 
@@ -421,6 +422,11 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
           projectId={project.id}
           images={project.media}
           configured={projectImagesConfigured()}
+        />
+
+        <ProjectDevelopmentObservability
+          projectId={project.id}
+          milestones={project.milestones.filter(milestone => Boolean(milestone.delivery)).map(milestone => ({ id: milestone.id, title: milestone.title }))}
         />
 
         <AdminProjectMilestoneManager

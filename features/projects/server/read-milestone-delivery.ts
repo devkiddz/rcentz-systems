@@ -1,9 +1,18 @@
 'use server';
 import { createHmac, randomUUID } from 'node:crypto';
 import { getCurrentUser } from '@/features/auth/server/get-current-user';
+export type DeliveryActivityEvent = {
+  id: string; sha: string; message: string; committedAt: string;
+  milestoneKey: string | null;
+  kind: 'milestone-start' | 'milestone-complete' | 'milestone-seal' | 'milestone-reopen' | 'milestone-cancel' | 'release' | 'commit';
+  candidateKey: string | null; version: string | null; prerelease: boolean; issue: string | null;
+};
 export type MilestoneDelivery = {
   managed: boolean; phase: string | null; repository: string | null; branch: string | null;
   commits: Array<{ id: string; sha: string; message: string; committedAt: string }>;
+  /** B2 API fields: privileged, optional until the API is deployed. */
+  activityTimeline?: DeliveryActivityEvent[];
+  activityTimelineTruncated?: boolean;
   nextCursor: string | null;
   evidence: { checks: Array<{ name: string; state: string }>; deployment: { id: string; state: string; url: string | null } | null; observedAt: string } | null;
 };

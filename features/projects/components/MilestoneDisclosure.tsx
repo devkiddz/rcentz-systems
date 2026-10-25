@@ -36,6 +36,17 @@ export function MilestoneDisclosure({ projectId, milestoneId, title, status, chi
       {data?.managed ? <>
         <p className="mb-3 break-all text-xs text-muted-foreground">{data.repository} · {data.branch} · {data.phase === 'AWAITING' ? 'Awaiting checks and deployment' : data.phase?.toLowerCase()}</p>
         <ol className="space-y-3">{data.commits.map(commit => <li key={commit.id} className="flex gap-3 text-xs"><GitCommitHorizontal aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" /><div className="min-w-0"><p className="break-words text-foreground">{commit.message}</p><p className="mt-1 text-muted-foreground"><a href={`https://github.com/${data.repository}/commit/${commit.sha}`} target="_blank" rel="noreferrer noopener" className="font-mono underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-theme-accent">{commit.sha.slice(0, 7)}</a> · <time dateTime={commit.committedAt}>{new Date(commit.committedAt).toLocaleDateString('en-GB')}</time></p></div></li>)}</ol>
+        {Array.isArray(data.activityTimeline) ? <section className="mt-4 space-y-2 border-t border-border pt-3" aria-label="GitHub development observability">
+          <h5 className="text-xs font-semibold text-foreground">GitHub activity timeline</h5>
+          <p className="text-xs text-muted-foreground">Development events grouped by recognized milestone windows. Markers are not evidence of acceptance.</p>
+          {data.activityTimeline.length === 0 ? <p className="text-xs text-muted-foreground">No recorded development events for this source.</p> :
+            <ol className="max-h-96 space-y-2 overflow-y-auto">{data.activityTimeline.map(event => <li key={event.id} className="rounded-lg border border-border p-2 text-xs">
+              <div className="flex flex-wrap items-center gap-2"><span className="font-medium text-foreground">{event.kind.replaceAll('-', ' ')}</span>{event.milestoneKey ? <span className="text-muted-foreground">{event.milestoneKey}</span> : <span className="text-muted-foreground">Unassigned</span>}{event.version ? <span className="text-muted-foreground">{event.version}</span> : null}</div>
+              <p className="mt-1 break-words text-foreground">{event.message}</p>
+              <p className="mt-1 text-muted-foreground"><a href={`https://github.com/${data.repository}/commit/${event.sha}`} target="_blank" rel="noopener noreferrer" className="font-mono underline underline-offset-2">{event.sha.slice(0, 7)}</a> · <time dateTime={event.committedAt}>{new Date(event.committedAt).toLocaleDateString('en-GB')}</time>{event.issue ? ` · ${event.issue}` : ''}{event.candidateKey ? ` · Candidate ${event.candidateKey}` : ''}</p>
+            </li>)}</ol>}
+          {data.activityTimelineTruncated ? <p className="text-xs text-muted-foreground">Showing a bounded source-history window; older commits are not included.</p> : null}
+        </section> : null}
         {data.nextCursor ? <button type="button" className={`${buttonClass} mt-3`} disabled={pending} onClick={() => load(true)}>Load more commits</button> : null}
         {data.evidence ? <div className="mt-4 space-y-2 border-t border-border pt-3 text-xs text-muted-foreground">
           {data.evidence.checks.map(check => <p key={check.name}>{check.name} · {check.state}</p>)}
