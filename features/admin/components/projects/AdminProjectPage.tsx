@@ -36,6 +36,7 @@ import type { AdminProject } from "@/features/admin/server/projects/get-admin-pr
 
 type AdminProjectPageProps = {
   project: AdminProject;
+  canReconcile?: boolean;
 };
 
 function humanize(value: string) {
@@ -105,7 +106,7 @@ function getStatusDotClass(status: string) {
   }
 }
 
-export function AdminProjectPage({ project }: AdminProjectPageProps) {
+export function AdminProjectPage({ project, canReconcile = false }: AdminProjectPageProps) {
   const milestones = project.milestones.filter(
     (milestone) => milestone.status !== "CANCELLED",
   );
@@ -425,6 +426,7 @@ export function AdminProjectPage({ project }: AdminProjectPageProps) {
         />
 
         <ProjectDevelopmentObservability
+          canReconcile={canReconcile}
           projectId={project.id}
           milestones={project.milestones.filter(milestone => Boolean(milestone.delivery)).map(milestone => ({ id: milestone.id, title: milestone.title }))}
         />

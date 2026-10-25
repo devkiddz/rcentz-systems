@@ -13,6 +13,9 @@ export type MilestoneDelivery = {
   /** B2 API fields: privileged, optional until the API is deployed. */
   activityTimeline?: DeliveryActivityEvent[];
   activityTimelineTruncated?: boolean;
+  sourceId?: string;
+  targetDeliveryMilestoneId?: string;
+  unassignedActivity?: Array<{id:string;sha:string;message:string;committedAt:string;issue:string|null}>;
   nextCursor: string | null;
   evidence: { checks: Array<{ name: string; state: string }>; deployment: { id: string; state: string; url: string | null } | null; observedAt: string } | null;
 };

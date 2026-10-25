@@ -3,11 +3,12 @@
 import { useState, useTransition } from 'react';
 import { Activity, GitCommitHorizontal, RefreshCw } from 'lucide-react';
 import { readMilestoneDelivery, type MilestoneDelivery } from '@/features/projects/server/read-milestone-delivery';
+import { ReconciliationControls } from './ReconciliationControls';
 
 type SourceMilestone = { id: string; title: string };
 
-export function ProjectDevelopmentObservability({ projectId, milestones }: {
-  projectId: string; milestones: SourceMilestone[];
+export function ProjectDevelopmentObservability({ projectId, milestones, canReconcile = false }: {
+  projectId: string; milestones: SourceMilestone[]; canReconcile?: boolean;
 }) {
   const [selected, setSelected] = useState(milestones[0]?.id ?? '');
   const [result, setResult] = useState<{ milestoneId: string; data: MilestoneDelivery } | null>(null);
@@ -50,6 +51,7 @@ export function ProjectDevelopmentObservability({ projectId, milestones }: {
           {error ? <p role="alert" className="text-xs text-destructive">{error}</p> : null}
           {current ? <>
             <p className="break-words text-xs text-muted">{current.repository} · {current.branch} · Delivery verification: {current.phase ?? 'Unknown'}</p>
+            {canReconcile && current.sourceId && current.targetDeliveryMilestoneId ? <ReconciliationControls key={`${selected}:${current.sourceId}`} projectId={projectId} sourceId={current.sourceId} targetDeliveryMilestoneId={current.targetDeliveryMilestoneId} commits={current.unassignedActivity ?? []} onCommitted={refresh} /> : null}
             {events ? <>
               <div className="flex flex-wrap gap-4 text-xs text-muted"><span>{events.length} recorded events in this window</span><span>{events.filter(event => event.kind === 'milestone-start').length} start markers</span><span>{events.filter(event => event.kind === 'milestone-complete').length} completion declarations</span><span>{events.filter(event => event.kind === 'milestone-seal').length} seal requests</span><span>{events.filter(event => event.kind === 'release').length} release references</span></div>
               <ol className="max-h-[30rem] space-y-2 overflow-y-auto">{events.map(event => <li key={event.id} className="flex gap-3 rounded-lg border border-border p-3 text-xs"><GitCommitHorizontal aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted" /><div className="min-w-0 flex-1"><p className="font-medium text-foreground">{event.message}</p><p className="mt-1 text-muted">{event.kind.replaceAll('-', ' ')} · {event.milestoneKey ?? 'Unassigned'} · <a className="font-mono underline underline-offset-2" href={`https://github.com/${current.repository}/commit/${event.sha}`} target="_blank" rel="noopener noreferrer">{event.sha.slice(0, 7)}</a> · <time dateTime={event.committedAt}>{new Date(event.committedAt).toLocaleDateString('en-GB')}</time>{event.version ? ` · ${event.version}` : ''}{event.issue ? ` · ${event.issue}` : ''}</p></div></li>)}</ol>
