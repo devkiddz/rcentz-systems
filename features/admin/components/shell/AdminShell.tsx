@@ -38,7 +38,8 @@ export function AdminShell({ children, user, headerFeed, showOpportunities }: Ad
           user={{
             name: user.name,
             email: user.email,
-            image: user.image
+            image: user.image,
+            role: user.role
           }}
         />
 

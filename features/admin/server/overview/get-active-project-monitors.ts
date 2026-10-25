@@ -128,6 +128,7 @@ export const getActiveProjectMonitors =
         select: {
           id: true,
           name: true,
+          description: true,
           slug: true,
 
           status: true,
@@ -141,6 +142,22 @@ export const getActiveProjectMonitors =
               name: true,
               image: true
             }
+          },
+
+          infrastructure: {
+            select: {
+              primaryDomain: true,
+              hostingProvider: true,
+              hostingRegion: true
+            }
+          },
+
+          deliverySources: {
+            select: {
+              repository: true,
+              branch: true
+            },
+            take: 1
           },
 
           media: {
@@ -177,6 +194,7 @@ export const getActiveProjectMonitors =
               id: true,
               title: true,
               status: true,
+              completionNotes: true,
               priority: true,
               progress: true,
               dueDate: true,
@@ -365,6 +383,7 @@ export const getActiveProjectMonitors =
       return {
         id: project.id,
         name: project.name,
+        description: project.description,
         slug: project.slug,
 
         status: project.status,
@@ -379,6 +398,8 @@ export const getActiveProjectMonitors =
         client: project.client,
 
         screenshot,
+        infrastructure: project.infrastructure,
+        deliverySources: project.deliverySources,
 
         milestones:
           project.milestones.map(
@@ -390,6 +411,24 @@ export const getActiveProjectMonitors =
                 milestone.progress
             })
           ),
+
+        recentCompletedMilestones: project.milestones
+          .filter(milestone =>
+            milestone.status === 'COMPLETED' &&
+            Boolean(milestone.completionNotes?.trim())
+          )
+          .sort((a, b) =>
+            (b.completedAt?.getTime() ?? 0) -
+            (a.completedAt?.getTime() ?? 0)
+          )
+          .slice(0, 5)
+          .map(milestone => ({
+            id: milestone.id,
+            title: milestone.title,
+            status: milestone.status,
+            completionNotes: milestone.completionNotes,
+            completedAt: milestone.completedAt
+          })),
 
         milestoneSummary,
         taskSummary,

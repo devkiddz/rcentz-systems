@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { FilePlus2, FolderPlus, LoaderCircle, LogOut, Plus } from 'lucide-react';
+import { ArrowLeftRight, FilePlus2, FolderPlus, LoaderCircle, LogOut, Plus } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -25,6 +26,7 @@ type AdminWorkspaceHeaderProps = {
     name: string;
     email: string;
     image: string | null;
+    role: 'ADMIN' | 'SUPER_ADMIN';
   };
 };
 
@@ -144,15 +146,17 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
 
             <div className="min-w-0">
               <p className="font-mono text-xs uppercase tracking-[0.16em] text-theme-accent sm:text-xs">
-                Operations Workspace
+                {pathname === '/admin' ? 'Systems / Administration' : 'Operations Workspace'}
               </p>
 
-              <p className="mt-1 truncate text-base font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
-                Welcome back, {firstName}
-              </p>
+              <h1 className="mt-1 truncate text-base font-semibold tracking-[-0.03em] text-foreground sm:text-lg">
+                {pathname === '/admin' ? 'Overview' : `Welcome back, ${firstName}`}
+              </h1>
 
               <p className="mt-1 hidden truncate text-xs text-muted sm:block">
-                Monitor and manage activity across Rcentz Systems.
+                {pathname === '/admin'
+                  ? 'Projects, milestones and company operations at a glance.'
+                  : 'Monitor and manage activity across Rcentz Systems.'}
               </p>
             </div>
           </div>
@@ -215,6 +219,15 @@ export function AdminWorkspaceHeader({ user }: AdminWorkspaceHeaderProps) {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Link
+              href="/dashboard"
+              aria-label="Go to customer dashboard"
+              title="Go to customer dashboard"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-border bg-surface-raised px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40 sm:px-3">
+              <ArrowLeftRight aria-hidden="true" className="size-4" />
+              <span className="hidden sm:inline">Customer dashboard</span>
+            </Link>
 
             <button
               type="button"

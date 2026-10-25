@@ -140,6 +140,8 @@ export function AdminProjectMilestoneManager({
   const [pending, startTransition] = useTransition();
 
   const completed = milestones.filter(milestone => milestone.status === 'COMPLETED').length;
+  const tracked = milestones.filter(milestone => milestone.deliveryManaged).length;
+  const manual = milestones.length - tracked;
 
   function handleDelete(milestone: MilestoneItem) {
     setError(null);
@@ -174,6 +176,7 @@ export function AdminProjectMilestoneManager({
 
             <p className="mt-1 text-xs leading-4 text-muted">
               {completed} of {milestones.length} completed for {projectName}.
+              {' '}· {tracked} GitHub-tracked · {manual} manually governed
             </p>
           </div>
 
@@ -237,7 +240,7 @@ export function AdminProjectMilestoneManager({
       {milestones.length > 0 ? (
         <div className="divide-y divide-border">
           {milestones.map((milestone, index) => {
-            const canDelete = milestone.status === 'PLANNED' && milestone.visibility === 'INTERNAL';
+            const canDelete = !milestone.deliveryManaged && milestone.status === 'PLANNED' && milestone.visibility === 'INTERNAL';
 
             return (
               <MilestoneDisclosure key={milestone.id} projectId={projectId} milestoneId={milestone.id} title={milestone.title} status={milestone.status}>
@@ -255,6 +258,9 @@ export function AdminProjectMilestoneManager({
                       />
 
                       <span className="text-xs text-muted">{humanize(milestone.status)}</span>
+                      <span className="rounded-md border border-border px-2 py-0.5 text-[10px] font-medium text-muted">
+                        {milestone.deliveryManaged ? 'GitHub-tracked' : 'Manual governance'}
+                      </span>
 
                       <span className="text-xs text-muted">·</span>
 
@@ -273,12 +279,17 @@ export function AdminProjectMilestoneManager({
                       </p>
                     ) : null}
 
-                    <DeliveryProgress value={milestone.progress} label="Milestone progress" />
+                    <DeliveryProgress value={milestone.progress} label="Governed milestone progress" />
+                    {milestone.deliveryManaged ? (
+                      <p className="mt-1 text-[10px] leading-4 text-muted">
+                        Governed progress reflects verification, not commit counts. Expand this milestone to inspect its GitHub and deployment evidence.
+                      </p>
+                    ) : null}
                   </div>
 
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                     <div className="flex flex-wrap gap-5">
-                      <MilestoneStat label="Progress" value={`${milestone.progress}%`} />
+                      <MilestoneStat label={milestone.deliveryManaged ? "Verified" : "Progress"} value={`${milestone.progress}%`} />
 
                       <MilestoneStat label="Target" value={formatDate(milestone.dueDate)} />
 
@@ -340,7 +351,7 @@ export function AdminProjectMilestoneManager({
                           <Trash2 className="size-3.5" />
                         </button>
                       )}
-                    </div> : <span className="text-xs text-muted">Tracked from GitHub</span>}
+                    </div> : <span className="text-xs text-muted">Source: GitHub · managed by Rcentz API</span>}
                   </div>
                 </div>
               </article>

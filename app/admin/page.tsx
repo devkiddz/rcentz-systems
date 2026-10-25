@@ -1,16 +1,16 @@
-import { AdminCurrentProjectProgress } from '@/features/admin/components/overview/AdminCurrentProjectProgress';
+import { AdminOperationalCharts } from '@/features/admin/components/overview/AdminOperationalCharts';
 import { AdminFinanceOverview } from '@/features/admin/components/overview/AdminFinanceOverview';
 import { AdminOperationsTabs } from '@/features/admin/components/overview/AdminOperationsTabs';
 import { AdminOverviewLayout } from '@/features/admin/components/overview/AdminOverviewLayout';
 import { AdminOverviewMetrics } from '@/features/admin/components/overview/AdminOverviewMetrics';
-import { AdminProjectsProgress } from '@/features/admin/components/overview/AdminProjectsProgress';
 
 import { getActiveProjectMonitors } from '@/features/admin/server/overview/get-active-project-monitors';
 import { getFinanceOverview } from '@/features/admin/server/overview/get-finance-overview';
 import { getOverviewClients } from '@/features/admin/server/overview/get-overview-clients';
+import { getCommercialPreview } from '@/features/admin/server/overview/get-commercial-preview';
 import { getOverviewMetrics } from '@/features/admin/server/overview/get-overview-metrics';
 import { getOverviewNotifications } from '@/features/admin/server/overview/get-overview-notifications';
-import { getOverviewProjects } from '@/features/admin/server/overview/get-overview-projects';
+import { getOverviewMessages } from '@/features/admin/server/overview/get-overview-messages';
 import { getOverviewTasks } from '@/features/admin/server/overview/get-overview-tasks';
 
 import { requireAdmin } from '@/features/auth/server/require-admin';
@@ -20,7 +20,6 @@ export default async function AdminPage() {
 
   const [
     overviewMetrics,
-    overviewProjects,
     activeProjectMonitors,
     overviewTasks,
     overviewClients,
@@ -28,13 +27,18 @@ export default async function AdminPage() {
     financeOverview
   ] = await Promise.all([
     getOverviewMetrics(),
-    getOverviewProjects(),
     getActiveProjectMonitors(),
     getOverviewTasks(),
     getOverviewClients(),
     getOverviewNotifications(user.id),
     getFinanceOverview()
   ]);
+
+  const commercialPreview = await getCommercialPreview(
+    user.role === 'SUPER_ADMIN'
+  );
+
+  const overviewMessages = await getOverviewMessages(user.id);
 
   const metrics = [
     {
@@ -81,23 +85,20 @@ export default async function AdminPage() {
 
   return (
     <AdminOverviewLayout>
-      <h1 className="text-2xl font-semibold tracking-tight">Operations overview</h1>
       <AdminOverviewMetrics metrics={metrics} />
 
-      <section className="grid items-start gap-5 lg:grid-cols-2">
-        <div className="min-w-0 space-y-5">
-          <AdminProjectsProgress projects={overviewProjects} />
+      <AdminOperationalCharts projects={activeProjectMonitors} />
 
-          <AdminOperationsTabs
-            tasks={overviewTasks}
-            clients={overviewClients}
-            notifications={overviewNotifications}
-          />
-        </div>
 
-        <div className="min-w-0">
-          <AdminCurrentProjectProgress projects={activeProjectMonitors} />
-        </div>
+
+      <section aria-label="Workspace operations">
+        <AdminOperationsTabs
+          tasks={overviewTasks}
+          clients={overviewClients}
+          commercialPreview={commercialPreview}
+          notifications={overviewNotifications}
+          messages={overviewMessages}
+        />
       </section>
 
       <AdminFinanceOverview finance={financeOverview} />

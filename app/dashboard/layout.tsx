@@ -40,7 +40,8 @@ export default async function DashboardLayout({
       user={{
         name: user.name,
         email: user.email,
-        image: user.image
+        image: user.image,
+        role: user.role
       }}
       headerFeed={headerFeed}
     >

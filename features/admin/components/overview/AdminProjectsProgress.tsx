@@ -9,7 +9,7 @@ function humanize(value: string) {
 }
 export function AdminProjectsProgress({ projects }: { projects: OverviewProject[] }) {
   return (
-    <section className="flex h-96 flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+    <section className="flex h-[560px] flex-col overflow-hidden rounded-2xl border border-border bg-surface">
       <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-5 py-4">
         <div><h2 className="text-sm font-semibold">Projects</h2><p className="mt-1 text-xs text-muted">Delivery progress and the next step</p></div>
         <Link href="/admin/projects" className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-muted hover:text-foreground">View all <ArrowUpRight aria-hidden="true" className="size-4" /></Link>

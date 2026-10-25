@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { AlertTriangle, CalendarDays, CircleDot, UserRound } from 'lucide-react';
+import { CalendarDays, CircleDot, UserRound } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -230,66 +230,98 @@ function TaskRow({ task, isPreview }: { task: OverviewTask; isPreview: boolean }
   );
 }
 
-export function AdminTasksOverview({ data }: AdminTasksOverviewProps) {
-  const isPreview = false;
+type Queue = {
+  title: string;
+  description: string;
+  tasks: OverviewTask[];
+};
 
-  const visibleTasks = data.tasks;
-
-  const summary = {
-    todo: visibleTasks.filter(task => task.status === 'TODO').length,
-
-    inProgress: visibleTasks.filter(task => task.status === 'IN_PROGRESS').length,
-
-    review: visibleTasks.filter(task => task.status === 'REVIEW').length,
-
-    blocked: visibleTasks.filter(task => task.status === 'BLOCKED').length
-  };
-
+function TaskQueue({ queue }: { queue: Queue }) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="shrink-0 px-1 pb-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-foreground">Execution queue</p>
-
-              {isPreview ? (
-                <span className="rounded-full border border-border bg-surface-raised px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-muted">
-                  Preview
-                </span>
-              ) : null}
-            </div>
-
-            <p className="mt-1 text-xs text-muted">Current project work requiring attention.</p>
-          </div>
-
-          <Link
-            href="/admin/tasks"
-            className="text-xs font-medium text-muted transition-colors hover:text-foreground">
-            View all
-          </Link>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs">
-          <span className="text-amber-500">Todo {summary.todo}</span>
-
-          <span className="text-sky-500">Active {summary.inProgress}</span>
-
-          <span className="text-violet-500">Review {summary.review}</span>
-
-          <span className="flex items-center gap-1 text-rose-500">
-            <AlertTriangle className="size-3" />
-            Blocked {summary.blocked}
+    <section className="flex min-h-[190px] min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-background lg:h-full lg:min-h-0">
+      <header className="shrink-0 border-b border-border p-3">
+        <div className="flex items-center justify-between gap-2">
+          <h4 className="text-sm font-semibold">{queue.title}</h4>
+          <span className="rounded-md bg-surface-muted px-2 py-0.5 text-xs font-semibold tabular-nums">
+            {queue.tasks.length}
           </span>
         </div>
+        <p className="mt-1 text-xs leading-4 text-muted">
+          {queue.description}
+        </p>
+      </header>
+
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-2.5">
+        {queue.tasks.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-border p-3">
+            <p className="text-xs leading-5 text-muted">
+              No tasks in this queue.
+            </p>
+          </div>
+        ) : (
+          queue.tasks.map(task => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              isPreview={false}
+            />
+          ))
+        )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="space-y-2.5">
-          {visibleTasks.map(task => (
-            <TaskRow key={task.id} task={task} isPreview={isPreview} />
-          ))}
+      <footer className="shrink-0 border-t border-border p-2.5">
+        <Link
+          href="/admin/tasks"
+          className="text-xs font-medium text-theme-accent hover:underline"
+        >
+          View all
+        </Link>
+      </footer>
+    </section>
+  );
+}
+
+export function AdminTasksOverview({ data }: AdminTasksOverviewProps) {
+  const queues: Queue[] = [
+    {
+      title: 'To Do',
+      description: 'Work waiting to begin.',
+      tasks: data.tasks.filter(task => task.status === 'TODO')
+    },
+    {
+      title: 'In Progress',
+      description: 'Work currently being executed.',
+      tasks: data.tasks.filter(task => task.status === 'IN_PROGRESS')
+    },
+    {
+      title: 'Review & Blocked',
+      description: 'Work requiring approval or intervention.',
+      tasks: data.tasks.filter(
+        task => task.status === 'REVIEW' || task.status === 'BLOCKED'
+      )
+    }
+  ];
+
+  return (
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+      <header className="shrink-0">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 className="text-sm font-semibold">Execution Queue</h3>
+            <p className="mt-1 text-xs text-muted">
+              Recorded project tasks requiring attention.
+            </p>
+          </div>
+          <span className="text-xs text-muted">
+            {data.tasks.length} in preview
+          </span>
         </div>
+      </header>
+
+      <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-3 overflow-y-auto lg:grid-cols-3 lg:overflow-hidden [&>*]:min-w-0">
+        {queues.map(queue => (
+          <TaskQueue key={queue.title} queue={queue} />
+        ))}
       </div>
     </div>
   );

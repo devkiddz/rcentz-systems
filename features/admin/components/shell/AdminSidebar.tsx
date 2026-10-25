@@ -42,8 +42,8 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 
-import { RcentzSymbol } from '@/ui-shell/brand/RcentzSymbol';
-import { RcentzBrandLogo } from '@/ui-shell/brand/RcentzBrandLogo';
+import { RcentzBrandSymbol } from '@/ui-shell/brand/RcentzBrandSymbol';
+import { RcentzBrandLockup } from '@/ui-shell/brand/RcentzBrandLockup';
 
 type AdminNavigationAction = {
   key: string;
@@ -401,14 +401,16 @@ export function AdminSidebar({ showOpportunities = false }: { showOpportunities?
               tooltip={t('workspace')}
               render={<Link href="/admin" onClick={handleNavigate} />}
               className="transition-colors duration-150 hover:bg-sidebar-accent">
-              <div className="flex size-8 shrink-0 items-center justify-center">
-                <RcentzSymbol className="size-7! text-sidebar-foreground" />
+              <div className="hidden size-8 shrink-0 items-center justify-center group-data-[collapsible=icon]:flex">
+                <RcentzBrandSymbol className="size-7 brightness-0 dark:invert" />
               </div>
 
-              <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                <RcentzBrandLogo className="h-auto! w-24! text-sidebar-foreground" />
+              <div className="grid min-w-0 flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+                <RcentzBrandLockup className="w-28 max-w-full" />
 
-                <span className="truncate text-xs text-sidebar-foreground/55">Admin workspace</span>
+                <span className="mt-1 truncate text-xs text-sidebar-foreground/55">
+                  Admin workspace
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

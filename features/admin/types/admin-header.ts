@@ -13,6 +13,7 @@ export type AdminHeaderNotification = {
 
 export type AdminHeaderMessage = {
   id: string;
+  latestMessageId: string | null;
 
   title: string;
 

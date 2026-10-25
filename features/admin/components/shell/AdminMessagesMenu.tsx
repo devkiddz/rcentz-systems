@@ -1,8 +1,9 @@
 'use client';
 
 import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { MessageSquareText } from 'lucide-react';
+import { Check, CheckCheck, MessageSquareText } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -18,7 +19,10 @@ import {
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { markAdminConversationRead } from '@/features/admin/server/dashboard/admin-header-actions';
+import {
+  markAdminConversationRead,
+  markAllAdminConversationsRead
+} from '@/features/admin/server/dashboard/admin-header-actions';
 
 import type { AdminHeaderMessage } from '@/features/admin/types/admin-header';
 
@@ -40,11 +44,21 @@ export function AdminMessagesMenu({
   messages: AdminHeaderMessage[];
   hasUnread: boolean;
 }) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const unreadCount = messages.filter(message => message.unread).length;
 
   function handleMessage(conversationId: string) {
     startTransition(async () => {
       await markAdminConversationRead(conversationId);
+      router.refresh();
+    });
+  }
+
+  function handleMarkAllRead() {
+    startTransition(async () => {
+      await markAllAdminConversationsRead();
+      router.refresh();
     });
   }
 
@@ -57,7 +71,11 @@ export function AdminMessagesMenu({
               render={
                 <button
                   type="button"
-                  aria-label="Messages"
+                  aria-label={
+                    hasUnread
+                      ? `Messages, ${unreadCount} recent unread conversations`
+                      : 'Messages'
+                  }
                   className="relative flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent/40"
                 />
               }
@@ -68,8 +86,10 @@ export function AdminMessagesMenu({
           {hasUnread ? (
             <span
               aria-hidden="true"
-              className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-theme-accent"
-            />
+              className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[9px] font-bold leading-none text-white ring-2 ring-background"
+            >
+              {unreadCount}
+            </span>
           ) : null}
         </TooltipTrigger>
 
@@ -79,10 +99,26 @@ export function AdminMessagesMenu({
       <DropdownMenuContent align="end" sideOffset={8} className="w-[360px] overflow-hidden p-0">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-4 py-3.5">
-            <div>
+            <div className="flex items-start justify-between gap-3">
+              <div>
               <p className="text-sm font-semibold text-foreground">Messages</p>
 
               <p className="mt-0.5 text-xs font-normal text-muted">Recent client conversations</p>
+              </div>
+              {hasUnread ? (
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleMarkAllRead();
+                  }}
+                  className="shrink-0 text-xs font-semibold text-theme-accent hover:opacity-75 disabled:opacity-40"
+                >
+                  Mark all read
+                </button>
+              ) : null}
             </div>
           </DropdownMenuLabel>
         </DropdownMenuGroup>
@@ -104,13 +140,13 @@ export function AdminMessagesMenu({
             <div className="max-h-[370px] overflow-y-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {messages.map(message => {
                 return (
+                  <div key={message.id} className="border-b border-border/60 bg-surface-raised/40 last:border-b-0">
                   <DropdownMenuItem
-                    key={message.id}
                     disabled={pending}
                     onClick={() => {
                       handleMessage(message.id);
                     }}
-                    className="cursor-pointer gap-3 rounded-none px-4 py-3.5">
+                    className="cursor-pointer gap-3 rounded-none px-4 pb-1 pt-3.5">
                     <div className="relative shrink-0">
                       <Avatar className="size-9">
                         {message.senderImage ? (
@@ -152,6 +188,22 @@ export function AdminMessagesMenu({
                       <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-theme-accent" />
                     ) : null}
                   </DropdownMenuItem>
+                  {message.unread ? (
+                    <DropdownMenuItem
+                      disabled={pending}
+                      onClick={() => handleMessage(message.id)}
+                      className="cursor-pointer justify-start rounded-none pb-3 pl-16 pr-4 pt-1 text-xs font-medium text-emerald-600"
+                    >
+                      <Check aria-hidden="true" className="mr-1 inline size-3.5 align-[-2px]" />
+                      Mark as read
+                    </DropdownMenuItem>
+                  ) : (
+                    <div className="flex items-center pl-16 pr-4 pb-3 pt-1 text-xs font-medium text-muted" aria-label="Message read">
+                      <CheckCheck aria-hidden="true" className="mr-1 inline size-3.5 align-[-2px]" />
+                      Read
+                    </div>
+                  )}
+                  </div>
                 );
               })}
             </div>

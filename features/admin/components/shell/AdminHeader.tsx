@@ -15,6 +15,7 @@ import type { AdminHeaderFeed } from '@/features/admin/types/admin-header';
 import { AdminAccountMenu } from './AdminAccountMenu';
 import { AdminCommandSearch } from './AdminCommandSearch';
 import { AdminMessagesMenu } from './AdminMessagesMenu';
+import { AdminHeaderAlertSound } from './AdminHeaderAlertSound';
 import { AdminNotificationsMenu } from './AdminNotificationsMenu';
 import { AdminThemeToggle } from './AdminThemeToggle';
 
@@ -93,6 +94,8 @@ export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
             notifications={headerFeed.notifications}
             unreadCount={headerFeed.unreadNotificationCount}
           />
+
+          <AdminHeaderAlertSound feed={headerFeed} userId={user.email} />
 
           <AdminThemeToggle />
 

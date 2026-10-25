@@ -77,6 +77,7 @@ type ClientShellProps = {
     name: string;
     email: string;
     image: string | null;
+    role: 'USER' | 'CLIENT' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN';
   };
 
   headerFeed: ClientHeaderFeed;

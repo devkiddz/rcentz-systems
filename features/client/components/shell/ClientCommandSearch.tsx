@@ -153,7 +153,7 @@ export function ClientCommandSearch() {
             <div className="bg-background px-3">
               <CommandInput
                 placeholder="Search workspace..."
-                className="min-h-14 border-0 bg-transparent py-2 text-sm text-foreground placeholder:text-muted"
+                className="min-h-14 border-0 bg-transparent py-2 text-sm text-foreground placeholder:text-muted outline-none! focus:outline-none! focus-visible:outline-none! focus-visible:ring-0! focus-visible:shadow-none!"
               />
             </div>
 
