@@ -419,18 +419,14 @@ export function AdminProjectPage({ project, canReconcile = false }: AdminProject
           </div>
         </section>
 
-        <AdminProjectImages
-          projectId={project.id}
-          images={project.media}
-          configured={projectImagesConfigured()}
-        />
+        {/* PM-WORKSPACE-PASS-1 */}
+        <nav aria-label="Project workspace sections" className="flex flex-wrap gap-2 rounded-2xl border border-border bg-surface p-3">
+          <a href="#project-milestones" className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">Milestones</a>
+          <a href="#project-development" className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">Development evidence</a>
+          <a href="#project-media" className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">Project media</a>
+        </nav>
 
-        <ProjectDevelopmentObservability
-          canReconcile={canReconcile}
-          projectId={project.id}
-          milestones={project.milestones.filter(milestone => Boolean(milestone.delivery)).map(milestone => ({ id: milestone.id, title: milestone.title }))}
-        />
-
+        <div id="project-milestones" className="scroll-mt-24" />
         <AdminProjectMilestoneManager
           projectId={project.id}
           projectName={project.name}
@@ -476,6 +472,20 @@ export function AdminProjectPage({ project, canReconcile = false }: AdminProject
               files: milestone._count.files,
             },
           }))}
+        />
+
+        <div id="project-development" className="scroll-mt-24" />
+        <ProjectDevelopmentObservability
+          canReconcile={canReconcile}
+          projectId={project.id}
+          milestones={project.milestones.filter(milestone => Boolean(milestone.delivery)).map(milestone => ({ id: milestone.id, title: milestone.title }))}
+        />
+
+        <div id="project-media" className="scroll-mt-24" />
+        <AdminProjectImages
+          projectId={project.id}
+          images={project.media}
+          configured={projectImagesConfigured()}
         />
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
