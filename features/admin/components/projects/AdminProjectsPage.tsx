@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   Clock3,
   FolderKanban,
+  GitBranch,
+  GitCommitHorizontal,
   Plus,
   Search,
   UserRound
@@ -288,79 +290,70 @@ export function AdminProjectsPage({ data, activity }: AdminProjectsPageProps) {
 function ProjectCard({ project, activity }: { project: AdminProjectListItem; activity?: ProjectActivitySummary }) {
   const [expanded, setExpanded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const progress = Math.max(0, Math.min(100, project.progress));
   const canPreview = project.visibility === 'PUBLIC' && Boolean(project.portfolio?.publishedAt);
-  const milestones = project.milestonePreview;
-  const latest = activity?.latestMilestoneEvent;
+  const marker = activity?.latestMilestoneEvent;
   const commit = activity?.latestCommit;
-  const summary = latest ? `${humanize(latest.kind)} · ${latest.milestoneKey}` : commit?.message ?? (
-    activity?.state === 'SYNC_ERROR' ? 'Source synchronization needs attention' :
-    activity?.state === 'NO_SOURCE' ? 'No delivery source connected' :
-    activity?.state === 'AWAITING_SYNC' ? 'Awaiting synchronization' :
-    activity?.state === 'UNAVAILABLE' ? 'Activity service unavailable' : 'No recorded GitHub activity'
-  );
-  const timestamp = latest?.committedAt ?? commit?.committedAt;
-  const source = latest?.repository ?? commit?.repository;
-  const percentage = Math.max(0, Math.min(100, project.progress));
-  const radius = 18;
-  const circumference = 2 * Math.PI * radius;
-  const website = (() => {
-    const url = project.portfolio?.liveUrl;
-    if (!url) return null;
-    try { const parsed = new URL(url); return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.hostname : null; }
-    catch { return null; }
-  })();
-
+  const source = commit?.repository ?? marker?.repository;
+  const dot = project.status === 'ON_HOLD' ? 'bg-[var(--chart-warning)]' : project.status === 'CANCELLED' ? 'bg-[var(--chart-danger)]' : 'bg-theme-accent';
+  const markerText = marker ? `${humanize(marker.kind)} · ${marker.milestoneKey}` : activity?.state === 'SYNC_ERROR' ? 'Source synchronization needs attention' : 'No recognized milestone activity';
+  const records = 'milestonePreview' in project && Array.isArray(project.milestonePreview)
+    ? project.milestonePreview as Array<{ id: string; title: string; status: string; progress: number }>
+    : [];
   return (
-    <article className="relative min-w-0 rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-border-strong">
-      <div className="flex items-start gap-3">
-        <div className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
-          {project.screenshot?.url ? <Image src={project.screenshot.url} alt={project.screenshot.alt || `${project.name} preview`} width={44} height={44} unoptimized className="size-full object-cover" /> : <FolderKanban aria-hidden="true" className="size-5 text-theme-accent" />}
+    <article className="relative flex min-w-0 flex-col rounded-2xl border border-border bg-surface transition-colors hover:border-border-strong">
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <header className="flex items-center justify-between gap-2">
+          <span className="min-w-0 truncate font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground">{project.slug}</span>
+          <div className="flex shrink-0 items-center gap-2.5">
+            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Development: ${humanize(project.status)}`}><span className={`size-2.5 rounded-full ${dot}`} />Dev</span>
+            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Milestones: ${project.milestoneHealth.completed} completed, ${project.milestoneHealth.active} active, ${project.milestoneHealth.remaining} remaining`}><span className="size-2.5 rounded-full border border-border-strong bg-surface-raised" />MS</span>
+            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Visibility: ${humanize(project.visibility)}`}><span className={`size-2.5 rounded-full ${project.visibility === 'PUBLIC' ? 'bg-theme-accent' : 'bg-muted'}`} />{humanize(project.visibility)}</span>
+            <div className="relative">
+              <button type="button" aria-label={`Manage ${project.name}`} aria-expanded={menuOpen} onClick={() => setMenuOpen(value => !value)} className="flex size-7 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-raised">···</button>
+              {menuOpen ? <div className="absolute right-0 top-full z-40 mt-1 w-44 rounded-xl border border-border bg-background p-1 shadow-lg">
+                <Link href={`/admin/projects/${project.id}`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Open workspace</Link>
+                <Link href={`/admin/projects/${project.id}/edit`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Edit project</Link>
+                <Link href={`/admin/projects/${project.id}/sources`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Development sources</Link>
+                {canPreview ? <Link href={`/portfolio/${project.slug}`} target="_blank" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Public preview</Link> : null}
+                {project.portfolio?.liveUrl ? <a href={project.portfolio.liveUrl} target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Live website</a> : null}
+              </div> : null}
+            </div>
+          </div>
+        </header>
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+            {project.screenshot?.url ? <img src={project.screenshot.url} alt={project.screenshot.alt ?? `${project.name} screenshot`} className="size-full object-cover" /> : <FolderKanban className="size-6 text-muted" aria-hidden="true" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <Link href={`/admin/projects/${project.id}`} className="block truncate text-sm font-semibold text-foreground hover:underline">{project.name}</Link>
+            {project.portfolio?.liveUrl ? <a href={project.portfolio.liveUrl} target="_blank" rel="noreferrer" className="mt-1 block truncate text-xs text-muted hover:underline">{project.portfolio.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a> : <p className="mt-1 truncate text-xs text-muted">{project.client?.clientProfile?.companyName ?? project.client?.name ?? project.slug}</p>}
+          </div>
+          <div className="relative size-14 shrink-0" role="img" aria-label={`${progress}% overall progress`}>
+            <svg viewBox="0 0 56 56" className="size-full -rotate-90" aria-hidden="true">
+              <circle cx="28" cy="28" r="23" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
+              <circle cx="28" cy="28" r="23" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 23} strokeDashoffset={2 * Math.PI * 23 * (1 - progress / 100)} className="text-theme-accent" />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-foreground">{progress}%</span>
+          </div>
         </div>
-        <div className="min-w-0 flex-1">
-          <Link href={`/admin/projects/${project.id}`} className="block truncate text-sm font-semibold text-foreground hover:underline">{project.name}</Link>
-          <p className="mt-0.5 truncate text-xs text-muted">{website ?? project.client?.clientProfile?.companyName ?? project.client?.name ?? humanize(project.status)}</p>
+        <div className="min-w-0 space-y-3 border-t border-border pt-3">
+          <div className="flex items-start gap-2"><GitCommitHorizontal className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-foreground" title={marker?.message}>{markerText}</p>{marker ? <p className="mt-0.5 text-[10px] text-muted">Recorded marker · Not verified here</p> : null}</div></div>
+          <div className="flex items-start gap-2"><GitBranch className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" /><p className="min-w-0 flex-1 truncate text-xs text-muted" title={commit?.message}>{commit?.message ?? 'No recorded Git commit'}</p></div>
+          <p className="truncate pl-6 font-mono text-[10px] text-muted">{source ?? 'No repository activity'}{commit ? ` · ${new Date(commit.committedAt).toLocaleDateString('en-NG')}` : ''}</p>
+          {activity?.state === 'SYNC_ERROR' && marker ? <p className="pl-6 text-xs text-[var(--chart-warning)]">Source synchronization needs attention</p> : null}
         </div>
-        <div title={`Overall project progress: ${percentage}%`} aria-label={`Overall project progress ${percentage}%`} role="img" className="relative size-11 shrink-0">
-          <svg viewBox="0 0 48 48" className="size-full -rotate-90" aria-hidden="true">
-            <circle cx="24" cy="24" r={radius} stroke="currentColor" strokeWidth="3.5" fill="none" className="text-border-strong" />
-            <circle cx="24" cy="24" r={radius} stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference * (1-percentage/100)} fill="none" className="text-theme-accent" />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold tabular-nums text-foreground">{percentage}%</span>
-        </div>
-        <div className="relative shrink-0">
-          <button type="button" aria-label={`Manage ${project.name}`} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} className="flex size-8 items-center justify-center rounded-lg border border-border text-foreground hover:bg-surface-raised">···</button>
-          {menuOpen && <div className="absolute right-0 top-full z-30 mt-1 w-48 rounded-xl border border-border bg-background p-1 shadow-lg">
-            <Link href={`/admin/projects/${project.id}`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Open workspace / milestones</Link>
-            <Link href={`/admin/projects/${project.id}/edit`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Edit project</Link>
-            <Link href={`/admin/projects/${project.id}/sources`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Development sources</Link>
-            {canPreview && <Link href={`/portfolio/${project.slug}`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Public portfolio</Link>}
-            {project.portfolio?.liveUrl && <a href={project.portfolio.liveUrl} target="_blank" rel="noopener noreferrer" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Live project</a>}
-          </div>}
-        </div>
+        <button type="button" aria-expanded={expanded} onClick={() => setExpanded(value => !value)} className="mt-auto flex w-full items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised"><span>Description</span><span aria-hidden="true">{expanded ? '−' : '+'}</span></button>
+        {expanded ? <div className="space-y-3 border-t border-border pt-3 text-xs">
+          <p className="whitespace-pre-wrap break-words leading-5 text-muted">{project.description || 'No project description recorded.'}</p>
+          {records.length ? <ul className="space-y-2">{records.map(item => <li key={item.id} className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2"><span className="min-w-0 truncate text-foreground" title={item.title}>{item.title}</span><span className="shrink-0 text-muted">{humanize(item.status)} · {item.progress}%</span></li>)}</ul> : <p className="text-muted">{project.milestoneHealth.total} milestone records</p>}
+          <p className="text-muted">Deliverables {project._count.deliverables} · Features {project._count.features} · Tasks {project._count.tasks}</p>
+          <div className="flex flex-wrap gap-3 text-muted"><span>Started {formatDate(project.startedAt)}</span><span>Target {formatDate(project.expectedEndAt)}</span></div>
+        </div> : null}
       </div>
-
-      <div className="mt-4 flex items-start gap-2">
-        <span className="mt-0.5 text-muted" aria-hidden="true">⌁</span>
-        <p className="min-w-0 flex-1 truncate text-xs font-semibold text-foreground" title={summary}>{summary}</p>
-      </div>
-      <p className="mt-1 truncate text-xs text-muted" title={source ?? undefined}>
-        {source ?? 'No repository connected'}{timestamp ? ` · ${new Date(timestamp).toLocaleDateString('en-NG', {day:'numeric',month:'short',year:'numeric'})}` : ''}
-      </p>
-      {activity?.state === 'SYNC_ERROR' && <p className="mt-2 text-xs text-[var(--chart-warning)]">Source synchronization needs attention</p>}
-      <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
-        <span className="truncate text-[11px] text-muted">{humanize(project.status)} · {project.milestoneHealth.active} active MS</span>
-        <button type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)} className="shrink-0 text-xs font-medium text-foreground underline-offset-2 hover:underline">{expanded ? 'Less details' : 'More details'}</button>
-      </div>
-      {expanded && <div className="mt-3 space-y-3 border-t border-border pt-3">
-        <p className="text-xs leading-5 text-muted">{project.description || 'No project description recorded.'}</p>
-        <div className="flex justify-between gap-3 text-xs text-muted"><span>Milestones</span><span>{project.milestoneHealth.completed} completed / {project.milestoneHealth.total} total</span></div>
-        {milestones.length ? <ul className="space-y-2">{milestones.map(m => <li key={m.id} className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-xs"><span className="min-w-0 truncate text-foreground" title={m.title}>{m.title}</span><span className="shrink-0 text-muted">{humanize(m.status)} · {m.progress}%</span></li>)}</ul> : <p className="text-xs text-muted">No recorded milestones.</p>}
-        <Link href={`/admin/projects/${project.id}`} className="inline-block text-xs font-semibold text-theme-accent hover:underline">Manage project milestones</Link>
-      </div>}
     </article>
   );
 }
-
 
 function CreateProjectPlaceholder() {
   return (
