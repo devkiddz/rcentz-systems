@@ -33,10 +33,12 @@ import { AdminProjectMilestoneManager } from "@/features/admin/components/projec
 import { ProjectDevelopmentObservability } from "@/features/admin/components/projects/ProjectDevelopmentObservability";
 
 import type { AdminProject } from "@/features/admin/server/projects/get-admin-project";
+import type { ProjectActivitySummary } from "@/server/rcentz-api/project-activity-client";
 
 type AdminProjectPageProps = {
   project: AdminProject;
   canReconcile?: boolean;
+  activity?: ProjectActivitySummary;
 };
 
 function humanize(value: string) {
@@ -106,7 +108,7 @@ function getStatusDotClass(status: string) {
   }
 }
 
-export function AdminProjectPage({ project, canReconcile = false }: AdminProjectPageProps) {
+export function AdminProjectPage({ project, canReconcile = false, activity }: AdminProjectPageProps) {
   const milestones = project.milestones.filter(
     (milestone) => milestone.status !== "CANCELLED",
   );
@@ -476,6 +478,7 @@ export function AdminProjectPage({ project, canReconcile = false }: AdminProject
 
         <div id="project-development" className="scroll-mt-24" />
         <ProjectDevelopmentObservability
+          activity={activity}
           canReconcile={canReconcile}
           projectId={project.id}
           milestones={project.milestones.filter(milestone => Boolean(milestone.delivery)).map(milestone => ({ id: milestone.id, title: milestone.title }))}
