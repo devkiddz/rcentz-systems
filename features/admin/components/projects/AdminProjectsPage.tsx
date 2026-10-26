@@ -361,26 +361,68 @@ function ProjectCard({
         ? 'bg-[var(--chart-danger)]'
         : 'bg-theme-accent';
 
-  const markerText = marker
-    ? `${humanize(marker.kind)} · ${marker.milestoneKey}`
-    : activity?.state === 'SYNC_ERROR'
-      ? 'Source synchronization needs attention'
-      : 'No recognized milestone activity';
   const records =
     'milestonePreview' in project && Array.isArray(project.milestonePreview)
-      ? (project.milestonePreview as Array<{ id: string; title: string; status: string; progress: number }>)
+      ? (project.milestonePreview as Array<{
+          id: string;
+          title: string;
+          status: string;
+          progress: number;
+        }>)
       : [];
-  // Health reports only an observed problem. No unapproved health scoring formula.
+
+  // Health reports only observed problems.
+  // No unapproved health scoring formula.
   const blockedMilestones = records.filter(item => item.status === 'BLOCKED').length;
+
   const needsAttention = blockedMilestones > 0 || activity?.state === 'SYNC_ERROR';
+
   const healthDescription = needsAttention
     ? [
-        blockedMilestones ? blockedMilestones + ' blocked milestone(s)' : '',
+        blockedMilestones ? `${blockedMilestones} blocked milestone(s)` : '',
         activity?.state === 'SYNC_ERROR' ? 'Source synchronization error' : ''
       ]
         .filter(Boolean)
         .join(' · ')
     : 'No verified health classification available';
+
+  // Current milestone: active work first, then review/blocked work.
+  // Preserve recorded order when equally ranked.
+  const currentMilestone =
+    records.find(item => item.status === 'IN_PROGRESS') ??
+    records.find(item => item.status === 'REVIEW') ??
+    records.find(item => item.status === 'BLOCKED') ??
+    records.find(item => item.status === 'PLANNED') ??
+    records[0];
+
+  // Associate activity only when the milestone reference matches.
+  const milestoneToken = currentMilestone?.title
+    .match(/^\s*([A-Za-z]+[-_]?\d+[A-Za-z0-9_-]*)\b/)?.[1]
+    ?.toUpperCase();
+
+  const normalizedKey = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const candidateEvents = activity?.milestoneEvents?.length
+    ? activity.milestoneEvents
+    : marker ? [marker] : [];
+  const linkedMarker = currentMilestone && milestoneToken
+    ? candidateEvents.find(event =>
+        normalizedKey(event.milestoneKey.split('/').pop() ?? '') === normalizedKey(milestoneToken)
+      ) ?? null
+    : null;
+  const descriptionLine = linkedMarker?.message
+    .split(/\r?\n/)
+    .find(line => /^Description:\s*\S/i.test(line));
+  const markerDescription = descriptionLine
+    ? descriptionLine.replace(/^Description:\s*/i, '').trim()
+    : linkedMarker?.message.split(/\r?\n/).slice(1).join('\n').trim();
+  const markerText = currentMilestone
+    ? currentMilestone.title
+    : marker
+      ? marker.message.split(/\r?\n/, 1)[0]
+      : activity?.state === 'SYNC_ERROR'
+        ? 'Source synchronization needs attention'
+        : 'No recognized milestone activity';
+
   return (
     <article className="relative flex min-w-0 flex-col rounded-2xl border border-border bg-surface transition-colors hover:border-border-strong">
       <div className="flex flex-1 flex-col gap-4 p-4">
@@ -555,36 +597,33 @@ function ProjectCard({
           <span aria-hidden="true">{expanded ? '−' : '+'}</span>
         </button>
         {expanded ? (
-          <div className="space-y-3 border-t border-border pt-3 text-xs">
-            <p className="whitespace-pre-wrap break-words leading-5 text-muted">
-              {project.description || 'No project description recorded.'}
-            </p>
-            {records.length ? (
-              <ul className="space-y-2">
-                {records.map(item => (
-                  <li
-                    key={item.id}
-                    className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2">
-                    <span className="min-w-0 truncate text-foreground" title={item.title}>
-                      {item.title}
-                    </span>
-                    <span className="shrink-0 text-muted">
-                      {humanize(item.status)} · {item.progress}%
-                    </span>
-                  </li>
-                ))}
-              </ul>
+          <div className="space-y-2 border-t border-border pt-3 text-xs">
+            {currentMilestone ? (
+              <>
+                <p className="break-words font-medium text-foreground">{currentMilestone.title}</p>
+                <p className="text-muted">
+                  {humanize(currentMilestone.status)} · {currentMilestone.progress}%
+                </p>
+              </>
+            ) : linkedMarker ? (
+              <p className="break-words font-medium text-foreground">
+                {linkedMarker.message.split(/\r?\n/, 1)[0]}
+              </p>
+            ) : null}
+            {markerDescription ? (
+              <p className="whitespace-pre-wrap break-words leading-5 text-muted">{markerDescription}</p>
             ) : (
-              <p className="text-muted">{project.milestoneHealth.total} milestone records</p>
+              <p className="text-muted">
+                {currentMilestone
+                  ? 'No associated milestone commit description is recorded.'
+                  : 'No current milestone description is available.'}
+              </p>
             )}
-            <p className="text-muted">
-              Deliverables {project._count.deliverables} · Features {project._count.features} · Tasks{' '}
-              {project._count.tasks}
-            </p>
-            <div className="flex flex-wrap gap-3 text-muted">
-              <span>Started {formatDate(project.startedAt)}</span>
-              <span>Target {formatDate(project.expectedEndAt)}</span>
-            </div>
+            {linkedMarker ? (
+              <p className="font-mono text-[10px] text-muted">
+                {linkedMarker.repository} · {linkedMarker.sha.slice(0, 7)}
+              </p>
+            ) : null}
           </div>
         ) : null}
       </div>

@@ -32,6 +32,7 @@ export type ProjectActivitySummary = {
   verification: 'NOT_EVALUATED';
   latestCommit: ProjectActivityEntry | null;
   latestMilestoneEvent: ProjectMilestoneActivity | null;
+  milestoneEvents?: ProjectMilestoneActivity[];
 };
 
 type ApiResponse = {
