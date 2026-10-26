@@ -17,7 +17,6 @@ import {
   UserRound
 } from 'lucide-react';
 
-
 import type {
   AdminProjectListItem,
   AdminProjectsData
@@ -189,9 +188,7 @@ export function AdminProjectsPage({ data, activity }: AdminProjectsPageProps) {
               <div>
                 <p className="text-sm font-semibold text-foreground">Project register</p>
 
-                <p className="mt-1 text-xs text-muted">
-                  Search, open, preview and manage project delivery.
-                </p>
+                <p className="mt-1 text-xs text-muted">Search, open, preview and manage project delivery.</p>
               </div>
 
               <div className="relative w-full lg:max-w-[320px]">
@@ -259,16 +256,73 @@ export function AdminProjectsPage({ data, activity }: AdminProjectsPageProps) {
 
           <div className="p-5 sm:p-6">
             <div className="mb-4 flex justify-end gap-2" aria-label="Project register view">
-              <button type="button" onClick={() => setView('cards')} aria-pressed={view === 'cards'} className={view === 'cards' ? 'rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background' : 'rounded-lg border border-border px-3 py-2 text-xs text-foreground'}>Cards</button>
-              <button type="button" onClick={() => setView('table')} aria-pressed={view === 'table'} className={view === 'table' ? 'rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background' : 'rounded-lg border border-border px-3 py-2 text-xs text-foreground'}>Table</button>
+              <button
+                type="button"
+                onClick={() => setView('cards')}
+                aria-pressed={view === 'cards'}
+                className={
+                  view === 'cards'
+                    ? 'rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background'
+                    : 'rounded-lg border border-border px-3 py-2 text-xs text-foreground'
+                }>
+                Cards
+              </button>
+              <button
+                type="button"
+                onClick={() => setView('table')}
+                aria-pressed={view === 'table'}
+                className={
+                  view === 'table'
+                    ? 'rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background'
+                    : 'rounded-lg border border-border px-3 py-2 text-xs text-foreground'
+                }>
+                Table
+              </button>
             </div>
-            {view === 'cards' ? <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {projects.map(project => (
-                <ProjectCard key={project.id} project={project} activity={activity[project.id]} />
-              ))}
+            {view === 'cards' ? (
+              <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {projects.map(project => (
+                  <ProjectCard key={project.id} project={project} activity={activity[project.id]} />
+                ))}
 
-              {filter === 'ALL' && !search.trim() ? <CreateProjectPlaceholder /> : null}
-            </div> : <div className="overflow-x-auto rounded-xl border border-border"><table className="w-full text-left text-xs"><thead className="border-b border-border bg-surface-raised"><tr><th className="p-3">Project</th><th className="p-3">Status</th><th className="p-3">Progress</th><th className="p-3">Milestones</th><th className="p-3">Actions</th></tr></thead><tbody>{projects.map(project => <tr key={project.id} className="border-b border-border last:border-0"><td className="p-3 font-medium"><Link href={`/admin/projects/${project.id}`} className="hover:underline">{project.name}</Link></td><td className="p-3">{humanize(project.status)}</td><td className="p-3 tabular-nums">{project.progress}%</td><td className="p-3">{project.milestoneHealth.completed}/{project.milestoneHealth.total} completed</td><td className="p-3"><Link className="underline" href={`/admin/projects/${project.id}`}>Manage</Link></td></tr>)}</tbody></table></div>}
+                {filter === 'ALL' && !search.trim() ? <CreateProjectPlaceholder /> : null}
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-border bg-surface-raised">
+                    <tr>
+                      <th className="p-3">Project</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3">Progress</th>
+                      <th className="p-3">Milestones</th>
+                      <th className="p-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {projects.map(project => (
+                      <tr key={project.id} className="border-b border-border last:border-0">
+                        <td className="p-3 font-medium">
+                          <Link href={`/admin/projects/${project.id}`} className="hover:underline">
+                            {project.name}
+                          </Link>
+                        </td>
+                        <td className="p-3">{humanize(project.status)}</td>
+                        <td className="p-3 tabular-nums">{project.progress}%</td>
+                        <td className="p-3">
+                          {project.milestoneHealth.completed}/{project.milestoneHealth.total} completed
+                        </td>
+                        <td className="p-3">
+                          <Link className="underline" href={`/admin/projects/${project.id}`}>
+                            Manage
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             {projects.length === 0 && (filter !== 'ALL' || search.trim()) ? (
               <div className="px-6 py-14 text-center">
@@ -286,8 +340,13 @@ export function AdminProjectsPage({ data, activity }: AdminProjectsPageProps) {
   );
 }
 
-
-function ProjectCard({ project, activity }: { project: AdminProjectListItem; activity?: ProjectActivitySummary }) {
+function ProjectCard({
+  project,
+  activity
+}: {
+  project: AdminProjectListItem;
+  activity?: ProjectActivitySummary;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const progress = Math.max(0, Math.min(100, project.progress));
@@ -295,61 +354,239 @@ function ProjectCard({ project, activity }: { project: AdminProjectListItem; act
   const marker = activity?.latestMilestoneEvent;
   const commit = activity?.latestCommit;
   const source = commit?.repository ?? marker?.repository;
-  const dot = project.status === 'ON_HOLD' ? 'bg-[var(--chart-warning)]' : project.status === 'CANCELLED' ? 'bg-[var(--chart-danger)]' : 'bg-theme-accent';
-  const markerText = marker ? `${humanize(marker.kind)} · ${marker.milestoneKey}` : activity?.state === 'SYNC_ERROR' ? 'Source synchronization needs attention' : 'No recognized milestone activity';
-  const records = 'milestonePreview' in project && Array.isArray(project.milestonePreview)
-    ? project.milestonePreview as Array<{ id: string; title: string; status: string; progress: number }>
-    : [];
+  const developmentDot =
+    project.status === 'ON_HOLD' || project.status === 'REVIEW'
+      ? 'bg-[var(--chart-warning)]'
+      : project.status === 'CANCELLED'
+        ? 'bg-[var(--chart-danger)]'
+        : 'bg-theme-accent';
+
+  const markerText = marker
+    ? `${humanize(marker.kind)} · ${marker.milestoneKey}`
+    : activity?.state === 'SYNC_ERROR'
+      ? 'Source synchronization needs attention'
+      : 'No recognized milestone activity';
+  const records =
+    'milestonePreview' in project && Array.isArray(project.milestonePreview)
+      ? (project.milestonePreview as Array<{ id: string; title: string; status: string; progress: number }>)
+      : [];
+  // Health reports only an observed problem. No unapproved health scoring formula.
+  const blockedMilestones = records.filter(item => item.status === 'BLOCKED').length;
+  const needsAttention = blockedMilestones > 0 || activity?.state === 'SYNC_ERROR';
+  const healthDescription = needsAttention
+    ? [
+        blockedMilestones ? blockedMilestones + ' blocked milestone(s)' : '',
+        activity?.state === 'SYNC_ERROR' ? 'Source synchronization error' : ''
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    : 'No verified health classification available';
   return (
     <article className="relative flex min-w-0 flex-col rounded-2xl border border-border bg-surface transition-colors hover:border-border-strong">
       <div className="flex flex-1 flex-col gap-4 p-4">
         <header className="flex items-center justify-between gap-2">
-          <span className="min-w-0 truncate font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground">{project.slug}</span>
+          <span className="min-w-0 truncate text-[11px] font-semibold uppercase tracking-wider text-foreground">
+            RCENTZ
+          </span>
           <div className="flex shrink-0 items-center gap-2.5">
-            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Development: ${humanize(project.status)}`}><span className={`size-2.5 rounded-full ${dot}`} />Dev</span>
-            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Milestones: ${project.milestoneHealth.completed} completed, ${project.milestoneHealth.active} active, ${project.milestoneHealth.remaining} remaining`}><span className="size-2.5 rounded-full border border-border-strong bg-surface-raised" />MS</span>
-            <span className="inline-flex items-center gap-1 text-[10px] text-muted" title={`Visibility: ${humanize(project.visibility)}`}><span className={`size-2.5 rounded-full ${project.visibility === 'PUBLIC' ? 'bg-theme-accent' : 'bg-muted'}`} />{humanize(project.visibility)}</span>
+            <span
+              className="inline-flex items-center gap-1 text-[10px] font-medium capitalize tracking-wide text-muted"
+              title={`Development: ${humanize(project.status)}`}>
+              <span className={`size-2.5 rounded-full ${developmentDot}`} />
+              Dev
+            </span>
+            <span
+              className="inline-flex items-center gap-1 text-[10px] font-medium capitalize tracking-wide text-muted"
+              title={healthDescription}>
+              <span
+                className={`size-2.5 rounded-full ${needsAttention ? 'bg-[var(--chart-danger)]' : 'border border-border-strong bg-surface-raised'}`}
+              />
+              Health
+            </span>
+            <span
+              className="inline-flex items-center gap-1 text-[10px] font-medium capitalize tracking-wide text-muted"
+              title={`Visibility: ${humanize(project.visibility)}`}>
+              <span
+                className={`size-2.5 rounded-full ${project.visibility === 'PUBLIC' ? 'bg-theme-accent' : project.visibility === 'PRIVATE' ? 'bg-muted' : 'bg-[var(--chart-warning)]'}`}
+              />
+              {humanize(project.visibility)}
+            </span>
             <div className="relative">
-              <button type="button" aria-label={`Manage ${project.name}`} aria-expanded={menuOpen} onClick={() => setMenuOpen(value => !value)} className="flex size-7 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-raised">···</button>
-              {menuOpen ? <div className="absolute right-0 top-full z-40 mt-1 w-44 rounded-xl border border-border bg-background p-1 shadow-lg">
-                <Link href={`/admin/projects/${project.id}`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Open workspace</Link>
-                <Link href={`/admin/projects/${project.id}/edit`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Edit project</Link>
-                <Link href={`/admin/projects/${project.id}/sources`} className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Development sources</Link>
-                {canPreview ? <Link href={`/portfolio/${project.slug}`} target="_blank" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Public preview</Link> : null}
-                {project.portfolio?.liveUrl ? <a href={project.portfolio.liveUrl} target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">Live website</a> : null}
-              </div> : null}
+              <button
+                type="button"
+                aria-label={`Manage ${project.name}`}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen(value => !value)}
+                className="flex size-7 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-raised">
+                ···
+              </button>
+              {menuOpen ? (
+                <div className="absolute right-0 top-full z-40 mt-1 w-44 rounded-xl border border-border bg-background p-1 shadow-lg">
+                  <Link
+                    href={`/admin/projects/${project.id}`}
+                    className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">
+                    Open workspace
+                  </Link>
+                  <Link
+                    href={`/admin/projects/${project.id}/edit`}
+                    className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">
+                    Edit project
+                  </Link>
+                  <Link
+                    href={`/admin/projects/${project.id}/sources`}
+                    className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">
+                    Development sources
+                  </Link>
+                  {canPreview ? (
+                    <Link
+                      href={`/portfolio/${project.slug}`}
+                      target="_blank"
+                      className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">
+                      Public preview
+                    </Link>
+                  ) : null}
+                  {project.portfolio?.liveUrl ? (
+                    <a
+                      href={project.portfolio.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-lg px-3 py-2 text-xs hover:bg-surface-raised">
+                      Live website
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
         </header>
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
-            {project.screenshot?.url ? <img src={project.screenshot.url} alt={project.screenshot.alt ?? `${project.name} screenshot`} className="size-full object-cover" /> : <FolderKanban className="size-6 text-muted" aria-hidden="true" />}
+            {project.screenshot?.url ? (
+              <img
+                src={project.screenshot.url}
+                alt={project.screenshot.alt ?? `${project.name} screenshot`}
+                className="size-full object-cover"
+              />
+            ) : (
+              <FolderKanban className="size-6 text-muted" aria-hidden="true" />
+            )}
           </div>
           <div className="min-w-0 flex-1">
-            <Link href={`/admin/projects/${project.id}`} className="block truncate text-sm font-semibold text-foreground hover:underline">{project.name}</Link>
-            {project.portfolio?.liveUrl ? <a href={project.portfolio.liveUrl} target="_blank" rel="noreferrer" className="mt-1 block truncate text-xs text-muted hover:underline">{project.portfolio.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a> : <p className="mt-1 truncate text-xs text-muted">{project.client?.clientProfile?.companyName ?? project.client?.name ?? project.slug}</p>}
+            <Link
+              href={`/admin/projects/${project.id}`}
+              className="block truncate text-sm font-semibold text-foreground hover:underline">
+              {project.name}
+            </Link>
+            {project.portfolio?.liveUrl ? (
+              <a
+                href={project.portfolio.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 block truncate text-xs text-muted hover:underline">
+                {project.portfolio.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              </a>
+            ) : (
+              <p className="mt-1 truncate text-xs text-muted">
+                {project.client?.clientProfile?.companyName ?? project.client?.name ?? project.slug}
+              </p>
+            )}
           </div>
           <div className="relative size-14 shrink-0" role="img" aria-label={`${progress}% overall progress`}>
             <svg viewBox="0 0 56 56" className="size-full -rotate-90" aria-hidden="true">
-              <circle cx="28" cy="28" r="23" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
-              <circle cx="28" cy="28" r="23" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 23} strokeDashoffset={2 * Math.PI * 23 * (1 - progress / 100)} className="text-theme-accent" />
+              <circle
+                cx="28"
+                cy="28"
+                r="23"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+                className="text-theme-accent/15"
+              />
+              <circle
+                cx="28"
+                cy="28"
+                r="23"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 23}
+                strokeDashoffset={2 * Math.PI * 23 * (1 - progress / 100)}
+                className="text-theme-accent"
+              />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-foreground">{progress}%</span>
+            <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-foreground">
+              {progress}%
+            </span>
           </div>
         </div>
         <div className="min-w-0 space-y-3 border-t border-border pt-3">
-          <div className="flex items-start gap-2"><GitCommitHorizontal className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-foreground" title={marker?.message}>{markerText}</p>{marker ? <p className="mt-0.5 text-[10px] text-muted">Recorded marker · Not verified here</p> : null}</div></div>
-          <div className="flex items-start gap-2"><GitBranch className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" /><p className="min-w-0 flex-1 truncate text-xs text-muted" title={commit?.message}>{commit?.message ?? 'No recorded Git commit'}</p></div>
-          <p className="truncate pl-6 font-mono text-[10px] text-muted">{source ?? 'No repository activity'}{commit ? ` · ${new Date(commit.committedAt).toLocaleDateString('en-NG')}` : ''}</p>
-          {activity?.state === 'SYNC_ERROR' && marker ? <p className="pl-6 text-xs text-[var(--chart-warning)]">Source synchronization needs attention</p> : null}
+          <div className="flex items-start gap-2">
+            <GitCommitHorizontal className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-medium text-foreground" title={marker?.message}>
+                {markerText}
+              </p>
+              {marker ? (
+                <p className="mt-0.5 text-[10px] text-muted">Recorded marker · Not verified here</p>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <GitBranch className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden="true" />
+            <p className="min-w-0 flex-1 truncate text-xs text-muted" title={commit?.message}>
+              {commit?.message ?? 'No recorded Git commit'}
+            </p>
+          </div>
+          <p className="truncate pl-6 font-mono text-[10px] text-muted">
+            {source ?? 'No repository activity'}
+            {commit ? ` · ${new Date(commit.committedAt).toLocaleDateString('en-NG')}` : ''}
+          </p>
+          {activity?.state === 'SYNC_ERROR' && marker ? (
+            <p className="pl-6 text-xs text-[var(--chart-warning)]">Source synchronization needs attention</p>
+          ) : null}
         </div>
-        <button type="button" aria-expanded={expanded} onClick={() => setExpanded(value => !value)} className="mt-auto flex w-full items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised"><span>Description</span><span aria-hidden="true">{expanded ? '−' : '+'}</span></button>
-        {expanded ? <div className="space-y-3 border-t border-border pt-3 text-xs">
-          <p className="whitespace-pre-wrap break-words leading-5 text-muted">{project.description || 'No project description recorded.'}</p>
-          {records.length ? <ul className="space-y-2">{records.map(item => <li key={item.id} className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2"><span className="min-w-0 truncate text-foreground" title={item.title}>{item.title}</span><span className="shrink-0 text-muted">{humanize(item.status)} · {item.progress}%</span></li>)}</ul> : <p className="text-muted">{project.milestoneHealth.total} milestone records</p>}
-          <p className="text-muted">Deliverables {project._count.deliverables} · Features {project._count.features} · Tasks {project._count.tasks}</p>
-          <div className="flex flex-wrap gap-3 text-muted"><span>Started {formatDate(project.startedAt)}</span><span>Target {formatDate(project.expectedEndAt)}</span></div>
-        </div> : null}
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded(value => !value)}
+          className="mt-auto flex w-full items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">
+          <span>Description</span>
+          <span aria-hidden="true">{expanded ? '−' : '+'}</span>
+        </button>
+        {expanded ? (
+          <div className="space-y-3 border-t border-border pt-3 text-xs">
+            <p className="whitespace-pre-wrap break-words leading-5 text-muted">
+              {project.description || 'No project description recorded.'}
+            </p>
+            {records.length ? (
+              <ul className="space-y-2">
+                {records.map(item => (
+                  <li
+                    key={item.id}
+                    className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2">
+                    <span className="min-w-0 truncate text-foreground" title={item.title}>
+                      {item.title}
+                    </span>
+                    <span className="shrink-0 text-muted">
+                      {humanize(item.status)} · {item.progress}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted">{project.milestoneHealth.total} milestone records</p>
+            )}
+            <p className="text-muted">
+              Deliverables {project._count.deliverables} · Features {project._count.features} · Tasks{' '}
+              {project._count.tasks}
+            </p>
+            <div className="flex flex-wrap gap-3 text-muted">
+              <span>Started {formatDate(project.startedAt)}</span>
+              <span>Target {formatDate(project.expectedEndAt)}</span>
+            </div>
+          </div>
+        ) : null}
       </div>
     </article>
   );
