@@ -1,3 +1,4 @@
+import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 import { projectImagesConfigured } from '@/features/admin/server/media/project-images';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 import { AdminProjectImages } from './AdminProjectImages';
@@ -41,6 +42,7 @@ type AdminProjectPageProps = {
   canReconcile?: boolean;
   activity?: ProjectActivitySummary;
   analytics?: ClientProjectAnalytics | null;
+  runtimeMetrics?: RuntimeMetrics;
   tab?: WorkspaceTab;
   selectorProjects?: Array<{ id: string; name: string }>;
 };
@@ -117,7 +119,7 @@ export function AdminProjectPage({
   canReconcile = false,
   activity,
   tab = 'overview',
-  selectorProjects = [], analytics }: AdminProjectPageProps) {
+  selectorProjects = [], analytics, runtimeMetrics }: AdminProjectPageProps) {
   const milestones = project.milestones.filter(milestone => milestone.status !== 'CANCELLED');
 
   const completedMilestones = milestones.filter(milestone => milestone.status === 'COMPLETED').length;
@@ -360,7 +362,7 @@ export function AdminProjectPage({
             </section>
 
             {/* PM-WORKSPACE-PASS-1 */}
-            <AdminProjectMonitoringCards project={project} activity={activity} analytics={analytics} />
+            <AdminProjectMonitoringCards project={project} activity={activity} analytics={analytics} runtimeMetrics={runtimeMetrics} />
 
             <nav
               aria-label="Project workspace sections"

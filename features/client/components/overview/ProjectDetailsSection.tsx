@@ -1,3 +1,4 @@
+import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 import { hasProjectBrief } from "@/features/client/lib/workspace";
 import { FileText, Plus } from "lucide-react";
 import type { ReactNode } from "react";
@@ -31,6 +32,7 @@ import type { ClientProject } from "@/features/client/server/projects/get-client
 type ProjectDetailsSectionProps = {
   project: ClientProject;
   analytics?: ClientProjectAnalytics;
+  runtimeMetrics?: RuntimeMetrics;
 };
 
 function humanize(value: string) {
@@ -90,6 +92,7 @@ function getCurrentDeliverable(project: ClientProject) {
 export function ProjectDetailsSection({
   project,
   analytics,
+  runtimeMetrics,
 }: ProjectDetailsSectionProps) {
   const currentDeliverable = getCurrentDeliverable(project);
 
@@ -262,7 +265,7 @@ export function ProjectDetailsSection({
           </Link>
         </div>
       </section>
-      <ProjectDecisionSummary project={project} analytics={analytics} />
+      <ProjectDecisionSummary project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />
       <section
         id="milestones"
         className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface"

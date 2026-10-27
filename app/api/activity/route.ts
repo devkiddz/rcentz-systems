@@ -1,3 +1,4 @@
+import { observeRoute } from '@/server/runtime-monitor/collector';
 import { prisma } from '@/lib/prisma';
 import { chatBody, chatFailure, chatUser } from '@/features/messaging/server/http';
 import { ChatError } from '@/features/messaging/server/conversations';
@@ -7,7 +8,7 @@ export const runtime = 'nodejs';
 const headers = { 'Cache-Control': 'private, no-store', Vary: 'Cookie' };
 const projectTypes = ['PROJECT', 'PROJECT_UPDATE'] as const;
 
-export async function GET() {
+async function rm01Get(_request: Request) {
   try {
     const user = await chatUser();
     const member = { status: 'ACTIVE' as const, participants: { some: { userId: user.id, leftAt: null } } };
@@ -28,7 +29,7 @@ export async function GET() {
   } catch (error) { return chatFailure(error); }
 }
 
-export async function POST(request: Request) {
+async function rm01Post(request: Request) {
   try {
     const user = await chatUser();
     const body = await chatBody(request);
@@ -37,3 +38,6 @@ export async function POST(request: Request) {
     return Response.json({ saved: true }, { headers });
   } catch (error) { return chatFailure(error); }
 }
+
+export const GET = observeRoute('/api/activity', rm01Get);
+export const POST = observeRoute('/api/activity', rm01Post);

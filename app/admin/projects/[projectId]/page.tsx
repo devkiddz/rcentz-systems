@@ -1,3 +1,4 @@
+import { readProjectRuntimeMetrics } from '@/server/runtime-monitor/read';
 import { getClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
 import { notFound } from 'next/navigation';
 import { AdminProjectPage } from '@/features/admin/components/projects/AdminProjectPage';
@@ -15,9 +16,10 @@ export default async function AdminProjectRoute({params,searchParams}:AdminProje
  if (!project) notFound();
  const activity = (await readProjectActivitySummaries([projectId]))[projectId];
  const analytics = await getClientProjectAnalytics({ userId: actor.id, projectId, adminPreview: true });
+ const runtimeMetrics = await readProjectRuntimeMetrics(projectId);
  const requestedTab = (await searchParams).tab;
  const tab: WorkspaceTab = requestedTab === 'resources' || requestedTab === 'logs' || requestedTab === 'analytics' || requestedTab === 'settings' ? requestedTab : 'overview';
  const register = await getAdminProjects();
  const selectorProjects = register.projects.map(item => ({id:item.id,name:item.name}));
- return <><AdminProjectPage project={project} canReconcile={actor.role==='SUPER_ADMIN'} activity={activity} analytics={analytics} tab={tab} selectorProjects={selectorProjects}/><div className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6"><details className="rounded-xl border border-border p-4"><summary className="cursor-pointer text-sm font-medium">Manual milestone review and exceptions</summary><AdminProjectGovernancePanel projectId={projectId}/></details></div></>;
+ return <><AdminProjectPage project={project} canReconcile={actor.role==='SUPER_ADMIN'} activity={activity} analytics={analytics} runtimeMetrics={runtimeMetrics} tab={tab} selectorProjects={selectorProjects}/><div className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6"><details className="rounded-xl border border-border p-4"><summary className="cursor-pointer text-sm font-medium">Manual milestone review and exceptions</summary><AdminProjectGovernancePanel projectId={projectId}/></details></div></>;
 }

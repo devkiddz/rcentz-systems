@@ -1,3 +1,4 @@
+import { readProjectRuntimeMetrics } from '@/server/runtime-monitor/read';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Eye, ArrowLeft } from 'lucide-react';
@@ -34,6 +35,7 @@ export default async function AdminCustomerPreviewRoute({ params }: Props) {
     getClientProjectAnalytics({ userId: clientId, projectId }),
   ]);
   if (!project || !analytics) notFound();
+  const runtimeMetrics = await readProjectRuntimeMetrics(projectId);
 
   return (
     <main className="rcentz-dashboard-frame mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
@@ -48,7 +50,7 @@ export default async function AdminCustomerPreviewRoute({ params }: Props) {
       </div>
       <p className="mt-3 text-xs leading-5 text-muted">This is a preview of the assigned customer's project page. Links, forms, and action buttons inside the preview are disabled; no customer session is created.</p>
       <ReadOnlyCustomerPreview>
-        <ClientProjectPage project={project} analytics={analytics} />
+        <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />
       </ReadOnlyCustomerPreview>
     </main>
   );
