@@ -8,6 +8,7 @@ import { ClientProjectPage } from '@/features/client/components/projects/ClientP
 import { getClientProject } from '@/features/client/server/projects/get-client-project';
 
 import { getClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
+import { readOwnedProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
 
 type DashboardProjectPageProps = {
   params: Promise<{
@@ -38,6 +39,9 @@ export default async function DashboardProjectPage({
     notFound();
   }
 
-  const runtimeMetrics = await readProjectRuntimeMetrics(projectId);
-  return <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />;
+  const [runtimeMetrics, activity] = await Promise.all([
+    readProjectRuntimeMetrics(projectId),
+    readOwnedProjectActivitySummary({ projectId, userId: user.id })
+  ]);
+  return <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />;
 }
