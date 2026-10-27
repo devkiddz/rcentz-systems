@@ -1,4 +1,5 @@
 import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
+import type { ProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
 import Link from "next/link";
 
 import { ArrowLeft } from "lucide-react";
@@ -16,6 +17,7 @@ type ClientProjectPageProps = {
   project: ClientProject;
   analytics: ClientProjectAnalytics;
   runtimeMetrics?: RuntimeMetrics;
+  activity?: ProjectActivitySummary;
 };
 
 function formatLabel(value: string) {
@@ -30,6 +32,7 @@ export function ClientProjectPage({
   project,
   analytics,
   runtimeMetrics,
+  activity,
 }: ClientProjectPageProps) {
   return (
     <main className="py-6 sm:py-8">
@@ -65,7 +68,7 @@ export function ClientProjectPage({
           </div>
         </section>
 
-        <ProjectDetailsSection project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />
+        <ProjectDetailsSection project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
 
         {project.slug === "demo-dennis-portfolio-complete-v1" ? (
           <p className="rounded-xl border border-border bg-surface-muted px-5 py-3 text-xs leading-6 text-muted-foreground">

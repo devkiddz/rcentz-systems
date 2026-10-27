@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Activity, ChevronRight } from 'lucide-react';
 import type { ProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
+import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 
 type Metric = {
   label: string;
@@ -12,7 +13,7 @@ type Metric = {
 type Props = {
   mode: 'admin' | 'customer';
   href: string;
-  metrics?: { requests?: Metric; functions?: Metric; errors?: Metric };
+  metrics?: RuntimeMetrics & { requests?: Metric; functions?: Metric; errors?: Metric };
   activity?: ProjectActivitySummary;
 };
 
@@ -38,6 +39,13 @@ export function ProjectObservabilityCard({ mode, href, metrics, activity }: Prop
     { key: 'errors', label: 'Instrumented error rate', metric: metrics?.errors }
   ];
   const hasData = rows.some(row => row.metric?.value !== null && row.metric?.value !== undefined);
+  const stateLabel = metrics?.state === 'ACTIVE'
+    ? 'Active'
+    : metrics?.state === 'AWAITING_DATA'
+      ? 'Connected · awaiting measurements'
+      : metrics?.state === 'NOT_INSTRUMENTED'
+        ? 'Not instrumented'
+        : 'Unavailable';
   return (
     <article className="flex h-[420px] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface lg:h-[460px]" aria-label="Project operational observability">
       <header className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4">
@@ -45,20 +53,21 @@ export function ProjectObservabilityCard({ mode, href, metrics, activity }: Prop
         <Link href={href} aria-label={mode === 'admin' ? 'Open development evidence' : 'Review delivery progress'} className="rounded-md p-1 text-muted hover:text-foreground"><ChevronRight className="size-4" /></Link>
       </header>
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 py-5 [scrollbar-width:thin] [scrollbar-color:transparent_transparent] hover:[scrollbar-color:var(--border)_transparent] focus-within:[scrollbar-color:var(--border)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-transparent hover:[&::-webkit-scrollbar-thumb]:bg-border focus-within:[&::-webkit-scrollbar-thumb]:bg-border [mask-image:linear-gradient(to_bottom,transparent,black_12px,black_95%,transparent)]">
+        <div className="flex items-center justify-between gap-3 text-xs"><span className="text-muted">Runtime collection</span><span className="text-right font-medium text-foreground">{stateLabel}</span></div>
         {rows.map(row => <div key={row.key} className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] items-center gap-3">
           <div className="min-w-0"><p className="text-xs text-muted">{row.label}</p><p className="mt-1 text-sm font-semibold tabular-nums text-foreground">{row.metric?.value == null ? '—' : `${row.metric.value.toLocaleString('en-NG')}${row.metric.unit ?? ''}`}</p></div>
           <Trend label={row.label} points={row.metric?.points} />
         </div>)}
-        {!hasData ? <p className="border-t border-border pt-3 text-xs leading-5 text-muted">No instrumented request measurements have been received for this project yet.</p> : null}
-        {mode === 'admin' && activity ? (
+        {!hasData ? <p className="border-t border-border pt-3 text-xs leading-5 text-muted">{metrics?.state === 'NOT_INSTRUMENTED' ? 'This managed project has no runtime source connected yet.' : metrics?.state === 'AWAITING_DATA' ? 'A runtime source is connected, but no request measurements were received in this window.' : 'Runtime observability is temporarily unavailable for this project.'}</p> : null}
+        {activity ? (
           <div className="space-y-2 border-t border-border pt-3 text-xs">
-            <p className="font-semibold text-foreground">GitHub delivery activity</p>
+            <p className="font-semibold text-foreground">{mode === 'admin' ? 'GitHub delivery activity' : 'Delivery activity'}</p>
             <div className="flex items-center justify-between gap-2"><span className="text-muted">Source status</span><span className="font-medium text-foreground">{activity.state.replaceAll('_', ' ').toLowerCase()}</span></div>
             {activity.latestCommit ? <>
               <p className="break-words text-foreground">{activity.latestCommit.message}</p>
-              <p className="text-muted">{activity.latestCommit.repository} · {activity.latestCommit.branch} · {activity.latestCommit.sha.slice(0, 7)}</p>
+              <p className="text-muted">{mode === 'admin' ? `${activity.latestCommit.repository} · ${activity.latestCommit.branch} · ${activity.latestCommit.sha.slice(0, 7)}` : `Recorded ${new Date(activity.latestCommit.committedAt).toLocaleDateString('en-GB')}`}</p>
             </> : <p className="text-muted">No recorded commit available for this project.</p>}
-            <p className="text-muted">Activity verification: {activity.verification === 'NOT_EVALUATED' ? 'not evaluated' : activity.verification}</p>
+            {mode === 'admin' ? <p className="text-muted">Activity verification: {activity.verification === 'NOT_EVALUATED' ? 'not evaluated' : activity.verification}</p> : null}
           </div>
         ) : null}
 

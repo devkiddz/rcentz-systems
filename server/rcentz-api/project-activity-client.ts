@@ -3,6 +3,7 @@ import 'server-only';
 
 import { createHmac, randomUUID } from 'node:crypto';
 import { requireAdmin } from '@/features/auth/server/require-admin';
+import { prisma } from '@/lib/prisma';
 
 const endpoint = '/api/v1/internal/systems/project-activity-summary';
 
@@ -208,4 +209,44 @@ export async function readProjectActivitySummaries(
   }
 
   return result;
+}
+
+/** Client-safe reader: local ownership is proved before service delegation. */
+export async function readOwnedProjectActivitySummary({
+  projectId,
+  userId
+}: {
+  projectId: string;
+  userId: string;
+}): Promise<ProjectActivitySummary | undefined> {
+  const owned = await prisma.project.findFirst({
+    where: { id: projectId, clientId: userId },
+    select: { id: true }
+  });
+  if (!owned) return undefined;
+
+  const secret = process.env.RCENTZ_SYSTEMS_API_SECRET;
+  const baseValue = process.env.RCENTZ_API_URL;
+  const serviceSubject = process.env.RCENTZ_SYSTEMS_ACTIVITY_SUBJECT_ID
+    ?? process.env.OPPORTUNITY_OWNER_ID;
+  if (!secret || secret.length < 32 || !baseValue || !serviceSubject) {
+    return unavailable(projectId);
+  }
+
+  try {
+    const base = new URL(baseValue);
+    const validProtocol = base.protocol === 'https:' || (
+      process.env.NODE_ENV !== 'production'
+      && base.protocol === 'http:'
+      && ['localhost', '127.0.0.1'].includes(base.hostname)
+    );
+    if (base.username || base.password || base.search || base.hash || !validProtocol) {
+      return unavailable(projectId);
+    }
+    const summaries = await readBatch([projectId], serviceSubject, base, secret);
+    return summaries.find(summary => summary.projectId === projectId)
+      ?? unavailable(projectId);
+  } catch {
+    return unavailable(projectId);
+  }
 }
