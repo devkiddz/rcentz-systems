@@ -1,4 +1,5 @@
 import 'server-only';
+import { requireAdmin } from '@/features/auth/server/require-admin';
 
 import { cache } from 'react';
 
@@ -183,11 +184,14 @@ export const getClientProjectAnalytics =
   cache(
     async ({
       userId,
-      projectId
+      projectId,
+      adminPreview = false
     }: {
       userId: string;
       projectId: string;
+      adminPreview?: boolean;
     }) => {
+      if (adminPreview) await requireAdmin();
       /*
        * Ownership is checked here again even though
        * the route already fetches the client project.
@@ -197,10 +201,7 @@ export const getClientProjectAnalytics =
        */
       const project =
         await prisma.project.findFirst({
-          where: {
-            id: projectId,
-            clientId: userId
-          },
+          where: adminPreview ? { id: projectId } : { id: projectId, clientId: userId },
 
           select: {
             id: true,
@@ -238,9 +239,7 @@ export const getClientProjectAnalytics =
         };
       }
 
-      if (
-        !config.clientVisible
-      ) {
+      if (!adminPreview && !config.clientVisible) {
         return {
           available:
             false as const,

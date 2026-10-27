@@ -237,18 +237,61 @@ export function AdminProjectMilestoneManager({
         </div>
       ) : null}
 
+      {/* PM-MILESTONE-ROADMAP-PASS-1 — shared visual language, existing admin governance */}
+      <div className="grid border-b border-border bg-background/30 sm:grid-cols-3">
+        <div className="px-5 py-4 sm:px-6">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">Current milestone</p>
+          {(() => {
+            const current = milestones.find(item => item.status === 'IN_PROGRESS')
+              ?? milestones.find(item => item.status === 'REVIEW')
+              ?? milestones.find(item => item.status === 'BLOCKED');
+            return current ? (
+              <div className="mt-2">
+                <p className="line-clamp-2 text-sm font-semibold text-foreground">{current.title}</p>
+                <p className="mt-1 text-xs text-muted">{humanize(current.status)} · {current.progress}% governed progress</p>
+              </div>
+            ) : <p className="mt-2 text-xs text-muted">No active milestone</p>;
+          })()}
+        </div>
+        <div className="border-t border-border px-5 py-4 sm:border-l sm:border-t-0 sm:px-6">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">Recently completed</p>
+          {(() => {
+            const recent = [...milestones].reverse().find(item => item.status === 'COMPLETED');
+            return recent ? (
+              <div className="mt-2">
+                <p className="line-clamp-2 text-sm font-semibold text-foreground">{recent.title}</p>
+                <p className="mt-1 text-xs text-muted">{formatDate(recent.completedAt ?? recent.dueDate)}</p>
+              </div>
+            ) : <p className="mt-2 text-xs text-muted">No milestone completed yet</p>;
+          })()}
+        </div>
+        <div className="border-t border-border px-5 py-4 sm:border-l sm:border-t-0 sm:px-6">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">Up next</p>
+          {(() => {
+            const next = milestones.find(item => item.status === 'PLANNED');
+            return next ? (
+              <div className="mt-2">
+                <p className="line-clamp-2 text-sm font-semibold text-foreground">{next.title}</p>
+                <p className="mt-1 text-xs text-muted">Target {formatDate(next.dueDate)}</p>
+              </div>
+            ) : <p className="mt-2 text-xs text-muted">No upcoming milestone</p>;
+          })()}
+        </div>
+      </div>
+
       {milestones.length > 0 ? (
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-border bg-background/15">
           {milestones.map((milestone, index) => {
             const canDelete = !milestone.deliveryManaged && milestone.status === 'PLANNED' && milestone.visibility === 'INTERNAL';
 
             return (
               <MilestoneDisclosure key={milestone.id} projectId={projectId} milestoneId={milestone.id} title={milestone.title} status={milestone.status}>
-              <article className="px-5 pb-5 sm:px-6">
-                <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              {/* RCENTZ-MILESTONE-STAGE2: presentation only; controls and evidence retained */}
+              <article className="px-5 pb-5 pt-1 sm:px-6">
+                <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs uppercase tracking-[0.1em] text-muted">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                      <span className="rounded-md border border-border bg-surface-raised px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">
                         M{String(index + 1).padStart(2, '0')}
                       </span>
 
@@ -258,23 +301,19 @@ export function AdminProjectMilestoneManager({
                       />
 
                       <span className="text-xs text-muted">{humanize(milestone.status)}</span>
-                      <span className="rounded-md border border-border px-2 py-0.5 text-[10px] font-medium text-muted">
+                      <span className="rounded-full border border-border bg-surface-raised px-2 py-1 text-[10px] font-medium text-muted">
                         {milestone.deliveryManaged ? 'GitHub-tracked' : 'Manual governance'}
                       </span>
 
-                      <span className="text-xs text-muted">·</span>
+                      <span title="Priority" className="rounded-full bg-surface-muted px-2 py-1 text-[10px] text-muted">{humanize(milestone.priority)} priority</span>
 
-                      <span className="text-xs text-muted">{humanize(milestone.priority)}</span>
-
-                      <span className="text-xs text-muted">·</span>
-
-                      <span className="text-xs text-muted">{humanize(milestone.visibility)}</span>
+                      <span title="Visibility" className="rounded-full bg-surface-muted px-2 py-1 text-[10px] text-muted">{humanize(milestone.visibility)}</span>
                     </div>
 
 
 
                     {milestone.description ? (
-                      <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted">
+                      <p className="mt-3 max-w-2xl text-xs leading-5 text-muted">
                         {milestone.description}
                       </p>
                     ) : null}
@@ -287,8 +326,8 @@ export function AdminProjectMilestoneManager({
                     ) : null}
                   </div>
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <div className="flex flex-wrap gap-5">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:justify-end">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-lg border border-border bg-surface-raised/50 px-3 py-2">
                       <MilestoneStat label={milestone.deliveryManaged ? "Verified" : "Progress"} value={`${milestone.progress}%`} />
 
                       <MilestoneStat label="Target" value={formatDate(milestone.dueDate)} />
@@ -309,7 +348,8 @@ export function AdminProjectMilestoneManager({
                             milestone
                           });
                         }}
-                        className="inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-muted transition-colors hover:text-foreground"
+                        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-muted transition-colors hover:border-theme-accent/40 hover:text-theme-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent"
+                        title={`Edit ${milestone.title}`}
                         aria-label={`Edit ${milestone.title}`}>
                         <Pencil className="size-3.5" />
                       </button>

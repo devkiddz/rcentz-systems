@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import { Menu } from 'lucide-react';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
@@ -33,6 +33,8 @@ type AdminHeaderProps = {
 
 export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isProjectDetail = /^\/admin\/projects\/[^/]+\/?$/.test(pathname) && pathname !== '/admin/projects/new';
 
   useEffect(() => {
     function refreshHeader() {
@@ -77,6 +79,9 @@ export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
 
         <div className="h-5 w-px shrink-0 bg-border" />
 
+        {isProjectDetail ? (
+          <div id="admin-project-picker-slot" className="min-w-0 flex-1 max-w-[310px]" />
+        ) : (
         <div className="min-w-0">
           <p className="truncate text-xs font-semibold tracking-[-0.02em] text-foreground sm:text-sm">
             Admin
@@ -84,6 +89,7 @@ export function AdminHeader({ user, headerFeed }: AdminHeaderProps) {
 
           <p className="hidden truncate text-xs text-muted sm:block">Rcentz Systems</p>
         </div>
+        )}
 
         <div className="ml-auto flex min-w-0 items-center gap-0.5">
           <AdminCommandSearch />
