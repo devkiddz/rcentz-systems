@@ -1,3 +1,4 @@
+import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Check, Circle, ArrowUpRight, BarChart3 } from 'lucide-react';
@@ -25,7 +26,7 @@ function humanize(value: string) {
   return value.toLowerCase().replaceAll('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-export function ProjectDecisionSummary({ project, analytics }: { project: ClientProject; analytics?: ClientProjectAnalytics }) {
+export function ProjectDecisionSummary({ project, analytics, runtimeMetrics }: { project: ClientProject; analytics?: ClientProjectAnalytics; runtimeMetrics?: RuntimeMetrics }) {
   const a = analytics?.available ? analytics : null;
   // The project reader already limits these records to CLIENT/PUBLIC visibility.
   const milestones = project.milestones.filter(m => m.status !== 'CANCELLED');
@@ -46,7 +47,7 @@ export function ProjectDecisionSummary({ project, analytics }: { project: Client
       <Link href="#milestones" className="mt-4 inline-flex min-h-11 items-center text-xs font-medium hover:underline">Review milestones →</Link>
     </Card>
 
-    <ProjectObservabilityCard mode="customer" href="#milestones" />
+    <ProjectObservabilityCard mode="customer" href="#milestones" metrics={runtimeMetrics} />
 
     <Card title="Analytics" badge={a?.collection.sample ? 'Sample data' : a ? '30 days' : undefined} href="#analytics">
       {a ? <>

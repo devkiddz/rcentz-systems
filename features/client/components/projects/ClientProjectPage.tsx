@@ -1,3 +1,4 @@
+import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 import Link from "next/link";
 
 import { ArrowLeft } from "lucide-react";
@@ -14,6 +15,7 @@ import { ClientProjectFinanceSection } from "./ClientProjectFinanceSection";
 type ClientProjectPageProps = {
   project: ClientProject;
   analytics: ClientProjectAnalytics;
+  runtimeMetrics?: RuntimeMetrics;
 };
 
 function formatLabel(value: string) {
@@ -27,6 +29,7 @@ function formatLabel(value: string) {
 export function ClientProjectPage({
   project,
   analytics,
+  runtimeMetrics,
 }: ClientProjectPageProps) {
   return (
     <main className="py-6 sm:py-8">
@@ -62,7 +65,7 @@ export function ClientProjectPage({
           </div>
         </section>
 
-        <ProjectDetailsSection project={project} analytics={analytics} />
+        <ProjectDetailsSection project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />
 
         {project.slug === "demo-dennis-portfolio-complete-v1" ? (
           <p className="rounded-xl border border-border bg-surface-muted px-5 py-3 text-xs leading-6 text-muted-foreground">

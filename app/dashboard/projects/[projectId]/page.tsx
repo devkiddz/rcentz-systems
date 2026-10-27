@@ -1,3 +1,4 @@
+import { readProjectRuntimeMetrics } from '@/server/runtime-monitor/read';
 import { notFound } from 'next/navigation';
 
 import { requireAuth } from '@/features/auth/server/require-auth';
@@ -37,5 +38,6 @@ export default async function DashboardProjectPage({
     notFound();
   }
 
-  return <ClientProjectPage project={project} analytics={analytics} />;
+  const runtimeMetrics = await readProjectRuntimeMetrics(projectId);
+  return <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} />;
 }
