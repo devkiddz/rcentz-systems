@@ -1,19 +1,30 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export function RcentzBrandSymbol({
-  className = "",
+  className = '',
 }: {
   className?: string;
 }) {
   return (
-    <Image
-      src="/brands/rcentz/rcentz-cr-symbol-blue.svg"
-      width={128}
-      height={128}
-      alt=""
-      aria-hidden="true"
-      unoptimized
-      className={className}
-    />
+    <>
+      <Image
+        src="/brand/rcentz-mark-light.svg"
+        width={128}
+        height={128}
+        alt=""
+        aria-hidden="true"
+        unoptimized
+        className={`dark:hidden ${className}`}
+      />
+      <Image
+        src="/brand/rcentz-mark-dark.svg"
+        width={128}
+        height={128}
+        alt=""
+        aria-hidden="true"
+        unoptimized
+        className={`hidden dark:block ${className}`}
+      />
+    </>
   );
 }

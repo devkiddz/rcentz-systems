@@ -1,7 +1,7 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react';
 
 export function RcentzSymbol({
-  className = "",
+  className = '',
   ...props
 }: SVGProps<SVGSVGElement>) {
   return (
@@ -12,9 +12,16 @@ export function RcentzSymbol({
       {...props}
     >
       <image
-        href="/brands/rcentz/rcentz-cr-symbol-blue.svg"
+        href="/brand/rcentz-mark-light.svg"
         width="128"
         height="128"
+        className="dark:hidden"
+      />
+      <image
+        href="/brand/rcentz-mark-dark.svg"
+        width="128"
+        height="128"
+        className="hidden dark:block"
       />
     </svg>
   );
