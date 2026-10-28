@@ -361,6 +361,37 @@ export function AdminProjectPage({
                       </span>
                     </div>
                   </div>
+
+                  {activity ? (
+                    <section aria-label="Recent GitHub activity"
+                      className="mt-4 border-t border-border pt-3 text-xs">
+                      <h3 className="font-semibold text-foreground">
+                        Recent GitHub activity
+                      </h3>
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <span className="text-muted">Source</span>
+                        <span className="font-medium text-foreground">
+                          {activity.state.replaceAll('_', ' ').toLowerCase()}
+                        </span>
+                      </div>
+                      {activity.latestCommit ? (
+                        <>
+                          <p className="mt-2 line-clamp-2 break-words text-foreground"
+                             title={activity.latestCommit.message}>
+                            {activity.latestCommit.message}
+                          </p>
+                          <p className="mt-1 truncate text-muted"
+                             title={activity.latestCommit.repository + ' ? ' + activity.latestCommit.branch}>
+                            {activity.latestCommit.repository} ? {activity.latestCommit.branch}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="mt-2 text-muted">
+                          No recorded GitHub commit yet.
+                        </p>
+                      )}
+                    </section>
+                  ) : null}
                 </aside>
               </div>
             </section>
