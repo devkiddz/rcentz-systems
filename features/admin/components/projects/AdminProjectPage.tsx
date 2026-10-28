@@ -1,4 +1,6 @@
 import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
+import type { ProjectIntelligence } from '@/server/intelligence/read-project-intelligence';
+import { ProjectIntelligenceDashboard } from './ProjectIntelligenceDashboard';
 import { projectImagesConfigured } from '@/features/admin/server/media/project-images';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 import { AdminProjectImages } from './AdminProjectImages';
@@ -30,6 +32,7 @@ import {
 import { MilestoneHealthChart } from '@/features/client/components/overview/MilestoneHealthChart';
 
 import { AdminProjectMilestoneManager } from '@/features/admin/components/projects/AdminProjectMilestoneManager';
+import { ProjectSectionTabs } from './ProjectSectionTabs';
 import { ProjectDevelopmentObservability } from '@/features/admin/components/projects/ProjectDevelopmentObservability';
 import { AdminProjectMonitoringCards } from './AdminProjectMonitoringCards';
 import type { ClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
@@ -43,6 +46,7 @@ type AdminProjectPageProps = {
   activity?: ProjectActivitySummary;
   analytics?: ClientProjectAnalytics | null;
   runtimeMetrics?: RuntimeMetrics;
+  intelligence?: ProjectIntelligence | null;
   tab?: WorkspaceTab;
   selectorProjects?: Array<{ id: string; name: string }>;
 };
@@ -119,7 +123,7 @@ export function AdminProjectPage({
   canReconcile = false,
   activity,
   tab = 'overview',
-  selectorProjects = [], analytics, runtimeMetrics }: AdminProjectPageProps) {
+  selectorProjects = [], analytics, runtimeMetrics, intelligence }: AdminProjectPageProps) {
   const milestones = project.milestones.filter(milestone => milestone.status !== 'CANCELLED');
 
   const completedMilestones = milestones.filter(milestone => milestone.status === 'COMPLETED').length;
@@ -364,27 +368,9 @@ export function AdminProjectPage({
             {/* PM-WORKSPACE-PASS-1 */}
             <AdminProjectMonitoringCards project={project} activity={activity} analytics={analytics} runtimeMetrics={runtimeMetrics} />
 
-            <nav
-              aria-label="Project workspace sections"
-              className="flex flex-wrap gap-2 rounded-2xl border border-border bg-surface p-3">
-              <a
-                href="#project-milestones"
-                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">
-                Milestones
-              </a>
-              <a
-                href="#project-development"
-                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">
-                Development evidence
-              </a>
-              <a
-                href="#project-media"
-                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-raised">
-                Project media
-              </a>
-            </nav>
-
-            <div id="project-milestones" className="scroll-mt-24" />
+                        <ProjectSectionTabs
+              milestones={<>
+<div id="project-milestones" className="scroll-mt-24" />
             <AdminProjectMilestoneManager
               projectId={project.id}
               projectName={project.name}
@@ -432,7 +418,9 @@ export function AdminProjectPage({
               }))}
             />
 
-            <div id="project-development" className="scroll-mt-24" />
+                          </>}
+              development={<>
+<div id="project-development" className="scroll-mt-24" />
             <ProjectDevelopmentObservability
               activity={activity}
               canReconcile={canReconcile}
@@ -442,14 +430,19 @@ export function AdminProjectPage({
                 .map(milestone => ({ id: milestone.id, title: milestone.title }))}
             />
 
-            <div id="project-media" className="scroll-mt-24" />
+                          </>}
+              media={<>
+<div id="project-media" className="scroll-mt-24" />
             <AdminProjectImages
               projectId={project.id}
               images={project.media}
               configured={projectImagesConfigured()}
             />
 
-            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                          </>}
+            />
+
+<section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <ManagementCard
                 icon={Layers3}
                 label="Features"
@@ -622,6 +615,8 @@ export function AdminProjectPage({
               )}
             </AdminDetails>
           </>
+        ) : tab === 'analytics' ? (
+          <ProjectIntelligenceDashboard intelligence={intelligence ?? null} runtimeMetrics={runtimeMetrics} />
         ) : (
           <section className="rounded-2xl border border-border bg-surface p-6">
             <h2 className="text-base font-semibold text-foreground">
@@ -629,9 +624,7 @@ export function AdminProjectPage({
                 ? 'Resources'
                 : tab === 'logs'
                   ? 'Logs & History'
-                  : tab === 'analytics'
-                    ? 'Analytics'
-                    : 'Settings'}
+                  : 'Settings'}
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted">
               This workspace tab is reserved for the next reorganization stage. Existing project records and
