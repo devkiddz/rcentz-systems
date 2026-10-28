@@ -23,7 +23,7 @@ function IntelligencePreview({
   label: string;
 }) {
   return (
-    <article className="group flex h-[420px] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-theme-accent/40 hover:shadow-sm motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none lg:h-[460px]">
+    <article className="group flex h-[320px] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-theme-accent/40 hover:shadow-sm motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none lg:h-[320px]">
       <header className="flex items-center justify-between border-b border-border px-4 py-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <Icon aria-hidden="true" className="size-4 text-theme-accent" />{title}
