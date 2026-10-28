@@ -34,8 +34,8 @@
      PRIMARY / SECONDARY
      --------------------------------------------------------- */
 
-  --primary: #171717;
-  --primary-foreground: #ffffff;
+  --primary: #006DFD;
+  --primary-foreground: #FFFFFF;
 
   --secondary: #f0f0f0;
   --secondary-foreground: #262626;
@@ -60,13 +60,13 @@
      RCENTZ BRAND ACCENT
      --------------------------------------------------------- */
 
-  --theme-accent-vivid: #9299A3;
-  --theme-accent: #454B54;
-  --theme-accent-strong: #17191C;
+  --theme-accent-vivid: #006DFD;
+  --theme-accent: #006DFD;
+  --theme-accent-strong: #0059D6;
 
-  --theme-accent-soft: rgb(0 0 0 / 0.06);
-  --theme-accent-faint: rgb(0 0 0 / 0.025);
-  --theme-accent-glow: rgb(0 0 0 / 0.08);
+  --theme-accent-soft: rgb(0 109 253 / 0.10);
+  --theme-accent-faint: rgb(0 109 253 / 0.035);
+  --theme-accent-glow: rgb(0 109 253 / 0.16);
 
   /* ---------------------------------------------------------
      SEMANTIC STATUS
@@ -88,7 +88,7 @@
      INTERACTION
      --------------------------------------------------------- */
 
-  --ring: rgb(0 0 0 / 0.45);
+  --ring: rgb(0 109 253 / 0.50);
 
   --hover-overlay: rgb(0 0 0 / 0.035);
   --pressed-overlay: rgb(0 0 0 / 0.065);
@@ -135,8 +135,8 @@
      BRAND
      --------------------------------------------------------- */
 
-  --brand-primary: #171717;
-  --brand-primary-foreground: #ffffff;
+  --brand-primary: #006DFD;
+  --brand-primary-foreground: #FFFFFF;
 
   --brand-logo-background: var(--brand-primary);
   --brand-logo-foreground: var(--brand-primary-foreground);
@@ -267,8 +267,8 @@
      PRIMARY / SECONDARY
      --------------------------------------------------------- */
 
-  --primary: #ededed;
-  --primary-foreground: #000000;
+  --primary: #006DFD;
+  --primary-foreground: #FFFFFF;
 
   --secondary: #171717;
   --secondary-foreground: #ededed;
@@ -293,13 +293,13 @@
      RCENTZ BRAND ACCENT
      --------------------------------------------------------- */
 
-  --theme-accent-vivid: #E5E7EB;
-  --theme-accent: #BFC4CC;
-  --theme-accent-strong: #E5E7EB;
+  --theme-accent-vivid: #368EFF;
+  --theme-accent: #006DFD;
+  --theme-accent-strong: #75B1FF;
 
-  --theme-accent-soft: rgb(255 255 255 / 0.07);
-  --theme-accent-faint: rgb(255 255 255 / 0.025);
-  --theme-accent-glow: rgb(255 255 255 / 0.12);
+  --theme-accent-soft: rgb(0 109 253 / 0.16);
+  --theme-accent-faint: rgb(0 109 253 / 0.06);
+  --theme-accent-glow: rgb(0 109 253 / 0.22);
 
   /* ---------------------------------------------------------
      SEMANTIC STATUS
@@ -321,7 +321,7 @@
      INTERACTION
      --------------------------------------------------------- */
 
-  --ring: rgb(255 255 255 / 0.5);
+  --ring: rgb(0 109 253 / 0.60);
 
   --hover-overlay: rgb(255 255 255 / 0.042);
   --pressed-overlay: rgb(255 255 255 / 0.07);
@@ -354,8 +354,8 @@
      BRAND
      --------------------------------------------------------- */
 
-  --brand-primary: #ededed;
-  --brand-primary-foreground: #000000;
+  --brand-primary: #006DFD;
+  --brand-primary-foreground: #FFFFFF;
 
   --brand-logo-background: var(--brand-primary);
   --brand-logo-foreground: var(--brand-primary-foreground);
