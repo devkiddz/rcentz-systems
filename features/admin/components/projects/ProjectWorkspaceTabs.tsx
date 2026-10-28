@@ -34,7 +34,7 @@ const tabs: { key: WorkspaceTab; label: string }[] = [
   { key: 'overview', label: 'Project Overview' },
   { key: 'resources', label: 'Resources' },
   { key: 'logs', label: 'Logs & History' },
-  { key: 'analytics', label: 'Analytics' },
+  { key: 'analytics', label: 'Intelligence' },
   { key: 'settings', label: 'Settings' }
 ];
 

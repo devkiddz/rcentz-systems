@@ -17,7 +17,7 @@ export async function mirrorAnalyticsToIntelligence(origin: string, event: Mirro
     const url = new URL('/api/v1/intelligence/analytics', base);
     const localHttp = process.env.NODE_ENV !== 'production' && url.protocol === 'http:' && ['localhost','127.0.0.1'].includes(url.hostname);
     if ((url.protocol !== 'https:' && !localHttp) || url.username || url.password) return;
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       cache: 'no-store',
       redirect: 'error',
@@ -25,7 +25,14 @@ export async function mirrorAnalyticsToIntelligence(origin: string, event: Mirro
       headers: { 'Content-Type': 'application/json', Origin: origin },
       body: JSON.stringify({ ...event, occurredAt: new Date().toISOString() })
     });
+    if (!response.ok) {
+      console.error(
+        '[Intelligence mirror] API rejected analytics event',
+        { status: response.status }
+      );
+    }
   } catch {
-    // The local analytics transaction remains authoritative while SDK delivery is unavailable.
+    console.error('[Intelligence mirror] Delivery unavailable');
+    // Existing analytics remains authoritative.
   }
 }
