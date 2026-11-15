@@ -67,7 +67,20 @@ export default async function AdminProjectEditRoute({ params }: AdminProjectEdit
 
         startedAt: toDateInput(project.startedAt),
 
-        expectedEndAt: toDateInput(project.expectedEndAt)
+        expectedEndAt: toDateInput(project.expectedEndAt),
+
+        liveUrl: project.portfolio?.liveUrl ?? '',
+        repositoryUrl: project.portfolio?.repositoryUrl ?? '',
+        primaryDomain: project.infrastructure?.primaryDomain ?? '',
+        domainRegistrar: project.infrastructure?.domainRegistrar ?? '',
+        dnsProvider: project.infrastructure?.dnsProvider ?? '',
+        hostingProvider: project.infrastructure?.hostingProvider ?? '',
+        hostingRegion: project.infrastructure?.hostingRegion ?? '',
+        databaseProvider: project.infrastructure?.databaseProvider ?? '',
+        storageProvider: project.infrastructure?.storageProvider ?? '',
+        emailProvider: project.infrastructure?.emailProvider ?? '',
+        sslProvider: project.infrastructure?.sslProvider ?? '',
+        infrastructureNotes: project.infrastructure?.notes ?? ''
       }}
       clients={builderData.clients}
     />

@@ -68,6 +68,20 @@ export function ClientProjectPage({
           </div>
         </section>
 
+        <nav aria-label="Customer project workspace" className="flex gap-1 overflow-x-auto border-b border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {[
+            { href: '#project-overview', label: 'Project Overview' },
+            { href: '#project-milestones', label: 'Milestones' },
+            { href: '#project-activity', label: 'Activity' },
+            { href: '#project-finances', label: 'Finances' },
+            { href: '#project-analytics', label: 'Analytics' }
+          ].map(item => (
+            <a key={item.href} href={item.href} className="shrink-0 border-b-2 border-transparent px-3 py-3 text-xs font-medium text-muted transition-colors hover:border-theme-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent">
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
         <ProjectDetailsSection project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
 
         {project.slug === "demo-dennis-portfolio-complete-v1" ? (
@@ -77,11 +91,15 @@ export function ClientProjectPage({
             charged or received.
           </p>
         ) : null}
-        <ClientProjectFinanceSection project={project} />
-        <ClientProjectAnalyticsSection
-          project={project}
-          analytics={analytics}
-        />
+        <section id="project-finances" aria-label="Project finances" className="scroll-mt-24">
+          <ClientProjectFinanceSection project={project} />
+        </section>
+        <section id="project-analytics" aria-label="Project analytics" className="scroll-mt-24">
+          <ClientProjectAnalyticsSection
+            project={project}
+            analytics={analytics}
+          />
+        </section>
 
         {/*
           THEN:

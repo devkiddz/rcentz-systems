@@ -3450,3 +3450,30 @@ model ProjectGovernanceEvent {
   @@index([projectId, createdAt])
   @@index([milestoneId, createdAt])
 }
+
+// Standalone, unauthenticated Corporate intake. Financial Quote records remain
+// separate and must be created from reviewed Service Requests.
+model PublicEnquiry {
+  id             String   @id @default(cuid())
+  reference      String   @unique
+  submissionId   String   @unique
+  purpose        String
+  name           String
+  email          String
+  company        String?
+  phone          String?
+  projectType    String?
+  budgetNote     String?
+  timeline       String?
+  message        String   @db.Text
+  source         String   @default("CORPORATE_CONTACT")
+  status         String   @default("NEW")
+  notifiedAt     DateTime?
+  consentAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([purpose, createdAt])
+  @@index([status, createdAt])
+  @@index([email, createdAt])
+}

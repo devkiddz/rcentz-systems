@@ -1,12 +1,11 @@
 'use client';
-import { MilestoneDisclosure } from '@/features/projects/components/MilestoneDisclosure';
 import { DeliveryProgress } from '@/components/ui/DeliveryProgress';
 
 import { useState, useTransition } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { CheckCircle2, CircleDot, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import { CheckCircle2, ChevronDown, CircleDot, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 
@@ -176,7 +175,7 @@ export function AdminProjectMilestoneManager({
 
             <p className="mt-1 text-xs leading-4 text-muted">
               {completed} of {milestones.length} completed for {projectName}.
-              {' '}· {tracked} GitHub-tracked · {manual} manually governed
+              {' '}· {tracked} legacy source-linked · {manual} manually governed
             </p>
           </div>
 
@@ -285,7 +284,12 @@ export function AdminProjectMilestoneManager({
             const canDelete = !milestone.deliveryManaged && milestone.status === 'PLANNED' && milestone.visibility === 'INTERNAL';
 
             return (
-              <MilestoneDisclosure key={milestone.id} projectId={projectId} milestoneId={milestone.id} title={milestone.title} status={milestone.status}>
+              <details key={milestone.id} className="group/legacy-milestone">
+                <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+                  {milestone.status === 'COMPLETED' ? <CheckCircle2 className="size-4 shrink-0 text-emerald-500" aria-hidden="true" /> : <CircleDot className="size-4 shrink-0 text-muted" aria-hidden="true" />}
+                  <span className={`min-w-0 flex-1 break-words ${milestone.status === 'COMPLETED' ? 'line-through text-muted' : ''}`}>{milestone.title}</span>
+                  <ChevronDown className="size-4 shrink-0 text-muted transition-transform group-open/legacy-milestone:rotate-180" aria-hidden="true" />
+                </summary>
               {/* RCENTZ-MILESTONE-STAGE2: presentation only; controls and evidence retained */}
               <article className="px-5 pb-5 pt-1 sm:px-6">
                 <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
@@ -302,7 +306,7 @@ export function AdminProjectMilestoneManager({
 
                       <span className="text-xs text-muted">{humanize(milestone.status)}</span>
                       <span className="rounded-full border border-border bg-surface-raised px-2 py-1 text-[10px] font-medium text-muted">
-                        {milestone.deliveryManaged ? 'GitHub-tracked' : 'Manual governance'}
+                        {milestone.deliveryManaged ? 'Legacy source-linked' : 'Manual governance'}
                       </span>
 
                       <span title="Priority" className="rounded-full bg-surface-muted px-2 py-1 text-[10px] text-muted">{humanize(milestone.priority)} priority</span>
@@ -321,7 +325,7 @@ export function AdminProjectMilestoneManager({
                     <DeliveryProgress value={milestone.progress} label="Governed milestone progress" />
                     {milestone.deliveryManaged ? (
                       <p className="mt-1 text-[10px] leading-4 text-muted">
-                        Governed progress reflects verification, not commit counts. Expand this milestone to inspect its GitHub and deployment evidence.
+                        GitHub development evidence is shown separately in Logs & History.
                       </p>
                     ) : null}
                   </div>
@@ -395,7 +399,7 @@ export function AdminProjectMilestoneManager({
                   </div>
                 </div>
               </article>
-              </MilestoneDisclosure>
+              </details>
             );
           })}
         </div>
@@ -405,7 +409,7 @@ export function AdminProjectMilestoneManager({
 
           <p className="mt-3 text-sm font-semibold text-foreground">No milestones yet</p>
 
-          <p className="mt-1 text-xs text-muted">Linked GitHub milestone commits will appear here. You can also add a manual milestone.</p>
+          <p className="mt-1 text-xs text-muted">Add a manual milestone to begin the governed delivery plan.</p>
         </div>
       )}
     </section>

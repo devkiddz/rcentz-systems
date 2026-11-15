@@ -1,14 +1,14 @@
 import type { RuntimeMetrics } from '@/server/runtime-monitor/read';
 import type { ProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
-import { hasProjectBrief } from "@/features/client/lib/workspace";
-import { FileText, Plus } from "lucide-react";
-import type { ReactNode } from "react";
-import Link from "next/link";
-import { Radio } from "lucide-react";
-import type { ClientProjectAnalytics } from "@/features/analytics/server/read/get-client-project-analytics";
-import { ProjectDecisionSummary } from "./ProjectDecisionSummary";
+import { hasProjectBrief } from '@/features/client/lib/workspace';
+import { FileText, Plus } from 'lucide-react';
+import type { ReactNode } from 'react';
+import Link from 'next/link';
+import { Radio } from 'lucide-react';
+import type { ClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
+import { ProjectDecisionSummary } from './ProjectDecisionSummary';
 
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 import {
   CalendarDays,
@@ -19,16 +19,16 @@ import {
   GitBranch,
   Globe2,
   Layers3,
-  ServerCog,
-} from "lucide-react";
+  ServerCog
+} from 'lucide-react';
 
-import { CopyProjectIdButton } from "@/features/client/components/overview/CopyProjectIdButton";
+import { CopyProjectIdButton } from '@/features/client/components/overview/CopyProjectIdButton';
 
-import { ProjectScreenshotCarousel } from "@/features/client/components/overview/ProjectScreenshotCarousel";
+import { ProjectScreenshotCarousel } from '@/features/client/components/overview/ProjectScreenshotCarousel';
 
-import { ClientProjectMilestonesSection } from "@/features/client/components/projects/ClientProjectMilestonesSection";
+import { ClientProjectMilestonesSection } from '@/features/client/components/projects/ClientProjectMilestonesSection';
 
-import type { ClientProject } from "@/features/client/server/projects/get-client-project";
+import type { ClientProject } from '@/features/client/server/projects/get-client-project';
 
 type ProjectDetailsSectionProps = {
   project: ClientProject;
@@ -40,20 +40,20 @@ type ProjectDetailsSectionProps = {
 function humanize(value: string) {
   return value
     .toLowerCase()
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 function formatDate(value: Date | string | null | undefined) {
   if (!value) {
-    return "Not set";
+    return 'Not set';
   }
 
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+  return new Intl.DateTimeFormat('en-NG', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
   }).format(new Date(value));
 }
 
@@ -69,24 +69,20 @@ function getHostname(value: string | null | undefined) {
   try {
     return new URL(value).hostname;
   } catch {
-    return value.replace(/^https?:\/\//, "").split("/")[0];
+    return value.replace(/^https?:\/\//, '').split('/')[0];
   }
 }
 
 function getCurrentDeliverable(project: ClientProject) {
   return (
+    project.deliverables.find(deliverable => deliverable.status === 'IN_PROGRESS') ??
     project.deliverables.find(
-      (deliverable) => deliverable.status === "IN_PROGRESS",
+      deliverable =>
+        deliverable.status === 'REVIEW' ||
+        deliverable.status === 'BLOCKED' ||
+        deliverable.status === 'READY'
     ) ??
-    project.deliverables.find(
-      (deliverable) =>
-        deliverable.status === "REVIEW" ||
-        deliverable.status === "BLOCKED" ||
-        deliverable.status === "READY",
-    ) ??
-    project.deliverables.find(
-      (deliverable) => deliverable.status === "PLANNED",
-    ) ??
+    project.deliverables.find(deliverable => deliverable.status === 'PLANNED') ??
     null
   );
 }
@@ -95,7 +91,7 @@ export function ProjectDetailsSection({
   project,
   analytics,
   runtimeMetrics,
-  activity,
+  activity
 }: ProjectDetailsSectionProps) {
   const currentDeliverable = getCurrentDeliverable(project);
 
@@ -103,32 +99,28 @@ export function ProjectDetailsSection({
 
   const repositoryUrl = project.portfolio?.repositoryUrl ?? null;
 
-  const projectTagline =
-    project.portfolio?.tagline ?? "Project delivery workspace";
+  const projectTagline = project.portfolio?.tagline ?? 'Project delivery workspace';
 
   const domain =
-    project.infrastructure?.primaryDomain ??
-    getHostname(liveUrl) ??
-    "Not published";
+    project.infrastructure?.primaryDomain ?? getHostname(liveUrl) ?? 'Not published';
 
-  const hostingProvider =
-    project.infrastructure?.hostingProvider ?? "Not recorded";
+  const hostingProvider = project.infrastructure?.hostingProvider ?? 'Not recorded';
 
   const technologies = project.technologies;
 
   const technologiesWithNotes = technologies.filter(
-    (technology) =>
+    technology =>
       Boolean(technology.purpose) ||
       Boolean(technology.rationale) ||
-      Boolean(technology.description),
+      Boolean(technology.description)
   );
 
   const milestones = project.milestones.filter(
-    (milestone) => milestone.status !== "CANCELLED",
+    milestone => milestone.status !== 'CANCELLED'
   );
 
   const completedMilestones = milestones.filter(
-    (milestone) => milestone.status === "COMPLETED",
+    milestone => milestone.status === 'COMPLETED'
   ).length;
 
   const hasScopeInformation =
@@ -140,24 +132,34 @@ export function ProjectDetailsSection({
 
   return (
     <div className="space-y-4">
-      <section className="overflow-hidden rounded-2xl border border-border bg-surface">
-        <div className="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 sm:px-6">
-          <div>
-            <h2 className="text-sm font-semibold tracking-[-0.025em] text-foreground">
-              Project Details
-            </h2>
-
-            <p className="mt-1 hidden text-xs text-muted-foreground sm:block">
-              Current delivery, access and project state
-            </p>
+      <section id="project-overview" className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface">
+        <header className="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-5">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">Customer project workspace</p>
+            <h2 className="mt-1 truncate text-base font-semibold tracking-tight text-foreground">{project.name}</h2>
+            <p className="mt-1 text-xs text-muted">Current delivery, access and project state</p>
           </div>
-        </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="rounded-full border border-border bg-background px-2.5 py-1.5 text-[11px] font-medium text-foreground">
+              {humanize(project.status)}
+            </span>
+            <span title="A saved URL does not verify current uptime" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1.5 text-[11px] text-foreground">
+              <Globe2 className={`size-3.5 ${liveUrl ? 'text-emerald-500' : 'text-muted'}`} aria-hidden="true" />
+              {liveUrl ? 'Live URL configured' : 'No live URL'}
+            </span>
+            <a href="#project-milestones" title="View milestone progress" aria-label={`Project progress ${clampProgress(project.progress)}%; jump to milestones`} className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-background p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent">
+              <svg viewBox="0 0 40 40" className="size-full -rotate-90" aria-hidden="true">
+                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
+                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 16} strokeDashoffset={2 * Math.PI * 16 * (1 - clampProgress(project.progress) / 100)} className="text-theme-accent" />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold tabular-nums text-foreground">{clampProgress(project.progress)}%</span>
+            </a>
+          </div>
+        </header>
 
-        <div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-5">
-          <div className="min-w-0 xl:col-span-2">
-            <p className="mb-3 text-xs font-semibold">
-              Latest application preview
-            </p>
+        <div className="grid min-w-0 items-stretch gap-0 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="min-w-0 border-b border-border p-4 sm:p-5 xl:border-b-0 xl:border-r">
+            <p className="mb-3 text-xs font-semibold">Latest application preview</p>
             <ProjectScreenshotCarousel
               screenshots={project.media}
               projectName={project.name}
@@ -166,7 +168,7 @@ export function ProjectDetailsSection({
               compact
             />
           </div>
-          <div className="min-w-0 space-y-5 xl:col-span-3 xl:pt-7">
+          <div className="min-w-0 space-y-5 p-4 sm:p-5">
             <div>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                 Application access
@@ -177,13 +179,12 @@ export function ProjectDetailsSection({
                   href={liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 text-xs font-medium text-emerald-700 dark:text-emerald-400"
-                >
+                  className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 text-xs font-medium text-emerald-700 dark:text-emerald-400">
                   <Radio
                     aria-hidden="true"
                     className="size-3.5 motion-safe:animate-pulse"
-                  />{" "}
-                  Live application
+                  />{' '}
+                  Live URL configured
                   <ExternalLink aria-hidden="true" className="size-3" />
                 </a>
               ) : (
@@ -193,34 +194,22 @@ export function ProjectDetailsSection({
               )}
             </div>
             <div className="space-y-3">
-              <AccessRow
-                icon={Globe2}
-                label="Domain"
-                value={domain}
-                href={liveUrl}
-              />
+              <AccessRow icon={Globe2} label="Domain" value={domain} href={liveUrl} />
               <Link
-                href={"/dashboard/projects/" + project.id + "/brief"}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-theme-accent/30 bg-theme-accent-faint px-3 text-xs font-semibold text-theme-accent hover:bg-theme-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
+                href={'/dashboard/projects/' + project.id + '/brief'}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-theme-accent/30 bg-theme-accent-faint px-3 text-xs font-semibold text-theme-accent hover:bg-theme-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 {hasProjectBrief(project) ? (
                   <FileText aria-hidden="true" className="size-4" />
                 ) : (
                   <Plus aria-hidden="true" className="size-4" />
                 )}
-                {hasProjectBrief(project)
-                  ? "Review brief"
-                  : "Add product brief"}
+                {hasProjectBrief(project) ? 'Review brief' : 'Add product brief'}
               </Link>
-              <AccessRow
-                icon={ServerCog}
-                label="Hosting"
-                value={hostingProvider}
-              />
+              <AccessRow icon={ServerCog} label="Hosting" value={hostingProvider} />
               <AccessRow
                 icon={GitBranch}
                 label="Repository"
-                value={repositoryUrl ? "Source repository" : "Not connected"}
+                value={repositoryUrl ? 'Source repository' : 'Not connected'}
                 href={repositoryUrl}
               />
               <ProjectIdRow projectId={project.id} />
@@ -245,59 +234,56 @@ export function ProjectDetailsSection({
             icon={CircleGauge}
           />
           <ProjectMeta
-            label={project.completedAt ? "Completed" : "Expected completion"}
+            label={project.completedAt ? 'Completed' : 'Expected completion'}
             value={formatDate(project.completedAt ?? project.expectedEndAt)}
             icon={CalendarDays}
           />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 sm:px-6">
           <p className="text-xs leading-6 text-muted-foreground">
-            To request a project update, review the latest preview and send your
-            feedback to the team.
+            To request a project update, review the latest preview and send your feedback
+            to the team.
           </p>
           <Link
             href={
               project.conversations[0]
-                ? "/dashboard/messages?conversation=" +
-                  project.conversations[0].id
-                : "/dashboard/messages"
+                ? '/dashboard/messages?conversation=' + project.conversations[0].id
+                : '/dashboard/messages'
             }
-            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-surface-muted"
-          >
+            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-surface-muted">
             Project conversations →
           </Link>
         </div>
       </section>
-      <ProjectDecisionSummary project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
+      <div id="project-activity" className="scroll-mt-24">
+        <ProjectDecisionSummary
+          project={project}
+          analytics={analytics}
+          runtimeMetrics={runtimeMetrics}
+          activity={activity}
+        />
+      </div>
       <section
-        id="milestones"
-        className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface"
-      >
+        id="project-milestones"
+        className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface">
         <AnimatedDetails
           title="Milestone progress"
-          meta={`${completedMilestones} of ${milestones.length} completed`}
-        >
+          meta={`${completedMilestones} of ${milestones.length} completed`}>
           <ClientProjectMilestonesSection project={project} />
         </AnimatedDetails>
 
-        <AnimatedDetails
-          title="Project Scope & Agreements"
-          meta="Delivery context"
-        >
+        <AnimatedDetails title="Project Scope & Agreements" meta="Delivery context">
           {hasScopeInformation ? (
             <div className="grid gap-6 md:grid-cols-2">
               <ScopeItem
                 title="Project Purpose"
-                value={
-                  project.purpose ?? "No project purpose has been published."
-                }
+                value={project.purpose ?? 'No project purpose has been published.'}
               />
 
               <ScopeItem
                 title="Expected Outcome"
                 value={
-                  project.expectedOutcome ??
-                  "No expected outcome has been published."
+                  project.expectedOutcome ?? 'No expected outcome has been published.'
                 }
               />
 
@@ -352,21 +338,17 @@ export function ProjectDetailsSection({
             </div>
           ) : (
             <p className="text-sm leading-6 text-muted-foreground">
-              No client-visible scope or agreement information has been
-              published yet.
+              No client-visible scope or agreement information has been published yet.
             </p>
           )}
         </AnimatedDetails>
 
         <AnimatedDetails
           title="Development Summary"
-          meta="Technology and technical context"
-        >
+          meta="Technology and technical context">
           <div className="overflow-hidden rounded-xl border border-border bg-background">
             <div className="p-4 sm:p-5">
-              <h3 className="text-sm font-semibold text-foreground">
-                Technologies
-              </h3>
+              <h3 className="text-sm font-semibold text-foreground">Technologies</h3>
 
               <p className="mt-1 text-xs text-muted-foreground">
                 Core technologies powering this project
@@ -374,7 +356,7 @@ export function ProjectDetailsSection({
 
               {technologies.length > 0 ? (
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {technologies.map((technology) => (
+                  {technologies.map(technology => (
                     <TechnologyBadge
                       key={technology.id}
                       name={technology.name}
@@ -402,7 +384,7 @@ export function ProjectDetailsSection({
                   </div>
 
                   <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                    {technologiesWithNotes.map((technology) => (
+                    {technologiesWithNotes.map(technology => (
                       <TechnologyNoteCard
                         key={technology.id}
                         name={technology.name}
@@ -427,7 +409,7 @@ export function ProjectDetailsSection({
 function AnimatedDetails({
   title,
   meta,
-  children,
+  children
 }: {
   title: string;
   meta: string;
@@ -445,9 +427,7 @@ function AnimatedDetails({
           <p className="text-xs font-semibold text-foreground">{title}</p>
         </div>
 
-        <span className="hidden text-xs text-muted-foreground sm:block">
-          {meta}
-        </span>
+        <span className="hidden text-xs text-muted-foreground sm:block">{meta}</span>
       </summary>
 
       <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-open:grid-rows-[1fr]">
@@ -465,7 +445,7 @@ function ProjectMeta({
   label,
   value,
   icon: Icon,
-  accent = false,
+  accent = false
 }: {
   label: string;
   value: string;
@@ -475,10 +455,7 @@ function ProjectMeta({
   return (
     <div className="min-w-0 rounded-lg border border-border bg-background px-3 py-2">
       <div className="flex items-center gap-1.5">
-        <Icon
-          aria-hidden="true"
-          className="size-3 shrink-0 text-muted-foreground"
-        />
+        <Icon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
 
         <p className="truncate text-[10px] text-muted-foreground">{label}</p>
       </div>
@@ -488,9 +465,7 @@ function ProjectMeta({
           <span className="size-1.5 shrink-0 rounded-full bg-theme-accent" />
         ) : null}
 
-        <p className="truncate text-xs font-semibold text-foreground">
-          {value}
-        </p>
+        <p className="truncate text-xs font-semibold text-foreground">{value}</p>
       </div>
     </div>
   );
@@ -500,7 +475,7 @@ function AccessRow({
   icon: Icon,
   label,
   value,
-  href,
+  href
 }: {
   icon: LucideIcon;
   label: string;
@@ -510,10 +485,7 @@ function AccessRow({
   return (
     <div className="grid min-w-0 grid-cols-[minmax(0,6.25rem)_minmax(0,1fr)] items-center gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <Icon
-          aria-hidden="true"
-          className="size-3.5 shrink-0 text-muted-foreground"
-        />
+        <Icon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
 
         <span className="truncate text-xs text-muted-foreground">{label}</span>
       </div>
@@ -523,8 +495,7 @@ function AccessRow({
           href={href}
           target="_blank"
           rel="noreferrer"
-          className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent"
-        >
+          className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent">
           <span className="truncate">{value}</span>
 
           <ExternalLink aria-hidden="true" className="size-3 shrink-0" />
@@ -542,21 +513,15 @@ function ProjectIdRow({ projectId }: { projectId: string }) {
   return (
     <div className="grid min-w-0 grid-cols-[minmax(0,6.25rem)_minmax(0,1fr)] items-center gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <Layers3
-          aria-hidden="true"
-          className="size-3.5 shrink-0 text-muted-foreground"
-        />
+        <Layers3 aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
 
-        <span className="truncate text-xs text-muted-foreground">
-          Project ID
-        </span>
+        <span className="truncate text-xs text-muted-foreground">Project ID</span>
       </div>
 
       <div className="flex min-w-0 items-center gap-1">
         <span
           title={projectId}
-          className="min-w-0 flex-1 truncate font-mono text-xs font-semibold text-foreground"
-        >
+          className="min-w-0 flex-1 truncate font-mono text-xs font-semibold text-foreground">
           {projectId}
         </span>
 
@@ -569,7 +534,7 @@ function ProjectIdRow({ projectId }: { projectId: string }) {
 function TechnologyBadge({
   name,
   category,
-  featured,
+  featured
 }: {
   name: string;
   category: string | null;
@@ -579,18 +544,15 @@ function TechnologyBadge({
     <div
       title={category ? `${name} · ${category}` : name}
       className={[
-        "inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5",
+        'inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5',
 
-        featured
-          ? "border-theme-accent/20 bg-theme-accent/5"
-          : "border-border bg-surface",
-      ].join(" ")}
-    >
+        featured ? 'border-theme-accent/20 bg-theme-accent/5' : 'border-border bg-surface'
+      ].join(' ')}>
       <span
         className={[
-          "size-1.5 rounded-full",
-          featured ? "bg-theme-accent" : "bg-muted-foreground/40",
-        ].join(" ")}
+          'size-1.5 rounded-full',
+          featured ? 'bg-theme-accent' : 'bg-muted-foreground/40'
+        ].join(' ')}
       />
 
       <span className="text-xs font-medium text-foreground">{name}</span>
@@ -604,7 +566,7 @@ function TechnologyNoteCard({
   purpose,
   rationale,
   description,
-  featured,
+  featured
 }: {
   name: string;
   category: string | null;
@@ -616,18 +578,15 @@ function TechnologyNoteCard({
   return (
     <article
       className={[
-        "rounded-xl border p-4",
+        'rounded-xl border p-4',
 
         featured
-          ? "border-theme-accent/20 bg-theme-accent/[0.035]"
-          : "border-border bg-surface",
-      ].join(" ")}
-    >
+          ? 'border-theme-accent/20 bg-theme-accent/[0.035]'
+          : 'border-border bg-surface'
+      ].join(' ')}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h5 className="truncate text-sm font-semibold text-foreground">
-            {name}
-          </h5>
+          <h5 className="truncate text-sm font-semibold text-foreground">{name}</h5>
 
           {category ? (
             <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
@@ -638,37 +597,25 @@ function TechnologyNoteCard({
 
         <span
           className={[
-            "mt-1 size-2 shrink-0 rounded-full",
+            'mt-1 size-2 shrink-0 rounded-full',
 
-            featured ? "bg-theme-accent" : "bg-border-strong",
-          ].join(" ")}
+            featured ? 'bg-theme-accent' : 'bg-border-strong'
+          ].join(' ')}
         />
       </div>
 
       <div className="mt-4 space-y-3">
-        {purpose ? (
-          <TechnologyCardField label="Purpose" value={purpose} />
-        ) : null}
+        {purpose ? <TechnologyCardField label="Purpose" value={purpose} /> : null}
 
-        {rationale ? (
-          <TechnologyCardField label="Why" value={rationale} />
-        ) : null}
+        {rationale ? <TechnologyCardField label="Why" value={rationale} /> : null}
 
-        {description ? (
-          <TechnologyCardField label="Notes" value={description} />
-        ) : null}
+        {description ? <TechnologyCardField label="Notes" value={description} /> : null}
       </div>
     </article>
   );
 }
 
-function TechnologyCardField({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function TechnologyCardField({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">

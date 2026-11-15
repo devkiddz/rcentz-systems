@@ -9,6 +9,9 @@ import { getClientProject } from '@/features/client/server/projects/get-client-p
 
 import { getClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
 import { readOwnedProjectActivitySummary } from '@/server/rcentz-api/project-activity-client';
+import { prisma } from '@/lib/prisma';
+import { PROJECT_DELETION_MARKER } from '@/features/projects/lib/deletion';
+import { ProjectDeletionRequestPanel } from '@/features/client/components/projects/ProjectDeletionRequestPanel';
 
 type DashboardProjectPageProps = {
   params: Promise<{
@@ -43,5 +46,18 @@ export default async function DashboardProjectPage({
     readProjectRuntimeMetrics(projectId),
     readOwnedProjectActivitySummary({ projectId, userId: user.id })
   ]);
-  return <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />;
+  const deletionRequest = await prisma.projectProcess.findFirst({
+    where: { projectId, createdById: user.id, type: 'OTHER', impact: PROJECT_DELETION_MARKER },
+    orderBy: { createdAt: 'desc' },
+    select: { id: true, status: true, reason: true, resolutionNotes: true, createdAt: true }
+  });
+  const previous = deletionRequest ? {
+    ...deletionRequest, createdAt: deletionRequest.createdAt.toISOString()
+  } : null;
+  return (
+    <>
+      <ClientProjectPage project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
+      <ProjectDeletionRequestPanel projectId={projectId} previous={previous} />
+    </>
+  );
 }

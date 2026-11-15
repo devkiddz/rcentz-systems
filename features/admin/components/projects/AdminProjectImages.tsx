@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ChevronLeft, ChevronRight, ImagePlus, Pencil } from 'lucide-react';
 
 async function cropImage(url: string, area: Area) {
   const image = new window.Image();
@@ -25,7 +26,7 @@ async function cropImage(url: string, area: Area) {
   throw new Error('This image is too large. Choose a smaller crop or image.');
 }
 
-export function AdminProjectImages({ projectId, images, configured }: { projectId: string; images: { id: string; url: string; alt: string | null }[]; configured: boolean }) {
+export function AdminProjectImages({ projectId, images, configured, display = 'gallery' }: { projectId: string; images: { id: string; url: string; alt: string | null }[]; configured: boolean; display?: 'gallery' | 'hero' }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const replacement = useRef<string | null>(null);
@@ -38,6 +39,15 @@ export function AdminProjectImages({ projectId, images, configured }: { projectI
   const [deleting, setDeleting] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  // The hero can navigate all stored screenshots; gallery management below is unchanged.
+  const [activeIndex, setActiveIndex] = useState(0);
+  const currentIndex = Math.min(activeIndex, Math.max(0, images.length - 1));
+  const activeImage = images[currentIndex] ?? null;
+  const multipleImages = images.length > 1;
+  function moveSlide(direction: -1 | 1) {
+    if (!multipleImages) return;
+    setActiveIndex(index => (index + direction + images.length) % images.length);
+  }
   useEffect(() => {
     const url = selection?.url;
     return () => { if (url) URL.revokeObjectURL(url); };
@@ -70,7 +80,84 @@ export function AdminProjectImages({ projectId, images, configured }: { projectI
     finally { setBusy(false); }
   }
   const button = 'min-h-10 rounded-lg border border-border px-4 text-xs font-semibold disabled:opacity-50';
-  return <section className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+  return <section className={display === 'hero' ? 'flex min-h-[280px] min-w-0 flex-1 flex-col sm:min-h-[320px] xl:min-h-[350px]' : 'rounded-2xl border border-border bg-surface p-5 sm:p-6'}>
+    {display === 'hero' ? (
+      <div
+        className="group relative flex min-h-[280px] flex-1 items-center justify-center overflow-hidden rounded-xl border border-border bg-background aspect-video sm:min-h-[320px] xl:aspect-auto xl:min-h-[350px]"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Project screenshot gallery">
+        {activeImage ? (
+          <Image
+            key={activeImage.id}
+            src={activeImage.url}
+            alt={activeImage.alt ?? `Project screenshot ${currentIndex + 1}`}
+            fill
+            unoptimized
+            sizes="(min-width: 1280px) 45vw, 100vw"
+            className="object-contain motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
+          />
+        ) : (
+          <div className="flex flex-col items-center gap-2 px-5 text-center text-muted">
+            <span className="text-sm font-semibold">No project screenshot</span>
+            <span className="text-xs">Add media to show a preview here.</span>
+          </div>
+        )}
+        {multipleImages ? (
+          <>
+            <span
+              aria-live="polite"
+              aria-atomic="true"
+              className="absolute left-3 top-3 z-10 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[11px] font-medium tabular-nums text-white">
+              {currentIndex + 1} / {images.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => moveSlide(-1)}
+              aria-label="Previous project screenshot"
+              className="absolute left-3 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/70 text-white opacity-100 transition-opacity hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+              <ChevronLeft className="size-5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => moveSlide(1)}
+              aria-label="Next project screenshot"
+              className="absolute right-3 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/70 text-white opacity-100 transition-opacity hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+              <ChevronRight className="size-5" aria-hidden="true" />
+            </button>
+            <div className="absolute inset-x-0 top-3 z-10 flex justify-center gap-1.5 px-16" aria-label="Screenshot position">
+              {images.map((image, index) => (
+                <button
+                  key={image.id}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Show screenshot ${index + 1} of ${images.length}`}
+                  aria-current={currentIndex === index ? 'true' : undefined}
+                  className={`h-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${currentIndex === index ? 'w-5 bg-white' : 'w-1.5 bg-white/45 hover:bg-white/75'}`}
+                />
+              ))}
+            </div>
+          </>
+        ) : null}
+        <div className={`absolute inset-x-0 bottom-0 z-20 flex flex-wrap justify-center gap-2 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-3 pt-10 transition-opacity duration-200 motion-reduce:transition-none ${activeImage ? 'pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:opacity-100' : 'opacity-100'}`}>
+          <button
+            type="button"
+            disabled={busy || !configured || images.length >= 12}
+            onClick={() => choose(null)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/40 bg-black/75 px-3 py-2 text-xs font-medium text-white hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-50">
+            <ImagePlus className="size-3.5" aria-hidden="true" /> Add media
+          </button>
+          <button
+            type="button"
+            disabled={busy || !configured || !activeImage}
+            onClick={() => { if (activeImage) choose(activeImage.id); }}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/40 bg-black/75 px-3 py-2 text-xs font-medium text-white hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-50">
+            <Pencil className="size-3.5" aria-hidden="true" /> Edit screenshot
+          </button>
+        </div>
+      </div>
+    ) : (
+      <>
     <h2 className="text-sm font-semibold">Project images</h2>
     <p className="mt-2 text-xs leading-5 text-muted">Screenshots are private to the client and administrators. The first image appears in the customer preview.</p>
     <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -84,6 +171,8 @@ export function AdminProjectImages({ projectId, images, configured }: { projectI
         </div>
       </div>)}
     </div>
+      </>
+    )}
     <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" aria-label="Choose project image" onChange={event => {
       const file = event.target.files?.[0]; event.target.value = '';
       if (!file) return;
@@ -91,7 +180,7 @@ export function AdminProjectImages({ projectId, images, configured }: { projectI
       pixels.current = null; setReady(false); setCrop({ x: 0, y: 0 }); setZoom(1); setAspect(16 / 9); setMessage('');
       setSelection({ url: URL.createObjectURL(file), name: file.name, replaceId: replacement.current });
     }} />
-    <button type="button" onClick={() => choose(null)} disabled={busy || !configured || images.length >= 12} className={button + ' mt-4 bg-foreground text-background'}>Add project image</button>
+    {display === 'gallery' ? <button type="button" onClick={() => choose(null)} disabled={busy || !configured || images.length >= 12} className={button + ' mt-4 bg-foreground text-background'}>Add project image</button> : null}
     {!configured && <p className="mt-3 text-xs text-muted">Connect the existing Cloudinary account to enable project uploads.</p>}
     <p role="status" className="mt-3 text-xs">{message}</p>
     <Dialog open={Boolean(selection)} onOpenChange={open => { if (!open && !busy) setSelection(null); }}>

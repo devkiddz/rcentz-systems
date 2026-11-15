@@ -3,6 +3,7 @@ import {
   type ServiceSelection,
 } from "@/features/services/lib/service-selection";
 import "server-only";
+import { projectImagesConfigured } from "@/features/admin/server/media/project-images";
 import type { Prisma } from "@/generated/prisma/client";
 import {
   emptyBrief,
@@ -119,5 +120,5 @@ export function legacyBrief(request: {
   };
 }
 export function uploadsConfigured() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return projectImagesConfigured();
 }
