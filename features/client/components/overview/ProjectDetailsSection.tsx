@@ -4,18 +4,19 @@ import { hasProjectBrief } from '@/features/client/lib/workspace';
 import { FileText, Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { Radio } from 'lucide-react';
+
 import type { ClientProjectAnalytics } from '@/features/analytics/server/read/get-client-project-analytics';
 import { ProjectDecisionSummary } from './ProjectDecisionSummary';
 
-import type { LucideIcon } from 'lucide-react';
+
+
 
 import {
   CalendarDays,
   ChevronDown,
-  CircleGauge,
-  ExternalLink,
-  Flag,
+  Clock3,
+  ArrowUpRight,
+  Eye,
   GitBranch,
   Globe2,
   Layers3,
@@ -73,6 +74,19 @@ function getHostname(value: string | null | undefined) {
   }
 }
 
+function safeHttpUrl(value: string | null | undefined) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password ? url.href : null;
+  } catch { return null; }
+}
+function safeGithubRepositoryUrl(value: string | null | undefined) {
+  const url = safeHttpUrl(value);
+  if (!url) return null;
+  try { return new URL(url).hostname.toLowerCase() === 'github.com' ? url : null; }
+  catch { return null; }
+}
 function getCurrentDeliverable(project: ClientProject) {
   return (
     project.deliverables.find(deliverable => deliverable.status === 'IN_PROGRESS') ??
@@ -101,10 +115,25 @@ export function ProjectDetailsSection({
 
   const projectTagline = project.portfolio?.tagline ?? 'Project delivery workspace';
 
-  const domain =
-    project.infrastructure?.primaryDomain ?? getHostname(liveUrl) ?? 'Not published';
 
   const hostingProvider = project.infrastructure?.hostingProvider ?? 'Not recorded';
+  const safeLiveUrl = safeHttpUrl(liveUrl);
+  const safeRepositoryUrl = safeGithubRepositoryUrl(repositoryUrl);
+  const progress = clampProgress(project.progress);
+  const commit = activity?.latestCommit ?? null;
+  const commitUrl = commit &&
+    /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(commit.repository) &&
+    /^[a-f0-9]{7,40}$/i.test(commit.sha) &&
+    safeRepositoryUrl?.includes(`github.com/${commit.repository}`)
+      ? `https://github.com/${commit.repository}/commit/${commit.sha}`
+      : null;
+  const recordedAt = commit ? new Date(commit.committedAt) : null;
+  const commitDate = recordedAt && Number.isFinite(recordedAt.getTime())
+    ? new Intl.DateTimeFormat('en-NG', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos'
+      }).format(recordedAt)
+    : null;
 
   const technologies = project.technologies;
 
@@ -132,136 +161,87 @@ export function ProjectDetailsSection({
 
   return (
     <div className="space-y-4">
-      <section id="project-overview" className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface">
-        <header className="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-5">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">Customer project workspace</p>
-            <h2 className="mt-1 truncate text-base font-semibold tracking-tight text-foreground">{project.name}</h2>
-            <p className="mt-1 text-xs text-muted">Current delivery, access and project state</p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <span className="rounded-full border border-border bg-background px-2.5 py-1.5 text-[11px] font-medium text-foreground">
+      <section id="project-overview" aria-label="Customer project details" className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-surface">
+        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-raised px-4 py-3 sm:px-5">
+          <div className="flex min-w-0 flex-wrap items-center gap-3 sm:gap-4">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-theme-accent/30 bg-theme-accent/[0.08] text-theme-accent">
+              <Layers3 aria-hidden="true" className="size-5" />
+            </span>
+            <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">Project Details</h2>
+            <span className="hidden h-7 w-px bg-border sm:block" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground">
+              <span className="size-2 rounded-full bg-theme-accent" aria-hidden="true" />
               {humanize(project.status)}
             </span>
-            <span title="A saved URL does not verify current uptime" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1.5 text-[11px] text-foreground">
-              <Globe2 className={`size-3.5 ${liveUrl ? 'text-emerald-500' : 'text-muted'}`} aria-hidden="true" />
-              {liveUrl ? 'Live URL configured' : 'No live URL'}
+          </div>
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            {safeLiveUrl ? (
+              <a href={safeLiveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-2 rounded-lg border border-theme-accent/40 bg-background px-3 text-xs font-medium text-theme-accent transition-colors hover:bg-surface-muted">
+                <Eye className="size-4" aria-hidden="true" /> Preview live <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>
+            ) : null}
+            {safeRepositoryUrl ? (
+              <a href={safeRepositoryUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-background px-3 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted">
+                <GitBranch className="size-4" aria-hidden="true" /> GitHub repo <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>
+            ) : null}
+            <span title="A saved URL does not verify uptime" className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-background px-2.5 text-[11px] text-foreground">
+              <Globe2 className={`size-3.5 ${safeLiveUrl ? 'text-emerald-500' : 'text-muted'}`} aria-hidden="true" />
+              <span className={`size-1.5 rounded-full ${safeLiveUrl ? 'bg-emerald-500' : 'bg-muted'}`} aria-hidden="true" />
+              {safeLiveUrl ? 'Live URL configured' : 'No live URL'}
             </span>
-            <a href="#project-milestones" title="View milestone progress" aria-label={`Project progress ${clampProgress(project.progress)}%; jump to milestones`} className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-background p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent">
-              <svg viewBox="0 0 40 40" className="size-full -rotate-90" aria-hidden="true">
-                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
-                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 16} strokeDashoffset={2 * Math.PI * 16 * (1 - clampProgress(project.progress) / 100)} className="text-theme-accent" />
+            <a href="#project-milestones" title="View registered milestones" aria-label={`Project progress ${progress}%; jump to milestones`} className="relative flex size-[72px] shrink-0 items-center justify-center rounded-full border border-border bg-background p-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent">
+              <svg viewBox="0 0 64 64" className="block size-full shrink-0 -rotate-90 overflow-visible" aria-hidden="true">
+                <circle cx="32" cy="32" r="27" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
+                <circle cx="32" cy="32" r="27" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 27} strokeDashoffset={2 * Math.PI * 27 * (1 - progress / 100)} className="text-theme-accent" />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold tabular-nums text-foreground">{clampProgress(project.progress)}%</span>
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[11px] font-semibold tabular-nums text-foreground">{progress}%</span>
             </a>
+            <Link href={`/dashboard/projects/${project.id}/brief`} title={hasProjectBrief(project) ? 'Review project brief' : 'Add product brief'} aria-label={hasProjectBrief(project) ? 'Review project brief' : 'Add product brief'} className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-muted">
+              {hasProjectBrief(project) ? <FileText className="size-4" aria-hidden="true" /> : <Plus className="size-4" aria-hidden="true" />}
+            </Link>
           </div>
         </header>
 
-        <div className="grid min-w-0 items-stretch gap-0 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-          <div className="min-w-0 border-b border-border p-4 sm:p-5 xl:border-b-0 xl:border-r">
-            <p className="mb-3 text-xs font-semibold">Latest application preview</p>
-            <ProjectScreenshotCarousel
-              screenshots={project.media}
-              projectName={project.name}
-              projectTagline={projectTagline}
-              liveUrl={liveUrl}
-              compact
-            />
+        <div className="grid min-w-0 w-full items-stretch xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="flex w-full min-w-0 max-w-full flex-col overflow-hidden border-b border-border p-4 sm:p-5 xl:border-b-0 xl:border-r">
+            <ProjectScreenshotCarousel screenshots={project.media} projectName={project.name} projectTagline={projectTagline} compact />
           </div>
-          <div className="min-w-0 space-y-5 p-4 sm:p-5">
+          <div className="flex w-full min-w-0 max-w-full flex-col gap-4 overflow-hidden p-4 sm:p-5">
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                Application access
-              </p>
-              <p className="mt-2 text-sm font-semibold">{projectTagline}</p>
-              {liveUrl ? (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                  <Radio
-                    aria-hidden="true"
-                    className="size-3.5 motion-safe:animate-pulse"
-                  />{' '}
-                  Live URL configured
-                  <ExternalLink aria-hidden="true" className="size-3" />
-                </a>
-              ) : (
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Preview not published yet
-                </p>
-              )}
+              <h3 className="break-words text-lg font-semibold tracking-tight text-foreground sm:text-xl">{project.name}</h3>
+              {project.description ? <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted">{project.description}</p> : null}
             </div>
-            <div className="space-y-3">
-              <AccessRow icon={Globe2} label="Domain" value={domain} href={liveUrl} />
-              <Link
-                href={'/dashboard/projects/' + project.id + '/brief'}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-theme-accent/30 bg-theme-accent-faint px-3 text-xs font-semibold text-theme-accent hover:bg-theme-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                {hasProjectBrief(project) ? (
-                  <FileText aria-hidden="true" className="size-4" />
-                ) : (
-                  <Plus aria-hidden="true" className="size-4" />
-                )}
-                {hasProjectBrief(project) ? 'Review brief' : 'Add product brief'}
-              </Link>
-              <AccessRow icon={ServerCog} label="Hosting" value={hostingProvider} />
-              <AccessRow
-                icon={GitBranch}
-                label="Repository"
-                value={repositoryUrl ? 'Source repository' : 'Not connected'}
-                href={repositoryUrl}
-              />
-              <ProjectIdRow projectId={project.id} />
+            <div className="grid gap-3 text-xs sm:grid-cols-2">
+              <p className="flex flex-wrap items-center gap-2"><CalendarDays className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-muted">Registered</span><span className="text-foreground">{formatDate(project.createdAt)}</span></p>
+              <p className="flex items-center gap-2"><Clock3 className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-foreground">{project.expectedEndAt ? `Target ${formatDate(project.expectedEndAt)}` : 'Target date not set'}</span></p>
+              <p className="flex flex-wrap items-center gap-2 sm:col-span-2"><Layers3 className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-muted">Project ID</span><span className="min-w-0 truncate font-mono text-foreground" title={project.id}>{project.id}</span><CopyProjectIdButton value={project.id} /></p>
+              <p className="flex flex-wrap items-center gap-2 sm:col-span-2"><Globe2 className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-muted">Live domain</span>{safeLiveUrl ? <a href={safeLiveUrl} target="_blank" rel="noopener noreferrer" className="min-w-0 break-all font-medium text-theme-accent hover:underline">{getHostname(safeLiveUrl)} <ArrowUpRight className="inline size-3" aria-hidden="true" /></a> : <span className="text-foreground">Not configured</span>}</p>
+              <p className="flex flex-wrap items-center gap-2 sm:col-span-2"><GitBranch className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-muted">Repository</span>{safeRepositoryUrl ? <a href={safeRepositoryUrl} target="_blank" rel="noopener noreferrer" className="min-w-0 break-all text-foreground hover:underline">{safeRepositoryUrl.replace(/^https?:\/\//, '')}</a> : <span className="text-foreground">Not connected</span>}</p>
+              <p className="flex flex-wrap items-center gap-2 sm:col-span-2"><ServerCog className="size-4 shrink-0 text-muted" aria-hidden="true" /><span className="text-muted">Hosting</span><span className="text-foreground">{hostingProvider}</span></p>
             </div>
+            <section id="project-activity" aria-label="Latest collected GitHub commit" className="scroll-mt-24 border-t border-border pt-3 text-xs xl:mt-auto">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h4 className="flex items-center gap-2 font-semibold text-foreground"><GitBranch className="size-4" aria-hidden="true" /> Latest GitHub commit</h4>
+                {safeRepositoryUrl && activity?.state === 'SYNCED' ? <span className="text-emerald-500">Source synced</span> : null}
+              </div>
+              {safeRepositoryUrl && commit ? (
+                <div className="mt-2 min-w-0 space-y-1.5">
+                  {commitUrl ? <a href={commitUrl} target="_blank" rel="noopener noreferrer" className="block break-words font-medium leading-5 text-foreground hover:text-theme-accent hover:underline">{commit.message.split(/\r?\n/, 1)[0]} <ArrowUpRight className="inline size-3" aria-hidden="true" /></a> : <p className="break-words font-medium leading-5 text-foreground">{commit.message.split(/\r?\n/, 1)[0]}</p>}
+                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted">
+                    <span className="font-mono text-foreground">{commit.sha.slice(0, 7)}</span><span aria-hidden="true">·</span><span className="break-all">{commit.repository}</span><span aria-hidden="true">·</span><span>Branch: {commit.branch}</span>
+                    {commitDate ? <><span aria-hidden="true">·</span><time dateTime={commit.committedAt}>{commitDate}</time></> : null}
+                  </p>
+                  <p className="text-[11px] text-muted">Latest collected commit; milestone completion remains subject to admin review.</p>
+                </div>
+              ) : <p className="mt-2 text-muted">{!safeRepositoryUrl || activity?.state === 'NO_SOURCE' ? 'No GitHub source connected for this project.' : activity?.state === 'SYNC_ERROR' ? 'GitHub synchronization needs attention.' : 'No collected GitHub commit available for this project.'}</p>}
+              <Link href={project.conversations[0] ? `/dashboard/messages?conversation=${project.conversations[0].id}` : '/dashboard/messages'} className="mt-3 inline-flex min-h-9 items-center gap-1 text-theme-accent hover:underline">Project conversations <ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>
+            </section>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2 border-t border-border px-4 py-4 sm:grid-cols-4 sm:px-6">
-          <ProjectMeta
-            label="Started"
-            value={formatDate(project.startedAt)}
-            icon={CalendarDays}
-          />
-          <ProjectMeta
-            label="Status"
-            value={humanize(project.status)}
-            icon={Flag}
-            accent
-          />
-          <ProjectMeta
-            label="Progress"
-            value={`${clampProgress(project.progress)}%`}
-            icon={CircleGauge}
-          />
-          <ProjectMeta
-            label={project.completedAt ? 'Completed' : 'Expected completion'}
-            value={formatDate(project.completedAt ?? project.expectedEndAt)}
-            icon={CalendarDays}
-          />
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 sm:px-6">
-          <p className="text-xs leading-6 text-muted-foreground">
-            To request a project update, review the latest preview and send your feedback
-            to the team.
-          </p>
-          <Link
-            href={
-              project.conversations[0]
-                ? '/dashboard/messages?conversation=' + project.conversations[0].id
-                : '/dashboard/messages'
-            }
-            className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-xs font-semibold hover:bg-surface-muted">
-            Project conversations →
-          </Link>
         </div>
       </section>
       <div id="project-activity" className="scroll-mt-24">
-        <ProjectDecisionSummary
-          project={project}
-          analytics={analytics}
-          runtimeMetrics={runtimeMetrics}
-          activity={activity}
-        />
+        <ProjectDecisionSummary project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
       </div>
       <section
         id="project-milestones"
@@ -438,96 +418,6 @@ function AnimatedDetails({
         </div>
       </div>
     </details>
-  );
-}
-
-function ProjectMeta({
-  label,
-  value,
-  icon: Icon,
-  accent = false
-}: {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-  accent?: boolean;
-}) {
-  return (
-    <div className="min-w-0 rounded-lg border border-border bg-background px-3 py-2">
-      <div className="flex items-center gap-1.5">
-        <Icon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
-
-        <p className="truncate text-[10px] text-muted-foreground">{label}</p>
-      </div>
-
-      <div className="mt-1 flex items-center gap-2">
-        {accent ? (
-          <span className="size-1.5 shrink-0 rounded-full bg-theme-accent" />
-        ) : null}
-
-        <p className="truncate text-xs font-semibold text-foreground">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function AccessRow({
-  icon: Icon,
-  label,
-  value,
-  href
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  href?: string | null;
-}) {
-  return (
-    <div className="grid min-w-0 grid-cols-[minmax(0,6.25rem)_minmax(0,1fr)] items-center gap-3">
-      <div className="flex min-w-0 items-center gap-2">
-        <Icon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
-
-        <span className="truncate text-xs text-muted-foreground">{label}</span>
-      </div>
-
-      {href ? (
-        <a
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-          className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-theme-accent">
-          <span className="truncate">{value}</span>
-
-          <ExternalLink aria-hidden="true" className="size-3 shrink-0" />
-        </a>
-      ) : (
-        <span className="min-w-0 truncate text-xs font-semibold text-foreground">
-          {value}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function ProjectIdRow({ projectId }: { projectId: string }) {
-  return (
-    <div className="grid min-w-0 grid-cols-[minmax(0,6.25rem)_minmax(0,1fr)] items-center gap-3">
-      <div className="flex min-w-0 items-center gap-2">
-        <Layers3 aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
-
-        <span className="truncate text-xs text-muted-foreground">Project ID</span>
-      </div>
-
-      <div className="flex min-w-0 items-center gap-1">
-        <span
-          title={projectId}
-          className="min-w-0 flex-1 truncate font-mono text-xs font-semibold text-foreground">
-          {projectId}
-        </span>
-
-        <CopyProjectIdButton value={projectId} />
-      </div>
-    </div>
   );
 }
 

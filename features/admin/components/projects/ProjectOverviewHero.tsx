@@ -78,12 +78,12 @@ export function ProjectOverviewHero({ project, activity }: Props) {
             <span className={`size-1.5 rounded-full ${live ? 'bg-emerald-500' : 'bg-muted'}`} aria-hidden="true" />
             {live ? 'Live URL configured' : 'No live URL'}
           </span>
-          <a href="#project-milestones" title="Go to registered milestones" className="relative flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-background p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent" aria-label={`Project progress ${progress}%; jump to milestones`}>
-            <svg viewBox="0 0 40 40" className="size-full -rotate-90" aria-hidden="true">
-              <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
-              <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 16} strokeDashoffset={2 * Math.PI * 16 * (1 - progress / 100)} className="text-theme-accent" />
+          <a href="#project-milestones" title="Go to registered milestones" className="relative flex size-[72px] shrink-0 items-center justify-center rounded-full border border-border bg-background p-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent" aria-label={`Project progress ${progress}%; jump to milestones`}>
+            <svg viewBox="0 0 64 64" className="block size-full shrink-0 -rotate-90 overflow-visible" aria-hidden="true">
+              <circle cx="32" cy="32" r="27" stroke="currentColor" strokeWidth="4" fill="none" className="text-theme-accent/15" />
+              <circle cx="32" cy="32" r="27" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray={2 * Math.PI * 27} strokeDashoffset={2 * Math.PI * 27 * (1 - progress / 100)} className="text-theme-accent" />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold tabular-nums text-foreground">{progress}%</span>
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[11px] font-semibold tabular-nums text-foreground">{progress}%</span>
           </a>
           <Link className="flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-surface-muted" href={`/admin/projects/${project.id}/edit`} title="Edit project" aria-label="Edit project">
             <Pencil className="size-4" aria-hidden="true" />
