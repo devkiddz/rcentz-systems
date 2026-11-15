@@ -4,7 +4,7 @@ import { useActionState, type ReactNode } from 'react';
 
 import Link from 'next/link';
 
-import { ArrowLeft, CalendarDays, FolderKanban, Save, UserRound } from 'lucide-react';
+import { ArrowLeft, CalendarDays, FolderKanban, Globe2, Save, ServerCog, UserRound } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 
@@ -53,6 +53,19 @@ type EditableProject = {
 
   startedAt: string;
   expectedEndAt: string;
+
+  liveUrl: string;
+  repositoryUrl: string;
+  primaryDomain: string;
+  domainRegistrar: string;
+  dnsProvider: string;
+  hostingProvider: string;
+  hostingRegion: string;
+  databaseProvider: string;
+  storageProvider: string;
+  emailProvider: string;
+  sslProvider: string;
+  infrastructureNotes: string;
 };
 
 type AdminProjectEditorProps = {
@@ -218,20 +231,24 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
                     </select>
                   </Field>
 
-                  <Field label="Overall progress (%)" required>
-                    <Input
-                      name="progress"
-                      type="number"
-                      min={0}
-                      max={100}
-                      step={1}
-                      defaultValue={project.progress}
-                      aria-describedby="overall-progress-help"
-                      required
-                    />
-                  </Field>
-
-                  <p id="overall-progress-help" className="text-xs leading-5 text-muted">Set the project total manually from 0 to 100. Milestone changes do not automatically update this value.</p>
+                  <div className="sm:col-span-2 xl:col-span-3 rounded-xl border border-border bg-surface-raised p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-foreground">Recorded project progress</p>
+                        <p className="mt-1 text-xs text-muted">
+                          Read-only here. Milestone criteria and approvals govern delivery progress.
+                        </p>
+                      </div>
+                      <span className="text-xl font-semibold tabular-nums text-theme-accent">
+                        {project.progress}%
+                      </span>
+                    </div>
+                    <Link
+                      href={`/admin/projects/${project.id}`}
+                      className="mt-3 inline-flex text-xs font-medium text-theme-accent hover:underline">
+                      Manage milestones and completion
+                    </Link>
+                  </div>
 
                   <Field label="Budget">
                     <Input name="budget" type="number" min={0} step="0.01" defaultValue={project.budget} />
@@ -262,6 +279,78 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
                   </Field>
                 </div>
               </ProjectFormSection>
+
+              <ProjectFormSection
+                icon={Globe2}
+                title="Domains & URLs"
+                description="Public website and repository links. Saving a live URL does not verify deployment health.">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Live website URL (HTTPS)">
+                    <Input name="liveUrl" type="url" maxLength={500} placeholder="https://rcentz.cc"
+                      defaultValue={project.liveUrl} />
+                  </Field>
+                  <Field label="GitHub repository URL (HTTPS)">
+                    <Input name="repositoryUrl" type="url" maxLength={500}
+                      placeholder="https://github.com/owner/repository"
+                      defaultValue={project.repositoryUrl} />
+                  </Field>
+                  <Field label="Primary domain">
+                    <Input name="primaryDomain" maxLength={253} placeholder="rcentz.cc"
+                      defaultValue={project.primaryDomain} />
+                  </Field>
+                  <div className="flex items-end">
+                    <p className="text-xs leading-5 text-muted">
+                      The GitHub URL is descriptive. Actual source synchronization is managed separately.
+                    </p>
+                  </div>
+                </div>
+              </ProjectFormSection>
+
+              <ProjectFormSection
+                icon={ServerCog}
+                title="Hosting & Infrastructure"
+                description="Operational provider information only. Never paste credentials, secrets or API keys here.">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Hosting provider">
+                    <Input name="hostingProvider" maxLength={160} placeholder="Vercel"
+                      defaultValue={project.hostingProvider} />
+                  </Field>
+                  <Field label="Hosting region">
+                    <Input name="hostingRegion" maxLength={160} placeholder="US East"
+                      defaultValue={project.hostingRegion} />
+                  </Field>
+                  <Field label="Domain registrar">
+                    <Input name="domainRegistrar" maxLength={160} placeholder="Hostinger"
+                      defaultValue={project.domainRegistrar} />
+                  </Field>
+                  <Field label="DNS provider">
+                    <Input name="dnsProvider" maxLength={160} placeholder="Cloudflare"
+                      defaultValue={project.dnsProvider} />
+                  </Field>
+                  <Field label="Database provider">
+                    <Input name="databaseProvider" maxLength={160} placeholder="Neon PostgreSQL"
+                      defaultValue={project.databaseProvider} />
+                  </Field>
+                  <Field label="Storage provider">
+                    <Input name="storageProvider" maxLength={160} placeholder="Cloudinary"
+                      defaultValue={project.storageProvider} />
+                  </Field>
+                  <Field label="Email provider">
+                    <Input name="emailProvider" maxLength={160} placeholder="Email delivery provider"
+                      defaultValue={project.emailProvider} />
+                  </Field>
+                  <Field label="SSL provider">
+                    <Input name="sslProvider" maxLength={160} placeholder="Let's Encrypt"
+                      defaultValue={project.sslProvider} />
+                  </Field>
+                  <div className="sm:col-span-2">
+                    <Field label="Infrastructure notes (non-sensitive)">
+                      <Textarea name="infrastructureNotes" rows={4} maxLength={2000}
+                        defaultValue={project.infrastructureNotes} />
+                    </Field>
+                  </div>
+                </div>
+              </ProjectFormSection>
             </div>
 
             <aside className="space-y-4 xl:sticky xl:top-24">
@@ -279,7 +368,9 @@ export function AdminProjectEditor({ project, clients }: AdminProjectEditorProps
 
                   <ContractRow label="Client assignment" value="Changes project ownership" />
 
-                  <ContractRow label="Status & progress" value="Changes delivery state" />
+                  <ContractRow label="Project status" value="Editable and recorded in project history" />
+                  <ContractRow label="Progress" value="Read-only; managed by milestone governance" />
+                  <ContractRow label="Domains & hosting" value="Saved with the project record" />
 
                   <ContractRow label="Milestones" value="Managed separately" />
 

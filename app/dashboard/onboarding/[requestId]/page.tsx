@@ -1,6 +1,5 @@
 import { ServiceSelectionSummary } from "@/features/services/components/selection/ServiceSelectionSummary";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/features/auth/server/require-auth";
@@ -90,33 +89,16 @@ export default async function EditBriefPage({
               All briefs
             </Link>
           </div>
-          {data?.attachments.length ? (
-            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-              {data.attachments.map((file) => (
-                <li key={file.id}>
-                  {file.type.startsWith("image/") ? (
-                    <Image
-                      unoptimized
-                      src={`/api/project-briefs/${requestId}/files/${file.id}?preview=1`}
-                      alt={file.name}
-                      width={480}
-                      height={270}
-                      className="mb-2 aspect-video w-full rounded-lg border border-border object-contain"
-                    />
-                  ) : null}
-                  <a
-                    href={`/api/project-briefs/${requestId}/files/${file.id}`}
-                    className="flex min-h-11 items-center justify-between gap-3 rounded-lg bg-surface-subtle px-3 py-2 text-xs"
-                  >
-                    <span className="break-all">{file.name}</span>
-                    <span className="shrink-0">
-                      Download · {(file.size / 1024).toFixed(0)} KB
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+          <p className="mt-4 text-sm leading-6 text-muted-foreground">
+            {data?.attachments.length || 0} reference file(s) attached. View the brief preview
+            to manage thumbnails, replace files, or remove an attachment.
+          </p>
+          <Link
+            href={`/dashboard/requests/${requestId}`}
+            className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-theme-accent underline underline-offset-4"
+          >
+            Preview brief and manage attachments
+          </Link>
         </section>
       </div>
       {data?.serviceSelection ? (

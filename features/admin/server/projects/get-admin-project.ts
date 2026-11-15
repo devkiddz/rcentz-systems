@@ -141,6 +141,16 @@ export const getAdminProject = cache(async (projectId: string) => {
         },
       },
 
+      features: {
+        orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+        take: 100,
+        select: {
+          id: true, slug: true, name: true, description: true,
+          expectedOutcome: true,
+          status: true, progress: true
+        }
+      },
+
       milestones: {
         orderBy: [
           {
@@ -173,6 +183,19 @@ export const getAdminProject = cache(async (projectId: string) => {
           completedAt: true,
 
           completionNotes: true,
+          // Canonical acceptance criteria and review history (not GitHub markers).
+          criteria: {
+            orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+            select: {
+              id: true, title: true, description: true, required: true,
+              sortOrder: true, revision: true, verified: true, verifiedAt: true
+            }
+          },
+          reviews: {
+            orderBy: { createdAt: 'desc' },
+            take: 3,
+            select: { id: true, decision: true, criteriaRevision: true, reason: true, createdAt: true }
+          },
           delivery: { select: { id: true } },
 
           createdAt: true,

@@ -1,3 +1,6 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 
 import Link from 'next/link';
@@ -27,6 +30,10 @@ function formatMoney(amount: number, currency: string) {
 }
 
 export function ClientDashboardIdentityRail({ summary }: ClientDashboardIdentityRailProps) {
+  const pathname = usePathname();
+  // Preserve account KPIs on dashboard pages, but not inside a project workspace.
+  if (/^\/dashboard\/projects\/[^/]+\/?$/.test(pathname)) return null;
+
   const items: IdentityItem[] = [
     {
       label: 'Active Projects',

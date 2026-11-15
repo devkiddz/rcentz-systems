@@ -117,6 +117,12 @@ const workspaceNavigation = [
 
 const communicationNavigation = [
   {
+    key: 'enquiries',
+    label: 'Quote & Enquiries',
+    href: '/admin/enquiries',
+    icon: BriefcaseBusiness
+  },
+  {
     key: 'messages',
     label: 'Messages',
     href: '/admin/messages',

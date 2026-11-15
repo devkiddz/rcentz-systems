@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { prisma } from "@/lib/prisma";
+import { PROJECT_DELETION_MARKER } from "@/features/projects/lib/deletion";
 
 const clientVisible = ["CLIENT", "PUBLIC"] as const;
 
@@ -12,6 +13,7 @@ export const getClientProject = cache(
       where: {
         id: projectId,
         clientId: userId,
+        processes: { none: { type: 'OTHER', impact: PROJECT_DELETION_MARKER, status: 'RESOLVED' } },
       },
 
       select: {

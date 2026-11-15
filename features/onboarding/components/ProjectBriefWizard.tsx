@@ -154,20 +154,29 @@ export function ProjectBriefWizard({
         return;
       }
       revision.current = result.updatedAt;
+      let uploadFailed = false;
       for (const file of files) {
         const form = new FormData();
         form.set("file", file);
-        const upload = await fetch(`/api/project-briefs/${result.id}/files`, {
-          method: "POST",
-          body: form,
-        });
-        if (!upload.ok) {
-          router.push(`/dashboard/onboarding/${result.id}?upload=failed`);
-          return;
+        try {
+          const upload = await fetch(`/api/project-briefs/${result.id}/files`, {
+            method: "POST",
+            body: form,
+          });
+          if (!upload.ok) {
+            const details = await upload.json().catch(() => null);
+            console.warn('[brief-attachment] Upload was rejected', upload.status, details?.code || 'UNKNOWN');
+            uploadFailed = true;
+          }
+        } catch {
+          uploadFailed = true;
         }
       }
+      const savedId = encodeURIComponent(result.id);
       router.push(
-        `/dashboard/onboarding/${encodeURIComponent(result.id)}?saved=1`,
+        requestId
+          ? `/dashboard/requests/${savedId}?${uploadFailed ? 'upload=failed' : 'saved=1'}`
+          : `/dashboard/requests/${savedId}/submitted${uploadFailed ? '?upload=failed' : ''}`,
       );
       router.refresh();
     } catch {
@@ -238,7 +247,7 @@ export function ProjectBriefWizard({
     );
   }
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
+    <div className="mx-auto w-full max-w-[100rem] px-3 py-8 sm:px-5 sm:py-12 lg:px-6 2xl:px-8">
       <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
           {name}, let us shape your project.
@@ -250,7 +259,7 @@ export function ProjectBriefWizard({
           Your briefs
         </Link>
       </div>
-      <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
+      <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,0.9fr)] xl:gap-8">
         <section>
           <div className="mb-5 flex items-center gap-3">
             <p className="shrink-0 text-xs font-medium text-muted-foreground">
@@ -294,6 +303,26 @@ export function ProjectBriefWizard({
               ][step]
             }
           </p>
+          <section aria-label="Why this step matters" className="mt-5 rounded-2xl border border-border bg-surface-subtle p-4 sm:p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-theme-accent">Why we ask</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{[
+              'Knowing the type of solution you have in mind helps us choose the right specialists and starting approach. You do not need to know the technology.',
+              'Your business name, project goal and target users tell us what success looks like. We can refine the details together.',
+              'Your existing tools, reference links and feature ideas help us understand the work involved. Rough ideas are welcome.',
+              'Your budget preference and timing guide our initial planning; they do not lock you into a price or delivery date.',
+              'Review the information and optionally attach up to five reference files. Rcentz will discuss scope and milestones with you before work begins.'
+            ][step]}</p>
+          </section>
+          {step > 0 && step < 4 ? (
+            <section aria-label="Your project so far" className="mt-4 rounded-2xl border border-border p-4">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Your project so far</h2>
+              <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+                <div><dt className="text-xs text-muted-foreground">Solution</dt><dd className="mt-1 font-medium">{buildOptions.find(option => option.value === brief.build)?.title || 'Not selected yet'}</dd></div>
+                {step >= 2 ? <div><dt className="text-xs text-muted-foreground">Project</dt><dd className="mt-1 break-words font-medium">{brief.title || 'Not named yet'}</dd></div> : null}
+                {step >= 3 ? <div><dt className="text-xs text-muted-foreground">Starting point</dt><dd className="mt-1 font-medium">{brief.startingPoint || 'To be discussed'}</dd></div> : null}
+              </dl>
+            </section>
+          ) : null}
           <div
             aria-hidden="true"
             className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface-subtle p-3 lg:hidden"
@@ -700,7 +729,7 @@ export function ProjectBriefWizard({
             </div>
           </form>
         </section>
-        <aside className="hidden lg:block">
+        <aside className="hidden min-w-0 lg:block">
           <BriefIllustration
             step={step}
             title={brief.title}

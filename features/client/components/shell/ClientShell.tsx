@@ -418,6 +418,7 @@ function ClientHeader({
   const pathname = usePathname();
 
   const headerIdentity = getHeaderIdentity(pathname);
+  const isProjectDetail = /^\/dashboard\/projects\/[^/]+\/?$/.test(pathname);
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur-md">
@@ -438,13 +439,16 @@ function ClientHeader({
 
         <div className="h-5 w-px shrink-0 bg-border" />
 
-        <div className="min-w-0">
-          <p className="truncate text-[12px] font-semibold tracking-[-0.02em] text-foreground">
-            {headerIdentity.title}
-          </p>
-
-          <p className="hidden truncate text-[9px] text-muted sm:block">{headerIdentity.description}</p>
-        </div>
+                {isProjectDetail ? (
+          <div id="client-project-picker-slot" className="min-w-0 max-w-[310px] flex-1" />
+        ) : (
+          <div className="min-w-0">
+            <p className="truncate text-[12px] font-semibold tracking-[-0.02em] text-foreground">
+              {headerIdentity.title}
+            </p>
+            <p className="hidden truncate text-[9px] text-muted sm:block">{headerIdentity.description}</p>
+          </div>
+        )}
 
         <div className="ml-auto flex min-w-0 items-center gap-0.5">
           <ClientCommandSearch />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -30,6 +30,16 @@ export function ProjectScreenshotCarousel({
 }: ProjectScreenshotCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useEffect(() => {
+    if (screenshots.length < 2) return;
+    const next = (activeIndex + 1) % screenshots.length;
+    const previous = (activeIndex - 1 + screenshots.length) % screenshots.length;
+    for (const index of new Set([next, previous])) {
+      const preload = new window.Image();
+      preload.src = screenshots[index].url;
+    }
+  }, [activeIndex, screenshots]);
+
   const hasScreenshots = screenshots.length > 0;
   const hasMultipleScreenshots = screenshots.length > 1;
 
@@ -56,11 +66,12 @@ export function ProjectScreenshotCarousel({
   }
 
   return (
-    <div>
-      <div className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-border bg-background">
+    <div className="w-full min-w-0 max-w-full overflow-hidden">
+      <div className="group relative h-[260px] w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-background sm:h-[320px] xl:h-[350px]">
         {activeScreenshot ? (
           <Image
             fill
+            priority={activeIndex === 0}
             unoptimized
             sizes="(min-width: 1280px) 34vw, 100vw"
             src={activeScreenshot.url}
@@ -69,7 +80,7 @@ export function ProjectScreenshotCarousel({
               activeScreenshot.caption ??
               `${projectName} project screenshot`
             }
-            className="absolute inset-0 size-full object-cover object-top"
+            className="absolute inset-0 size-full object-contain object-center"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-background">
@@ -118,7 +129,7 @@ export function ProjectScreenshotCarousel({
               type="button"
               onClick={showPrevious}
               aria-label="Show previous project screenshot"
-              className="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur-md transition hover:bg-black/65"
+              className="absolute left-3 top-1/2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur-md transition hover:bg-black/65"
             >
               <ChevronLeft aria-hidden="true" className="size-4" />
             </button>
@@ -127,7 +138,7 @@ export function ProjectScreenshotCarousel({
               type="button"
               onClick={showNext}
               aria-label="Show next project screenshot"
-              className="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur-md transition hover:bg-black/65"
+              className="absolute right-3 top-1/2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur-md transition hover:bg-black/65"
             >
               <ChevronRight aria-hidden="true" className="size-4" />
             </button>

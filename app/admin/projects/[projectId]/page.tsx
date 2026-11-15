@@ -18,7 +18,8 @@ export default async function AdminProjectRoute({params,searchParams}:AdminProje
  const activity = (await readProjectActivitySummaries([projectId]))[projectId];
  const analytics = await getClientProjectAnalytics({ userId: actor.id, projectId, adminPreview: true });
  const runtimeMetrics = await readProjectRuntimeMetrics(projectId);
- const intelligence = (await searchParams).tab === 'analytics' ? await readProjectIntelligence(projectId) : null;
+ const requested = (await searchParams).tab;
+ const intelligence = requested === 'analytics' || !requested || requested === 'overview' ? await readProjectIntelligence(projectId) : null;
  const requestedTab = (await searchParams).tab;
  const tab: WorkspaceTab = requestedTab === 'resources' || requestedTab === 'logs' || requestedTab === 'analytics' || requestedTab === 'settings' ? requestedTab : 'overview';
  const register = await getAdminProjects();
