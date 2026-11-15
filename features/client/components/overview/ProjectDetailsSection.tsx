@@ -241,7 +241,26 @@ export function ProjectDetailsSection({
         </div>
       </section>
       <div id="project-activity" className="scroll-mt-24">
-        <ProjectDecisionSummary project={project} analytics={analytics} runtimeMetrics={runtimeMetrics} activity={activity} />
+        <ProjectDecisionSummary
+          project={{
+            id: project.id,
+            _count: { features: project._count.features },
+            milestones: project.milestones.map(milestone => ({
+              id: milestone.id,
+              title: milestone.title,
+              description: milestone.description,
+              purpose: milestone.purpose,
+              expectedOutcome: milestone.expectedOutcome,
+              status: milestone.status,
+              priority: milestone.priority,
+              progress: milestone.progress,
+              dueDate: milestone.dueDate?.toISOString() ?? null
+            }))
+          }}
+          analytics={analytics}
+          runtimeMetrics={runtimeMetrics}
+          activity={activity}
+        />
       </div>
       <section
         id="project-milestones"

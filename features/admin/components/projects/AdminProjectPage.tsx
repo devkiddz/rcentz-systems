@@ -108,7 +108,7 @@ export function AdminProjectPage({
             <ProjectOverviewHero project={project} activity={activity} />
 
             {/* PM-WORKSPACE-PASS-1 */}
-            <AdminProjectMonitoringCards project={project} analytics={analytics} intelligence={intelligence} runtimeMetrics={runtimeMetrics} />
+            <AdminProjectMonitoringCards project={project} analytics={analytics} intelligence={intelligence} runtimeMetrics={runtimeMetrics} activity={activity} />
 
             {/* Advanced management remains available; registered milestones are shown above. */}
             <details id="advanced-milestone-management" className="rounded-2xl border border-border bg-surface">
